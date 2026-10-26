@@ -5,7 +5,7 @@ const DAY_IDS = ['ride_profiles', 'park_hours_2025', 'park_hours_published', 're
   'wait_by_month', 'events', 'ride_closures_by_month'];
 const dpState = { date: null, park: 'Disneyland', brk: 3, brkAt: 'auto', dine: { lunch: null, dinner: null }, rides: {
     'Disneyland': null, 'California Adventure': null }, reps: { 'Disneyland': new Map(), 'California Adventure': new Map()
-  }, b2b: false, ll: true, single: false, hotel: 'gc', custom: 20, pace: 'normal', start: 'auto', walk: 2, height: 0, win: {
+  }, b2b: false, ll: true, single: false, hotel: 'gc', custom: 20, pace: 'normal', start: 'auto', walk: 2, height: 0, lunchAt: 'auto', dinnerAt: 'auto', win: {
     start: 'rope', startAt: '09:00', end: 'close', endAt: '20:00' } };
 // Every shared setting with a control, in one list. key: the dpState field (its default is in dpState above);
 // ids: its controls, Plan a day's and the Trip wizard's copies kept in step by syncGlobals; type: 'num', 'text' or 'check';
@@ -23,7 +23,10 @@ const SETTINGS = [
   { key: 'hotel', ids: ['dp-hotel'], type: 'text', save: true, later: true },
   { key: 'custom', ids: ['dp-custom'], type: 'text', save: true, input: true, later: true },
   { key: 'll', ids: ['dp-ll'], type: 'check', save: true, later: true },
-  { key: 'single', ids: ['dp-ls'], type: 'check', save: true, later: true }
+  { key: 'single', ids: ['dp-ls'], type: 'check', save: true, later: true },
+  // meal times: Plan a day shows its pair above the restaurant chips (dineChips); wizard days can override them
+  { key: 'lunchAt', ids: ['wz-lunchat'], type: 'text', save: true },
+  { key: 'dinnerAt', ids: ['wz-dinnerat'], type: 'text', save: true }
 ];
 const readSetting = (e, type) => type === 'check' ? e.checked : type === 'num' ? +e.value : e.value;
 // ---------- repeat rides: a picked ride can be done more than once; reps maps ride name -> times (2+) ----------
@@ -31,6 +34,17 @@ const readSetting = (e, type) => type === 'check' ? e.checked : type === 'num' ?
 const lapsOf = (reps, name) => (reps && reps.get(name)) || 1;
 // each extra time becomes its own entry (the planner tells rides apart by object); extras go after the
 // park's own list so the first time plans exactly as before
+// rides Disney has closed for refurbishment on a date: their chips are greyed out and can't be picked for it
+const refurbRow = (iso, park, name) => (dash.data('refurbs').data || []).find(r => r.park === park && r.ride === name && iso >= r.start && (!r.end || iso <= r.end));
+const refurbTip = (iso, park, name) => { const rf = refurbRow(iso, park, name);
+  return 'Closed for refurbishment' + (rf && rf.end ? ` until ${fmtDay(rf.end)}` : '') + '. ' + (rf && rf.note ? rf.note : ''); };
+function closedChip(b, tip) {
+  b.disabled = true; b.classList.add('closed'); b.setAttribute('aria-pressed', 'false'); b.title = tip;
+  const s = document.createElement('span'); s.className = 'dclosed'; s.textContent = ' · closed'; b.insertBefore(s, b.querySelector('.ri'));
+}
+// the note when closed rides were taken off a day: "it's a small world is closed on Wed, Nov 5, so it's off this day's list."
+const closedOffText = (names, iso) => `${flexList(names)} ${names.length > 1 ? 'are' : 'is'} closed on ${fmtDay(iso)}, so ` +
+  `${names.length > 1 ? 'they’re' : 'it’s'} off this day’s list.`;
 const refurbOn = (iso, park, name) => (dash.data('refurbs').data || []).some(r => r.park === park && r.ride === name && iso >= r.start && (!r.end || iso <= r.end));
 // shortest rider's height (0 = no limit): rides with a higher minimum stay pickable but are flagged, since others
 // in the group may still ride (Rider Switch lets the adults take turns)
@@ -83,13 +97,32 @@ function cycleTap(b, onTap, onHold) {
   b.addEventListener('contextmenu', e => e.preventDefault());
   b.addEventListener('click', e => { if (held) { held = false; e.preventDefault(); return; } onTap(); });
 }
+// meal-time choices: the hours offered, and their words ("Around 1 pm")
+const MEAL_HOURS = { lunch: [11, 12, 13, 14, 15], dinner: [16, 17, 18, 19, 20, 21] };
+const hourLbl = (h) => h === 12 ? 'noon' : h > 12 ? `${h - 12} pm` : `${h} am`;
+const mealAtLbl = (v) => v == null || v === 'auto' ? 'whenever fits' : 'around ' + hourLbl(Number(v));
 const nextLap = (on, n, max) => !on ? 1 : n < max ? n + 1 : 0;
 // sit-down and walk-up restaurants as chips: tap to pick one for the meal you're in its park for (see dineAt below), tap again
 // for its other meal or to take it off (skipping a meal it doesn't serve), press and hold to clear.
 // dine is { lunch, dinner } holding 'park|name'; one place per meal per day.
+// mt (optional): the meal-time choices to show first, { value: { lunch, dinner }, same: the trip's { lunch, dinner } on a wizard day (or null),
+// set(kind, value) } with value 'auto', an hour, or null for the trip's choice.
 // Returns dineAt(where): call it once the plan is made, with mealWhere()'s { lunch, dinner }, to show where you'll be at each meal,
 // mark the closest places for it, and make taps pick the right meal. Returns nothing when there are no places to pick.
-function dineChips(box, parks, dine, onChange) {
+function dineChips(box, parks, dine, onChange, mt) {
+  if (mt) {
+    const h = document.createElement('span'); h.className = 'g wzh'; h.textContent = 'Meal times'; box.append(h);
+    const row = document.createElement('span'); row.className = 'g qt-mealtimes';
+    ['lunch', 'dinner'].forEach(k => {
+      const l = document.createElement('label'), s = document.createElement('select'); s.className = 'qt-input';
+      l.append((k === 'lunch' ? 'Lunch' : 'Dinner') + ' time ');
+      (mt.same ? [['', `Same as trip (${mealAtLbl(mt.same[k])})`]] : []).concat([['auto', 'Whenever fits']], MEAL_HOURS[k].map(x => [String(x), 'Around ' + hourLbl(x)]))
+        .forEach(([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; s.append(o); });
+      s.value = mt.value[k] == null ? (mt.same ? '' : 'auto') : String(mt.value[k]);
+      s.addEventListener('change', () => mt.set(k, s.value === '' ? null : s.value)); l.append(s); row.append(l, ' ');
+    });
+    box.append(row);
+  }
   const any = parks.some(p => (DINE_PICKS[p] || []).length); if (!any) return;
   const g = document.createElement('span'); g.className = 'g wzh'; g.textContent = 'Sit-down meals (optional)'; box.append(g);
   const hint = document.createElement('span'); hint.className = 'g qt-dinehint';
@@ -196,6 +229,14 @@ function staySum() {
           document.getElementById('tab-wizard').click(); wzGo(0); setTimeout(() => document.getElementById('trip-card').scrollIntoView({ block: 'start' }), 50);
         }); el.append(bt); });
 }
+// the line under the waits-vs-steps slider, by position, kept up to date while it moves
+const WALK_HINT = ["Goes to the ride with the shortest line next, even if it's across the park.",
+  "Mostly goes to the ride with the shortest line next, unless it's a long walk.",
+  'Balances lines and walking: a long walk only to save a lot of waiting.',
+  'Mostly goes to nearby rides first, unless their line is much longer.',
+  'Goes to nearby rides first, even if the line is a bit longer.'];
+const walkHint = (pre) => { const s = document.getElementById(pre + '-walk'), h = document.getElementById(pre + '-walk-hint'); if (s && h) h.textContent = WALK_HINT[+s.value] || ''; };
+['dp', 'wz'].forEach(pre => { const s = document.getElementById(pre + '-walk'); if (s) s.addEventListener('input', () => walkHint(pre)); });
 // changing a setting in either tab: store it, show it in both tabs, redraw both
 SETTINGS.filter(s => !s.own).forEach(s => s.ids.forEach(id => document.getElementById(id).addEventListener(s.input ? 'input' : 'change', (e) => {
   dpState[s.key] = readSetting(e.target, s.type); syncGlobals(); drawDay(); if (s.trip) drawTrip();

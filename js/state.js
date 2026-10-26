@@ -27,7 +27,7 @@
       if (W.sel) wz.sel = Object.fromEntries(WZ_PARKS.map(p => [p, new Set(W.sel[p] || [])]));
       wz.reps = Object.fromEntries(WZ_PARKS.map(p => [p, new Map(Object.entries((W.reps && W.reps[p]) || {}))]));
       if (W.days) wz.days = Object.fromEntries(Object.entries(W.days).map(([iso, d]) => [iso, {
-              brk: d.brk, brkAt: d.brkAt, walk: d.walk, start: d.start, win: d.win && typeof d.win === 'object' ? Object.assign({}, dpState.win,
+              brk: d.brk, brkAt: d.brkAt, walk: d.walk, start: d.start, lunchAt: d.lunchAt, dinnerAt: d.dinnerAt, win: d.win && typeof d.win === 'object' ? Object.assign({}, dpState.win,
                 d.win) : Object.assign({}, dpState.win), rides: Object.fromEntries(WZ_PARKS.map(p => [p, new Set((d.rides && d.rides[p]) || [])])),
               reps: Object.fromEntries(WZ_PARKS.map(p => [p, new Map(Object.entries((d.reps && d.reps[p]) || {}))])),
               dine: d.dine && typeof d.dine === 'object' ? { lunch: d.dine.lunch || null, dinner: d.dine.dinner || null } : { lunch: null, dinner: null } }]));
@@ -60,7 +60,7 @@ function saveState() {
       take: { which: takeState.which, ticks },
       wz: { key: wz.key, step: wz.step, reps: repsOut(wz.reps), sel: wz.sel ? Object.fromEntries(WZ_PARKS.map(p => [p, [...wz.sel[p]]])) : null,
         days: wz.days ? Object.fromEntries(Object.entries(wz.days).map(([iso, d]) => [iso, {
-                brk: d.brk, brkAt: d.brkAt, walk: d.walk, start: d.start, win: d.win, dine: d.dine,
+                brk: d.brk, brkAt: d.brkAt, walk: d.walk, start: d.start, lunchAt: d.lunchAt, dinnerAt: d.dinnerAt, win: d.win, dine: d.dine,
                 rides: Object.fromEntries(WZ_PARKS.map(p => [p, [...d.rides[p]]])), reps: repsOut(d.reps) }])) : null }
     }));
   } catch (e) { /* storage unavailable */ }

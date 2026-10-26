@@ -36,7 +36,7 @@ The scripts load in this order, and they share one set of top-level names (every
 | `js/controls.js` | Shared settings (`dpState`, and `SETTINGS`: one list of every setting with a control, used to bind both tabs' copies, `syncGlobals` and saving), repeat rides, ride details, tap-to-cycle and restaurant chips, hotels (`HOTELS`, `HOTEL_WALK` and `travelMin`, from `data/hotels.js`), start and finish, break |
 | `js/day.js` | The planner's day: day context (`dayContext`), closure and data notes, the About-the-data table, expected waits |
 | `js/walks.js` | Gates (`GATE`, `GC_GATE`), security and tap-in lines (`SEC`, `entryInfo`), Lightning Lane settings (`LL`), places (`PLACES`), walking times (`walkMin`), meal and show spots |
-| `js/scheduler.js` | The scheduler: break timing, free time, fit advice, Lightning Lane bookings, `scheduleBlock`, `llPlan`, `planDay` |
+| `js/scheduler.js` | The scheduler: break timing, free time, fit advice, Lightning Lane bookings, `scheduleBlock`, `llPlan`, `planDay`; meal times (`mealWin`); more time when rides or meal times don't fit (`flexFix`, `flexText`) |
 | `js/meals.js` | Restaurants (`DINING`, `DINE_PICKS`), booking tips, picked meals and their notes, meal stops near the next ride (`annotateMeals`) |
 | `js/restrooms.js` | Restroom stops on plans (`RESTROOMS`, `annotateRestrooms`) |
 | `js/hopper.js` | Park Hopper days (`planHopper`, `planHopperBoth`) |
@@ -46,6 +46,7 @@ The scripts load in this order, and they share one set of top-level names (every
 | `js/trip.js` | Trip wizard, first steps: your trip, trip scoring and best dates |
 | `js/wizard.js` | Trip wizard: days, rides, day pages, export step, walking chart |
 | `js/time-of-day.js` | Time of day overlay chart and its chips |
+| `js/walk-explorer.js` | Walking times page (More menu): the walk between any two mapped spots at each pace and crowd level |
 | `js/state.js` | Restoring and saving settings (localStorage `pdp-state`) |
 | `js/pdf.js` | Day PDF (Plan a day) and trip PDF (Trip wizard) |
 | `js/app.js` | Settings dialog, redraw when data loads, tabs, startup |
@@ -94,7 +95,10 @@ Follow **[UPDATING.md](UPDATING.md)**. If you're asked to "update all the data" 
   - Before a break or a park hop, the plan walks to the gate.
   - Hotel times (`data/hotels.js`, read into `HOTEL_WALK` in `js/controls.js`): routed footpath metres from an average room to the turnstiles, at the group's pace, plus elevator minutes. The Grand Californian has its own California Adventure entrance. Every entry from the hotel (morning, return from a break) adds the security and tap-in line from `data/security_waits.js` (by time from opening, scaled by how busy the day is). Hops only tap in. Grand Californian guests use its own California Adventure entrance (gate `gc` in `data/gates.js`) when it's open; hops always use the Esplanade.
 - **Restrooms:** 🚻 marks come from `data/restrooms.js` (Disney's map points) via `annotateRestrooms` in `js/restrooms.js`: within 2 min walk (3 before a 30+ min line or the walk out), only before such lines, before a break or hop, or every 90 min. Island restrooms are skipped. PDFs write the word "Restrooms" (PDF fonts have no emoji).
+- **More time when rides don't fit:** when picked rides would be left off, or a chosen meal time doesn't fit, a finish time the group set may move up to 2 h later (never past close), or the midday break may shrink (always at least 1 h at the hotel after the travel each way). Whichever meets the most meal times, then fits the most rides, with the fewest extra minutes wins; on a tie the break is kept. 15-minute steps. The plan says what changed. A finish at close with no break changes nothing.
+- **Meal times:** lunch (whenever fits, or around 11 am to 3 pm) and dinner (whenever fits, or around 4 to 9 pm), a shared setting like Break around, with a per-day override in the wizard. The meal starts within about half an hour of it; if it can't (even with more time), the plan says so and that meal goes back to whenever fits.
+- **Closed rides:** a ride in `refurbs` on that date is greyed out and can't be picked for that day, and comes off the day's list if it was picked (with a note).
 - **Start and finish:** each day can start at rope drop, 10 am, 1 pm or a set time, and finish at close or a set time. A start after lunch or a finish by 4 pm turns the midday break off for that day, and the plan says so.
 - **Shortest rider:** rides above their height (`min_height_in` in `ride_profiles`) stay pickable but are flagged "(N in and up)" on chips and "Riders must be at least N in tall" on plans, with a Rider Switch note. Every ride's height is shown on plans and PDFs, since families may have children of different heights.
-- **Refurbishments:** a ride in `refurbs` on that date is left out of the plan, and the wizard only puts it on days when it's open.
+- **Refurbishments:** a ride in `refurbs` on that date is left out of the plan, and the wizard only puts it on days when it's open (see **Closed rides**).
 - **Plan wording:** keep plain, short, friendly wording on plans. Dates past what the data covers fall back to typical values and say so on the plan (the `day_note` in each data file's header).

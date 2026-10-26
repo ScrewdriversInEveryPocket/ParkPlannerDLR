@@ -12,35 +12,41 @@ let dpDineAt = null;
 function buildRideChips(ctxs) {
   ctxs = [].concat(ctxs);
   const box = document.getElementById('dp-rides'); box.textContent = '';
+  const dropped = [];
   const lab = document.createElement('span'); lab.className = 'g wzh'; lab.textContent = 'Rides to fit in'; box.append(lab);
   { const q = document.createElement('span'); q.className = 'g qt-quick'; q.append('Quick picks: ');
     const pick = (txt, f, tip) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'qt-link'; b.textContent = txt;
-      if (tip) b.title = tip; b.addEventListener('click', () => { ctxs.forEach(ctx => { dpState.rides[ctx.park] = new Set(ctx.rides.filter(f).map(r => r.name));
+      if (tip) b.title = tip; b.addEventListener('click', () => { ctxs.forEach(ctx => { dpState.rides[ctx.park] = new Set(ctx.rides.filter(r => f(r) && !r.refurb).map(r => r.name));
               dpState.reps[ctx.park] = new Map(); }); drawDay(); drawTrip(); }); q.append(b, ' '); };
     pick('Headliners only', r => r.head); pick('Good for little kids', kidPick, 'Gentle rides with no height limit'); pick('Everything', () => true);
       pick('Nothing', () => false, 'Take every ride off'); q.append(riToggle()); box.append(q); }
   ctxs.forEach(ctx => {
     if (ctxs.length > 1) { const pl = document.createElement('span'); pl.className = 'g wzh'; pl.textContent = ctx.park; box.append(pl); }
-    if (!dpState.rides[ctx.park]) dpState.rides[ctx.park] = new Set(ctx.rides.filter(r => r.head).map(r => r.name));
+    if (!dpState.rides[ctx.park]) dpState.rides[ctx.park] = new Set(ctx.rides.filter(r => r.head && !r.refurb).map(r => r.name));
     const sel = dpState.rides[ctx.park];
+    // closed for refurbishment on this date: off the list, and the chip can't be picked
+    ctx.rides.filter(r => r.refurb && sel.has(r.name)).forEach(r => { sel.delete(r.name); dpState.reps[ctx.park].delete(r.name); dropped.push(r.name); });
     ctx.rides.slice().sort(rideOrder).forEach((r, i, a) => {
       if (r.char && !(a[i - 1] || {}).char) { const g = document.createElement('span'); g.className = 'g wzh'; g.textContent = 'Characters'; box.append(g); }
       const b = document.createElement('button'); b.type = 'button'; b.className = 'qt-chip'; b.dataset.fit = ctx.park + '|' + r.name;
       b.setAttribute('aria-pressed', sel.has(r.name) ? 'true' : 'false');
-      b.textContent = r.name + (ctx.closedSet.has(r.name) ? ' ⚠' : '');
+      b.textContent = r.name + (ctx.closedSet.has(r.name) && !r.refurb ? ' ⚠' : '');
       if (ctx.closedSet.has(r.name)) { const rf = ctx.refurbs.find(x => x.ride === r.name);
         b.title = rf ? 'Closed for refurbishment on this date, so it is left out of the plan. ' + rf.note : `Often closed in ${ctx.monName}`; }
       if (tooShort(r)) { b.classList.add('short'); b.title = (b.title ? b.title + ' ' : '') + shortTip(r); }
       const reps = dpState.reps[ctx.park], n = lapsOf(reps, r.name);
       if (sel.has(r.name)) { b.dataset.laps = String(n); if (n > 1) b.textContent += ' ×' + n; }
       rideInfo(b, r);
+      if (r.refurb) { closedChip(b, refurbTip(ctx.iso, ctx.park, r.name)); box.append(b); return; }
       const setN = v => { lastTap = { key: b.dataset.fit, added: v > (sel.has(r.name) ? n : 0) }; if (v) sel.add(r.name); else sel.delete(r.name);
         if (v > 1) reps.set(r.name, v); else reps.delete(r.name); drawDay(); drawTrip(); };
       cycleTap(b, () => setN(nextLap(sel.has(r.name), n, REP_DAY_MAX)), () => { if (sel.has(r.name)) setN(0); });
       box.append(b);
     });
   });
-  dpDineAt = dineChips(box, ctxs.map(c => c.park), dpState.dine, () => { drawDay(); drawTrip(); });
+  if (dropped.length) { const n = document.createElement('span'); n.className = 'g qt-dinehint'; n.textContent = closedOffText(dropped, ctxs[0].iso); box.append(n); }
+  dpDineAt = dineChips(box, ctxs.map(c => c.park), dpState.dine, () => { drawDay(); drawTrip(); }, { value: { lunch: dpState.lunchAt, dinner: dpState.dinnerAt },
+    set: (k, v) => { dpState[k + 'At'] = v || 'auto'; syncGlobals(); drawDay(); if (wz.D) drawWalk(wz.D); } });
 }
 
 // the day's key moments as a timeline: time on the left, a dot, then the moment and its details one per line
@@ -363,8 +369,8 @@ function drawHopperDay(D) {
     stepList(document.getElementById(pre + '-steps'),
       X.segs.map(s => [`${s.park} · ${fmtClock(s.start % 24)}–${fmtClock((s.hopStep ? s.depart : X.leave) % 24)}`,
           s.steps.concat(s.hopStep ? [s.hopStep] : [])]));
-    document.getElementById(pre + '-note').textContent = X.left.length ? (X.whyLeft || `Not enough time for: ${leftList(X.left,
-          true)}. Remove a few rides or pick a longer stay.`) : 'Every ride you picked in both parks fits.';
+    document.getElementById(pre + '-note').textContent = (flexText(X) ? flexText(X) + ' ' : '') + (X.left.length ? (X.whyLeft || `Not enough time for: ${leftList(X.left,
+          true)}. Remove a few rides or pick a longer stay.`) : 'Every ride you picked in both parks fits.');
   };
   fill('dp-stay', H);
   if (Hb) fill('dp-split', Hb);
@@ -465,9 +471,9 @@ function drawDay() {
   llNote(document.getElementById('dp-stay-ll'), S.llp);
   stepList(document.getElementById('dp-stay-steps'), [['', S.plan.steps]]);
   const stayNote = document.getElementById('dp-stay-note');
-  stayNote.textContent = (!S.plan.left.length && P.win.t1 > S.leave + 0.5 && ctx.sunset) ?
+  stayNote.textContent = (flexText(S) ? flexText(S) + ' ' : '') + ((!S.plan.left.length && P.win.t1 > S.leave + 0.5 && ctx.sunset) ?
     `Done early. Nighttime shows usually start 1–2 hours after sunset (${fmtClock(ctx.sunset)}), so stay until about ${fmtClock(Math.min(P.win.t1,
-        roundUp15(ctx.sunset + 2)) % 24)} if you want them.` : (S.plan.left.length ? `Not enough time for: ${leftList(S.plan.left)}.` : '');
+        roundUp15(ctx.sunset + 2)) % 24)} if you want them.` : (S.plan.left.length ? `Not enough time for: ${leftList(S.plan.left)}.` : ''));
   // split
   const X = P.split; const splitCard = document.getElementById('dp-split');
   if (!X) {
@@ -490,7 +496,7 @@ function drawDay() {
     const dWait = S.plan.totalWait - X.totalWait;
     const perRideS = S.done ? S.plan.totalWait / S.done : 0, perRideX = X.done ? X.totalWait / X.done : 0;
     const tooFar = atMin < 45 ? `With ${eOut.min} min each way you'd only get ${Math.max(0, atMin)} min at the hotel. Pick a longer break, or staying all day may be better. ` : '';
-    document.getElementById('dp-split-note').textContent = tooFar + `Compared with staying all day: ${X.done - S.done >= 0 ? (X.done - S.done) + ' more' :
+    document.getElementById('dp-split-note').textContent = (flexText(X) ? flexText(X) + ' ' : '') + tooFar + `Compared with staying all day: ${X.done - S.done >= 0 ? (X.done - S.done) + ' more' :
       (S.done - X.done) + ' fewer'} rides, ${f0(Math.abs(perRideS - perRideX))} min ${perRideX <= perRideS ? 'less' :
       'more'} waiting per ride, and ${Math.max(0, S.heat - X.heat)} fewer hours in the heat.` + (X.left.length ? ` Not enough time for: ${leftList(X.left)}.` :
       '');

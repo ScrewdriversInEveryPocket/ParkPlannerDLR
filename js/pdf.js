@@ -89,11 +89,14 @@ function dayHeadLines(ctx, P) {
 const kindOf = (P, ctx) => P.hop ? 'hop' : ctx.park === 'Disneyland' ? 'dl' : 'dca';
 
 // Plan a day: the plan on screen, on one page
+// the more-time note for the plan a PDF shows (see flexText)
+const flexOf = (P, kind) => flexText(P.hop ? (kind === 'split' && P.Hb) || P.H : (kind === 'split' && P.split) || P.stay);
 async function exportDayPDF() {
   const pi = planItems(takeState.which); if (!pi || !dpLast) return;
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'pt', format: 'letter' });
-  pdfDayPage(doc, pi, { title: pi.title, kind: kindOf(dpLast.P, pi.ctx), lines: dayHeadLines(pi.ctx, dpLast.P), ll: (pi.llp && pi.llp.multi || []).map(r => r.name) });
+  pdfDayPage(doc, pi, { title: pi.title, kind: kindOf(dpLast.P, pi.ctx), lines: dayHeadLines(pi.ctx, dpLast.P), ll: (pi.llp && pi.llp.multi || []).map(r => r.name),
+    notes: [flexOf(dpLast.P, pi.kind)].filter(Boolean) });
   pdfFooters(doc);
   await pdfSave(doc, `park-day-${pi.ctx.iso}.pdf`, 'DLR Planner day plan');
 }
@@ -174,6 +177,7 @@ async function exportTripPDF() {
             }[dpState.pace]} · ${walkPref(dayCfg.walk)} · ${brkOf(dayCfg) ? dayCfg.brk + '-hour midday break' : 'no midday break'}${winLabel(dayCfg.win) ?
             ' · ' + winLabel(dayCfg.win) : ''} · ${wzCount(dayCfg)} rides`);
         { const why = dayCfg && dayCfg.brk > 0 ? winWhy(P.hop ? P.H.win : P.win) : null; if (why) notes.push(why); }
+        { const ft = flexOf(P, pi.kind); if (ft) notes.push(ft); }
         const llNames = (pi.llp && pi.llp.multi || []).map(r => r.name);
         doc.addPage();
         pdfDayPage(doc, pi, { title: `Day ${dayNo.get(iso)} · ${fmtLong(iso)} · ${o.label}`, kind: kindOf(P, ctx), lines: dayHeadLines(ctx, P), ll: llNames, notes: [...new Set(notes)] });

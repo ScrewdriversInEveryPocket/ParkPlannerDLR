@@ -17,12 +17,12 @@ const dLaps = (d, p, nm) => d.rides[p].has(nm) ? lapsOf(d.reps[p], nm) : 0;
 const dAdd = (d, p, nm) => { if (d.rides[p].has(nm)) d.reps[p].set(nm, lapsOf(d.reps[p], nm) + 1); else d.rides[p].add(nm); };
 const dDrop = (d, p, nm) => { const n = dLaps(d, p, nm); if (n > 2) d.reps[p].set(nm, n - 1); else if (n === 2) d.reps[p].delete(nm); else { d.rides[p].delete(nm); d.reps[p].delete(nm); } };
 const dSet = (d, p, nm, n) => { if (n <= 0) { d.rides[p].delete(nm); d.reps[p].delete(nm); return; } d.rides[p].add(nm); if (n > 1) d.reps[p].set(nm, n); else d.reps[p].delete(nm); };
-// the settings to plan one wizard day with: its rides, break, walking choice, start and finish and meals,
+// the settings to plan one wizard day with: its rides, break, walking choice, start and finish, meals and meal times,
 // on top of the shared ones (pace, hotel, Lightning Lane, back to back, starting park)
 function wzSettings(d) {
   return Object.assign({}, dpState, { brk: d.brk, rides: { 'Disneyland': d.rides['Disneyland'], 'California Adventure': d.rides['California Adventure'] },
     reps: d.reps, dine: d.dine || { lunch: null, dinner: null } }, d.walk != null ? { walk: d.walk } : {}, d.win ? { win: d.win } : {},
-    d.brkAt != null ? { brkAt: d.brkAt } : {});
+    d.brkAt != null ? { brkAt: d.brkAt } : {}, d.lunchAt != null ? { lunchAt: d.lunchAt } : {}, d.dinnerAt != null ? { dinnerAt: d.dinnerAt } : {});
 }
 function wzParkDays() {
   if (!lastTrip || !lastTrip.best) return [];
@@ -145,6 +145,7 @@ function wzRenderPlan(box, iso, opt, day, D) {
         const adv = fullAdvice(X.morning.steps.concat(X.evening.steps), X.left, (p, name) => { const P2 = planDay(ctx, pool.filter(r => r.name !== name), cfg); return (P2.split || P2.stay.plan).left; });
         note.textContent = wzSlack(X.left, X.leave, P.win.t1, freeCosts, more, adv, cfg);
         wzDine(mk('p', 'qt-note'), X.morning.steps.concat(X.evening.steps), [park], box, day, D);
+        if (flexText(X)) mk('p', 'qt-note').textContent = flexText(X);
         if (P.brkMoved) mk('p', 'qt-note').textContent = `No break fits around ${brkAtLbl(day.brkAt)} on this day, so the planner picked the best time for it.`;
         return { left: X.left, slack: P.win.t1 - X.leave, freeCosts, more, adv, where: mealWhere(planSegs(P, park, cfg)), glance: {
             text: glanceText(X.leave, X.done, pool.length, X.totalWait, X.morning.steps.concat(X.evening.steps), X.heat), target: times } };
@@ -160,6 +161,7 @@ function wzRenderPlan(box, iso, opt, day, D) {
         const adv = fullAdvice(S.plan.steps, S.plan.left, (p, name) => planDay(ctx, pool.filter(r => r.name !== name), cfg).stay.plan.left);
         note.textContent = wzSlack(S.plan.left, S.leave, P.win.t1, freeCosts, more, adv, cfg);
         wzDine(mk('p', 'qt-note'), S.plan.steps, [park], box, day, D);
+        if (flexText(S)) mk('p', 'qt-note').textContent = flexText(S);
         return { left: S.plan.left, slack: P.win.t1 - S.leave, freeCosts, more, adv, where: mealWhere(planSegs(P, park, cfg)), glance: {
             text: glanceText(S.leave, S.done, pool.length, S.plan.totalWait, S.plan.steps, S.heat), target: times } };
       }
@@ -188,6 +190,7 @@ function wzRenderPlan(box, iso, opt, day, D) {
       const adv = fullAdvice(H.segs.flatMap(s => s.steps), H.left, hopDrop);
       note.textContent = wzSlack(H.left, H.leave, closeH, freeCosts, more, adv, cfg);
       wzDine(mk('p', 'qt-note'), H.flat, WZ_PARKS, box, day, D);
+      if (flexText(H)) mk('p', 'qt-note').textContent = flexText(H);
       if (H.whyLeft) mk('p', 'qt-note').textContent = H.whyLeft;
       if (H.brkMoved) mk('p', 'qt-note').textContent = `No break fits around ${brkAtLbl(day.brkAt)} on this day, so the planner picked the best time for it.`;
       return { left: H.left, slack: closeH - H.leave, freeCosts, more, adv, where: mealWhere(planSegs(H)), glance: { text: glanceText(H.leave, H.done, H.total, H.totalWait, H.flat), target: times } };
@@ -229,6 +232,7 @@ function syncGlobals() {
   document.getElementById('wz-start-wrap').hidden = tpState.ticket !== 'hopper';
   ['wz', 'dp'].forEach(pre => { document.getElementById(pre + '-brkat-wrap').hidden = !(dpState.brk > 0); });
   document.getElementById('dp-custom-wrap').hidden = dpState.hotel !== 'custom';
+  walkHint('dp'); walkHint('wz');
   const w = dpState.win;
   ['wz', 'dp'].forEach(pre => {
     set(pre + '-wstart', w.start); set(pre + '-wstart-at', w.startAt); set(pre + '-wend', w.end); set(pre + '-wend-at', w.endAt);
@@ -288,7 +292,8 @@ function drawWalk(D) {
     // quick picks first, then every ride with its details
     const quick = el('div', 'qt-controls');
     // a quick pick starts over: each picked ride once, any repeats cleared (as on Plan a day)
-    const pickAll = (f) => { WZ_PARKS.forEach(p => { wz.sel[p] = new Set(dayContext(pd[0].iso, p, D).rides.filter(f).map(r => r.name)); wz.reps[p] = new Map(); }); wz.hopperAsk = null; drawWalk(D); };
+    const visits = (p) => pd.filter(x => x.opt.parks.includes(p)), closedAll = (p, nm) => visits(p).length && visits(p).every(x => refurbOn(x.iso, p, nm));
+    const pickAll = (f) => { WZ_PARKS.forEach(p => { wz.sel[p] = new Set(dayContext(pd[0].iso, p, D).rides.filter(r => f(r) && !closedAll(p, r.name)).map(r => r.name)); wz.reps[p] = new Map(); }); wz.hopperAsk = null; drawWalk(D); };
     const hl = el('button', 'qt-link', 'Headliners only'); hl.type = 'button'; hl.addEventListener('click', () => pickAll(r => r.head));
     const kd = el('button', 'qt-link', 'Good for little kids'); kd.type = 'button'; kd.title = 'Gentle rides with no height limit'; kd.addEventListener('click', () => pickAll(kidPick));
     const ev = el('button', 'qt-link', 'Everything'); ev.type = 'button'; ev.addEventListener('click', () => pickAll(() => true));
@@ -305,7 +310,10 @@ function drawWalk(D) {
         const setN = v => { if (v) wz.sel[p].add(r.name); else wz.sel[p].delete(r.name); if (v > 1) wz.reps[p].set(r.name, v); else wz.reps[p].delete(r.name); wz.hopperAsk = null; drawWalk(D); };
         const c = wzChip(r.name + (on && n > 1 ? ' ×' + n : '') + (tooShort(r) ? ` (${r.minH} in and up)` : ''), on, null,
           tooShort(r) ? shortTip(r) : null); c.dataset.park = p; if (tooShort(r)) c.classList.add('short');
-        rideInfo(c, r); cycleTap(c, () => setN(nextLap(on, n, maxT)), () => { if (on) setN(0); }); box.append(c);
+        rideInfo(c, r);
+        if (closedAll(p, r.name)) { if (on) { wz.sel[p].delete(r.name); wz.reps[p].delete(r.name); }
+          closedChip(c, refurbTip(visits(p)[0].iso, p, r.name) + ' It’s closed on all your days at this park.'); box.append(c); return; }
+        cycleTap(c, () => setN(nextLap(on, n, maxT)), () => { if (on) setN(0); }); box.append(c);
       });
     });
     body.append(box);
@@ -359,19 +367,22 @@ function drawWalk(D) {
     { const t = el('div', 'qt-controls'); t.append(riToggle()); body.append(t); }
     opt.parks.forEach(p => {
       const all = dayContext(iso, p, D).rides.slice().sort(rideOrder);
+      // closed for refurbishment on this day: off its list, with a note, and greyed out below
+      const off = all.filter(r => r.refurb && day.rides[p].has(r.name)).map(r => r.name); off.forEach(nm => dSet(day, p, nm, 0));
+      if (off.length) chips.append(el('span', 'g qt-dinehint', closedOffText(off, iso)));
       const here = all.filter(r => day.rides[p].has(r.name)), free = all.filter(r => !daysOf(p, r.name).length && !r.refurb),
         other = all.filter(r => !day.rides[p].has(r.name) && daysOf(p, r.name).length && !r.refurb);
       const pre = opt.parks.length > 1 ? p + ': ' : '';
       const section = (title, list, mkChip) => { if (!list.length) return; const g = el('span', 'g wzh', title); g.dataset.park = p; chips.append(g); list.forEach(r => {
         const c = mkChip(r); c.dataset.park = p; if (list !== here) c.dataset.add = p + '|' + r.name; chips.append(c);
         if (tooShort(r)) { c.classList.add('short'); c.title = shortTip(r); }
-        if (list !== here) { rideInfo(c, r); return; }
-        if (r.refurb) { c.textContent += ' ⚠ closed'; c.title = 'Closed for refurbishment on this day, so it is left out of the plan. Press and hold to take it off, and add it to another day.'; }
+        if (list !== here) { if (!r.refurb) rideInfo(c, r); return; }
         const n = dLaps(day, p, r.name); c.dataset.fit = p + '|' + r.name; c.dataset.laps = String(n); if (n > 1) c.textContent += ' ×' + n;
         rideInfo(c, r);
         const setN = v => { lastTap = { key: p + '|' + r.name, added: v > n }; dSet(day, p, r.name, v); drawWalk(D); };
         cycleTap(c, () => setN(nextLap(true, n, REP_DAY_MAX)), () => setN(0));
       }); };
+      section(`${pre}Closed on this day`, all.filter(r => r.refurb), r => { const c = wzChip(r.name, false, null); closedChip(c, refurbTip(iso, p, r.name)); return c; });
       section(`${pre}On this day (${here.length})`, here, r => wzChip(r.name, true, null, 'Tap again to ride it more times; press and hold to take it off this day'));
       section(`${pre}Add more`, free, r => wzChip(r.name, false, () => { lastTap = { key: p + '|' + r.name, added: true }; day.rides[p].add(r.name); drawWalk(D); }));
       section(`${pre}On other days (tap to do it today too; it stays on the other day)`, other, r => {
@@ -379,7 +390,8 @@ function drawWalk(D) {
               lastTap = { key: p + '|' + r.name, added: true }; day.rides[p].add(r.name); drawWalk(D); }); });
     });
     if (!day.dine) day.dine = { lunch: null, dinner: null };
-    const dineAt = dineChips(chips, opt.parks, day.dine, () => drawWalk(D));
+    const dineAt = dineChips(chips, opt.parks, day.dine, () => drawWalk(D), { value: { lunch: day.lunchAt, dinner: day.dinnerAt },
+      same: { lunch: dpState.lunchAt, dinner: dpState.dinnerAt }, set: (k, v) => { day[k + 'At'] = v; drawWalk(D); } });
     body.append(chips);
     const planBox = el('div'); body.append(planBox);
     const fit = wzRenderPlan(planBox, iso, opt, day, D);

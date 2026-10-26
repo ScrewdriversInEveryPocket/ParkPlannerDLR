@@ -181,6 +181,15 @@
             const L = w.eval('dpLast'), P = L.P, picked = ['Disneyland', 'California Adventure'].some(p => w.eval('dpState').rides[p].size);
             const done = P.hop ? P.H.done : P.stay.done, open = P.hop ? true : L.ctx.close > L.ctx.open;
             if (picked && open && !done) bad.push('no rides planned');
+            // more time for left-over rides: never past close, at most 2 h past a set finish, a shortened break keeps 1 h at the hotel
+            { const S = w.eval('dpState'), W = P.hop ? P.H.win : P.win;
+              const close = P.hop ? Math.max(...Object.values(P.H.ctxs).map(c => c.close)) : L.ctx.close;
+              (P.hop ? [P.H, P.Hb] : [P.stay, P.split]).filter(Boolean).forEach(X => {
+                if (X.leave > close + 1e-6) bad.push(`leaves at ${X.leave} after close (${close})`);
+                if (S.win.end === 'set' && W.e != null && X.leave > W.e + 2 + 1e-6) bad.push(`leaves at ${X.leave}, more than 2 h after the set finish`);
+                if (X.flex && X.flex.kind === 'brk') { const h = P.hop ? w.hopHotel(X, S) : w.splitHotel(L.ctx, X, S);
+                  if (!h || h.hotel < 60 - 1e-6) bad.push('a shortened break leaves under 1 h at the hotel'); }
+              }); }
             if (ahead === 10 && vn === 'default') { w.__pdf = null; await w.exportDayPDF(); if (!w.__pdf || !w.__pdf.pages) bad.push('day PDF not made'); else if (/\((?:[^)]*?)(NaN|undefined)[^)]*\) Tj/.test(w.__pdf.text)) bad.push('day PDF shows NaN or undefined'); }
             check(S2, key, !bad.length, [...new Set(bad)].join('; '));
           } catch (err) { check(S2, key, false, 'crashed: ' + (err && err.stack || err)); }
@@ -193,17 +202,46 @@
       const st = w.eval('dpState');
       Object.assign(st, JSON.parse(JSON.stringify(base)), { date: addDays(TODAY, 10), park: 'Hopper', dine: { lunch: null, dinner: null } });
       w.drawDay();
-      const W = w.eval('mealWhere(planSegs(dpLast.P, dpLast.ctx.park))'), p = W.dinner.park;
+      const where = () => w.eval('mealWhere(planSegs(dpLast.P, dpLast.ctx.park))');
+      let W = where(); const p = W.dinner.park;
       const both = (w.eval('DINE_PICKS')[p] || []).filter(x => x.serves.length === 2);
-      // in that park for both meals: with lunch taken, a new pick goes to dinner
-      if (W.lunch.park === p && both.length > 1) { st.dine = { lunch: both[1].key, dinner: null }; w.drawDay(); }
+      // in that park for both meals: with lunch taken, a new pick goes to dinner (the plan may move once lunch is picked)
+      if (W.lunch.park === p && both.length > 1) { st.dine = { lunch: both[1].key, dinner: null }; w.drawDay(); W = where(); }
+      const inPark = ['lunch', 'dinner'].filter(m => W[m].park === p), want = inPark.find(m => !st.dine[m]) || inPark[0] || 'lunch';
       const line = doc.querySelector('#dp-rides .qt-dinewhere'), chip = doc.querySelector(`#dp-rides .qt-chip.dine[data-key="${both[0].key}"]`);
       chip.click(); await wait(50);
       const dine = w.eval('dpState.dine');
-      check(S2, 'tapping a restaurant picks the meal you are in its park for', dine.dinner === both[0].key && line && !line.hidden,
+      check(S2, 'tapping a restaurant picks the meal you are in its park for', dine[want] === both[0].key && line && !line.hidden,
         `picked ${JSON.stringify(dine)}; the plan has you in ${W.lunch.park} at lunch and ${W.dinner.park} at dinner; line: ${line ? line.textContent : 'none'}`);
       st.dine = { lunch: null, dinner: null };
     } catch (err) { check(S2, 'restaurant tap', false, 'crashed: ' + (err && err.stack || err)); }
+    // chosen meal times: lunch around 1 pm and dinner around 6 pm start within half an hour of it, or the plan says why not
+    try {
+      const st = w.eval('dpState'), bad = [];
+      for (const park of PARKS) {
+        Object.assign(st, JSON.parse(JSON.stringify(base)), { date: addDays(TODAY, 10), park, lunchAt: '13', dinnerAt: '18', dine: { lunch: null, dinner: null } });
+        w.drawDay();
+        const P = w.eval('dpLast').P;
+        (P.hop ? [P.H, P.Hb] : [P.stay, P.split]).filter(Boolean).forEach((X, i) => {
+          const steps = P.hop ? X.flat : X.plan ? X.plan.steps : X.morning.steps.concat(X.evening.steps);
+          [['lunch', 13], ['dinner', 18]].forEach(([k, T]) => { const m = steps.find(x => x.mealKind === k);
+            if (!(m && Math.abs(m.t - T) <= 0.6) && !(X.mealNote || '').toLowerCase().includes(k)) bad.push(`${park} plan ${i + 1}: ${k} at ${m ? m.t.toFixed(2) : 'none'}, no note`); });
+        });
+      }
+      Object.assign(st, { lunchAt: 'auto', dinnerAt: 'auto' });
+      check(S2, 'chosen meal times are kept, or the plan says why not', !bad.length, bad.join('; '));
+    } catch (err) { check(S2, 'meal times', false, 'crashed: ' + (err && err.stack || err)); }
+    // a ride closed for refurbishment on the date: its chip is greyed out and can't be picked
+    try {
+      const st = w.eval('dpState'), rf = (w.eval("dash.data('refurbs').data") || []).find(r => r.start && (!r.end || r.end >= TODAY));
+      if (rf) {
+        const iso = rf.start > TODAY ? rf.start : TODAY;
+        Object.assign(st, JSON.parse(JSON.stringify(base)), { date: iso, park: rf.park, dine: { lunch: null, dinner: null } }); st.rides[rf.park].add(rf.ride);
+        w.drawDay();
+        const chip = [...doc.querySelectorAll('#dp-rides .qt-chip')].find(b => b.textContent.startsWith(rf.ride));
+        check(S2, 'a closed ride\'s chip is greyed out and off the list', !!chip && chip.disabled && !st.rides[rf.park].has(rf.ride), `${rf.ride} on ${iso}: ${chip ? (chip.disabled ? 'disabled' : 'enabled') : 'no chip'}`);
+      }
+    } catch (err) { check(S2, 'closed ride chip', false, 'crashed: ' + (err && err.stack || err)); }
 
     // 3. Trip wizard: a 3-day trip with a break day, every step, then the trip PDF
     const S3 = section('Trip wizard');

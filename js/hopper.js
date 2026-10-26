@@ -10,8 +10,8 @@ function poolFor(ctx, S = dpState) {
   if (!S.rides[ctx.park]) S.rides[ctx.park] = new Set(ctx.rides.filter(r => r.head).map(r => r.name));
   return expandPool(ctx.rides.filter(r => S.rides[ctx.park].has(r.name)), S.reps[ctx.park]);
 }
-// S: the settings to plan with (default: Plan a day's dpState; the wizard passes a day's own)
-function planHopper(iso, D, withBreak, S = dpState) {
+// one plan with the group's own finish time and break (planHopper below may give the day a little more time)
+function planHopper0(iso, D, withBreak, S) {
   const PARKS = ['Disneyland', 'California Adventure'];
   // C: each park's hours cut to the group's start and finish times (C0 keeps the real hours for display)
   const C0 = Object.fromEntries(PARKS.map(p => [p, dayContext(iso, p, D)]));
@@ -60,7 +60,8 @@ function planHopper(iso, D, withBreak, S = dpState) {
     const done = segs.reduce((n, s) => n + s.steps.filter(x => x.ride).length, 0);
     const flatSteps = segs.flatMap(x => x.steps), miss = ['lunch',
       'dinner'].filter(k => S.dine && S.dine[k] && DINE_BY_KEY[S.dine[k]] && !flatSteps.some(x => x.mealKind === k && x.sit &&
-        x.sit.key === S.dine[k])).length;
+        x.sit.key === S.dine[k])).length +
+      mealMisses(flatSteps, S).length; // and chosen meal times missed
     return { segs, done, hops, totalWait: tw, saved, left, llps, idle, plan, miss };
   };
   let best = null;
@@ -139,7 +140,23 @@ function planHopper(iso, D, withBreak, S = dpState) {
     totalWait: best.totalWait, saved: best.saved, llps: best.llps, arrive: WW[first].rope ? C0[first].open - 0.5 : C[first].open, leave, win: WW[first],
     brkMoved, whyLeft, hopMin: HOP_MIN };
 }
-const planHopperBoth = (iso, D, S = dpState) => { const H = planHopper(iso, D, false, S);
+// the break in a hopper plan: minutes at the hotel, the travel and security around it, and when you're back in
+function hopHotel(H, S) {
+  const i = H.segs.findIndex((s, k) => k > 0 && s.gapBefore === 'break'); if (i < 1) return null;
+  const p = H.segs[i - 1], s = H.segs[i], out = travelMin(p.park, hotelGate(p.ctx, p.depart, S), S), e = entryInfo(s.ctx, s.start, S);
+  const overhead = out + e.min + e.sec;
+  return { overhead, hotel: (s.start - p.depart) * 60 - overhead, back: s.start };
+}
+// S: the settings to plan with (default: Plan a day's dpState; the wizard passes a day's own).
+// With picked rides left over or a chosen meal time missed, the finish time or the break may give a little more time (see planDay).
+function planHopper(iso, D, withBreak, S = dpState) {
+  const H = planHopper0(iso, D, withBreak, S);
+  if (!H) return H;
+  const ends = flexEnds(H.win, Math.max(...Object.values(H.ctxs).map(c => c.close)), S), b = withBreak ? hopHotel(H, S) : null;
+  return flexFix(H, S, ends.concat(b ? flexBrks(S.brk, b.overhead, S) : []), c => { const Y = planHopper0(iso, D, withBreak, c.S); if (!Y) return null;
+      if (c.kind === 'brk') { const h = hopHotel(Y, S); if (!h || h.hotel < FLEX_BRK_MIN_H * 60 - 1e-9) return null; } return Y; },
+    Y => Y.flat, Y => Y.left, Y => (hopHotel(Y, S) || {}).back, S2 => planHopper0(iso, D, withBreak, S2));
+}const planHopperBoth = (iso, D, S = dpState) => { const H = planHopper(iso, D, false, S);
   return { hop: true, H, Hb: S.brk > 0 ? planHopper(iso, D, true, S) : null, ctx: H.ctx }; };
 function hopLL(H) {
   const m = [], s = [];

@@ -49,18 +49,18 @@ window.addEventListener('error', (e) => {
   <nav class="qt-tabs" role="tablist" aria-label="Dashboard sections">
     <button type="button" role="tab" id="tab-wizard" aria-controls="panel-wizard" aria-selected="true" data-tab="wizard">Trip wizard</button>
     <button type="button" role="tab" id="tab-plan" aria-controls="panel-plan" aria-selected="false" data-tab="plan">Plan a day</button>
-    <button type="button" role="tab" id="tab-when" aria-controls="panel-when" aria-selected="false" data-tab="when">When to go</button>
+    <button type="button" role="tab" class="tab-extra" id="tab-when" aria-controls="panel-when" aria-selected="false" data-tab="when">When to go</button>
     <button type="button" role="tab" class="tab-extra" id="tab-weather" aria-controls="panel-weather" aria-selected="false" data-tab="weather">Weather</button>
     <button type="button" role="tab" class="tab-extra" id="tab-timeofday" aria-controls="panel-timeofday" aria-selected="false" data-tab="timeofday">Time of day</button>
     <button type="button" role="tab" class="tab-extra" id="tab-explore" aria-controls="panel-explore" aria-selected="false" data-tab="explore">Explore</button>
-    <button type="button" role="tab" class="tab-extra" id="tab-about" aria-controls="panel-about" aria-selected="false" data-tab="about">About the data</button>
+    <button type="button" role="tab" class="tab-extra" id="tab-walks" aria-controls="panel-walks" aria-selected="false" data-tab="walks">Walking times</button> aria-controls="panel-about" aria-selected="false" data-tab="about">About the data</button>
     <button type="button" class="tab-more" id="tab-more" aria-haspopup="true" aria-expanded="false">More ▾</button>
   </nav>
   <div class="tab-menu" id="tab-menu" hidden>
-    <button type="button" data-tab="weather">Weather</button>
+    <button type="button" data-tab="when">When to go</button>
     <button type="button" data-tab="timeofday">Time of day</button>
     <button type="button" data-tab="explore">Explore</button>
-    <button type="button" data-tab="about">About the data</button>
+    <button type="button" data-tab="walks">Walking times</button>
   </div>
   <div class="qt-panel" role="tabpanel" id="panel-wizard" aria-labelledby="tab-wizard">
   <div id="wz-stepper" class="qt-chipgroup" style="margin:var(--cds-gap-md) 0 var(--cds-gap-sm)"></div>
@@ -117,6 +117,8 @@ window.addEventListener('error', (e) => {
       <label id="wz-wend-at-wrap" hidden>Leave by <input type="time" id="wz-wend-at" class="qt-input" value="20:00" step="900"></label>
       <label>Midday hotel break <select id="wz-brk" class="qt-input"><option value="0">No break</option><option value="1">1 hour</option><option value="2">2 hours</option><option value="3" selected>3 hours</option><option value="4">4 hours</option><option value="5">5 hours</option></select></label>
       <label id="wz-brkat-wrap">Break around <select id="wz-brkat" class="qt-input"><option value="auto" selected>Whenever is best</option><option value="11">Around 11 am</option><option value="12">Around noon</option><option value="13">Around 1 pm</option><option value="14">Around 2 pm</option><option value="15">Around 3 pm</option></select></label>
+<label>Lunch time <select id="wz-lunchat" class="qt-input"><option value="auto" selected>Whenever fits</option><option value="11">Around 11 am</option><option value="12">Around noon</option><option value="13">Around 1 pm</option><option value="14">Around 2 pm</option><option value="15">Around 3 pm</option></select></label>
+<label>Dinner time <select id="wz-dinnerat" class="qt-input"><option value="auto" selected>Whenever fits</option><option value="16">Around 4 pm</option><option value="17">Around 5 pm</option><option value="18">Around 6 pm</option><option value="19">Around 7 pm</option><option value="20">Around 8 pm</option><option value="21">Around 9 pm</option></select></label>
       <label id="wz-start-wrap" hidden>Park Hopper days: start in <select id="wz-start" class="qt-input"><option value="auto">Whichever fits best</option><option value="Disneyland">Disneyland</option><option value="California Adventure">California Adventure</option></select></label>
     </div>
     <p class="qt-seth">Rides and lines</p>
@@ -126,7 +128,7 @@ window.addEventListener('error', (e) => {
     </div>
     <div class="qt-controls">
       <label><input type="checkbox" id="wz-b2b"> Allow repeat rides back to back (otherwise at least an hour apart)</label>
-      <label class="qt-walk">Shorter waits <input type="range" id="wz-walk" min="0" max="4" step="1" value="2" aria-label="Shorter waits or fewer steps"> Fewer steps</label>
+      <label class="qt-walk">Shorter waits <input type="range" id="wz-walk" min="0" max="4" step="1" value="2" aria-label="Shorter waits or fewer steps"> Fewer steps</label><span class="qt-walkhint" id="wz-walk-hint" aria-live="polite"></span>
     </div>
     <p class="qt-note">Start, finish, the midday break and the waits or steps slider are starting points; you can change them for each day later. A day that starts after lunch or finishes by 4 pm skips the break.</p>
   </section>
@@ -207,7 +209,7 @@ window.addEventListener('error', (e) => {
     <p class="qt-seth">Rides and lines</p>
     <div class="qt-controls">
       <label><input type="checkbox" id="dp-b2b"> Allow repeat rides back to back (otherwise at least an hour apart)</label>
-      <label class="qt-walk">Shorter waits <input type="range" id="dp-walk" min="0" max="4" step="1" value="2" aria-label="Shorter waits or fewer steps"> Fewer steps</label>
+      <label class="qt-walk">Shorter waits <input type="range" id="dp-walk" min="0" max="4" step="1" value="2" aria-label="Shorter waits or fewer steps"> Fewer steps</label><span class="qt-walkhint" id="dp-walk-hint" aria-live="polite"></span>
     </div>
     <p class="qt-note">Tap a picked ride again to do it more than once (up to 3 times a day). Press and hold a ride to take it off.</p>
     <div class="qt-chipgroup" id="dp-rides" style="margin-bottom:var(--cds-gap-sm)"></div>
@@ -497,7 +499,20 @@ window.addEventListener('error', (e) => {
   </section>
 
   </div>
-  <div class="qt-panel" role="tabpanel" id="panel-about" aria-labelledby="tab-about" hidden>
+  <div class="qt-panel" role="tabpanel" id="panel-walks" aria-labelledby="tab-walks" hidden>
+  <h2 id="walks">Walking times</h2>
+  <section class="qt-card">
+    <p class="qt-note">How long it takes to walk between any two spots: rides (from the exit to the next entrance, as the plans do), restaurants, shows, restrooms, park gates and hotels. Type in a box to narrow the list.</p>
+    <div class="qt-controls qt-wx">
+      <label>From <input type="search" id="wx-from-q" class="qt-input" placeholder="Filter" aria-label="Filter where you start"> <select id="wx-from" class="qt-input" aria-label="Where you start"></select></label>
+      <button type="button" class="qt-btn" id="wx-swap" aria-label="Swap from and to">⇄</button>
+      <label>To <input type="search" id="wx-to-q" class="qt-input" placeholder="Filter" aria-label="Filter where you're going"> <select id="wx-to" class="qt-input" aria-label="Where you're going"></select></label>
+    </div>
+    <div id="wx-out"></div>
+    <p class="qt-wxsrc">Our estimates: straight-line distance × 1.35 along paths, at your group's pace. Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>.</p>
+  </section>
+</div>
+<div class="qt-panel" role="tabpanel" id="panel-about" aria-labelledby="tab-about" hidden>
   <h2 id="data-status">How current the data is</h2>
   <section class="qt-card qt-method">
     <p id="ds-summary"></p>
@@ -559,6 +574,7 @@ window.addEventListener('error', (e) => {
 <script src="js/trip.js" onerror="pdpMissing(this)"></script>
 <script src="js/wizard.js" onerror="pdpMissing(this)"></script>
 <script src="js/time-of-day.js" onerror="pdpMissing(this)"></script>
+<script src="js/walk-explorer.js" onerror="pdpMissing(this)"></script>
 <script src="js/state.js" onerror="pdpMissing(this)"></script>
 <script src="js/pdf.js" onerror="pdpMissing(this)"></script>
 <script src="js/app.js" onerror="pdpMissing(this)"></script>

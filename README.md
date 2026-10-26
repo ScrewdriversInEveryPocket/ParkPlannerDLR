@@ -127,7 +127,7 @@ You get:
 
 - Waits come from each ride's average wait for that hour, adjusted for the month, the day of the week and how busy that week usually is.
 - Park hours are Disney's published hours where they're out (about six weeks ahead), otherwise the typical schedule.
-- **Walking time between any two rides** runs from one ride's exit to the next ride's entrance: the straight-line distance, stretched by about a third because paths wind, at your group's walking speed. It also looks one ride ahead so you don't zigzag across the park. Slide towards **Fewer steps** to stay in one area longer, or towards **Shorter waits** to chase the shortest lines.
+- **Walking time between any two rides** runs from one ride's exit to the next ride's entrance: the straight-line distance, stretched by about a third because paths wind, at your group's walking speed. It also looks one ride ahead so you don't zigzag across the park. Slide towards **Fewer steps** to stay in one area longer, or towards **Shorter waits** to chase the shortest lines. A line under the slider says what each position does.
 - **Group pace sets the walking speed:**
 
   | Pace | Who it's for | Speed through park crowds |
@@ -138,16 +138,18 @@ You get:
 
   Everyone walks up to 15% slower in the busiest weeks of the year.
 - **Start and finish:** rope drop means arriving 30 minutes before opening. Any other start, or a finish before close, plans only those hours.
+- **A little more time when rides don't fit:** if some picked rides would be left off, the plan can stay up to 2 hours past a finish time you set (never past close), or shorten your midday break (always keeping at least an hour at the hotel after the trip each way). It picks whichever fits the most rides with the fewest extra minutes, keeps the break when both are equal, adds only what's needed (in 15-minute steps), and says so on the plan: "To fit Matterhorn Bobsleds, you leave at 8:15 pm instead of 7:30 pm." or "Your break is shortened to 2 h (back by 3:00 pm) to fit Space Mountain." With no break and a finish at close, nothing changes: the plan lists what doesn't fit.
 - **Hotel times:** see [Hotel times](#hotel-times).
 - **Security and tap-in:** every time you come in from your hotel (the morning, and after a break), the plan adds our estimate of the bag-check and turnstile line: longest around opening (about 18 minutes on a typical day), shorter later on, and scaled up on busy days and down on quiet ones. The plan shows it next to *Leave hotel by*.
 - **Grand Californian guests** starting in California Adventure, or going back to it after a break, use the hotel's own entrance at Grizzly Peak, with a shorter line, and the first walk starts from there. For Disneyland, or when that entrance is closed, they walk to the Esplanade.
 - **Before a hotel break or a park hop** the plan walks you back to the gate. A hop then adds the walk across the Esplanade and the tap-in line at the other park (about 15 minutes on a typical day, longer when it's busy). There's no bag check on a hop.
 - **Spare time:** when your rides are done well before the end, the plan spreads the spare time through the day as longer meals (up to 20 minutes more) and 20 to 30 minute rest breaks, and then leaves when it's done instead of padding the day with free time. Lunch is never before 11. Each step shows the walk to it.
 - **Restrooms:** 🚻 on a step means one of Disney's restrooms is within about a 2-minute walk at your pace (3 before a long line or the walk out), so it's a good time to go if anyone needs to. To keep it useful, only some steps get it: before a line of 30 minutes or more, before you leave for a break or a hop, and otherwise about every 90 minutes. Tap 🚻 for which one; the PDFs spell it out. Tom Sawyer Island's restrooms are left out (you need the raft).
+- **Meal times:** above the restaurants you can choose **Lunch time** (whenever fits, or around 11 am to 3 pm) and **Dinner time** (whenever fits, or around 4 to 9 pm). The plan starts the meal within about half an hour of it and fits the rides around it; on a Park Hopper day it also decides which park you eat in. If the time falls in your break or after you leave, the plan tries a shorter break or a later finish (as above); if it still can't, it says so and plans that meal whenever it fits best. The Trip wizard's first page sets them for the trip, and each day page can change them for that day (**Same as trip** by default).
 - **Meals** are always in the park, never during the hotel break. Each meal is planned at the nearest quick-service place to where you are (on your way in from the gate after a break), with other options nearby, and the next walk starts from there.
 - **Free time** names the nearest show or character spot.
 - **Character meets** are only planned in the hours they usually run (Royal Hall about 10 am to 8 pm, by our estimate; Mickey's House all day). Character times change, so check the Disneyland app.
-- Rides that are closed for refurbishment, or often closed that month, are marked ⚠. A ride Disney has announced as closed for refurbishment on that date is left out of the plan (it stays picked for other dates), and the wizard only puts it on days when it's open.
+- A ride Disney has announced as closed for refurbishment on that date is greyed out (hover for when it reopens) and can't be picked for that day; if it was picked, it comes off that day's list and the plan says so. Rides often closed that month are marked ⚠. The wizard only puts a ride on days when it's open, and greys it out on the Rides step only if it's closed on every day you're in its park.
 
 ### Hotel times
 
@@ -201,7 +203,7 @@ Most sit-down places take bookings 60 days ahead. The meal step tells you **the 
 
 ## The data tabs
 
-**When to go** has its own tab. **Weather**, **Time of day**, **Explore** and **About the data** are under **More**. These tabs show the raw history behind the planners. They're useful on their own when you're deciding when to go, or just curious.
+**When to go**, **Weather**, **Time of day**, **Explore**, **Walking times** and **About the data** are under **More**. These tabs show the raw history behind the planners. They're useful on their own when you're deciding when to go, or just curious.
 
 ### When to go
 
@@ -228,6 +230,10 @@ Crowds and waits through the year.
 
 - **Overlay explorer:** lay any measures over each other week by week, such as waits against heat, crowds against rain, or park hours against sunset. *Scaled* lets different units share one chart; *Actual values* shows the real numbers. Presets like *Waits vs weather* are a quick start.
 - **Every week, side by side:** one row per week with every measure. Sort by any column, search by month or holiday, or click a row to plan a day that week.
+
+### Walking times
+
+Pick any two spots (rides, restaurants, shows, restrooms, park gates or a hotel; type in the box to narrow the list, ⇄ swaps them) to see the distance along the paths and the minutes it takes at each pace, from a quiet day to the busiest weeks. It uses the same walk rules as the plans: rides are left by their exit and reached at their entrance, and between the parks the walk goes through both gates across the Esplanade, plus the tap-in line.
 
 ### About the data
 
