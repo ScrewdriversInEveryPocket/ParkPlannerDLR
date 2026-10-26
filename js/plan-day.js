@@ -8,8 +8,12 @@ function dpFlush() { const f = dpLaterJob; dpLaterJob = null; if (f) f(); }
 function dpFitStatus(ctxs, left, end, close, trial, adv, glance) {
   const free = [].concat(ctxs).flatMap(c => c.rides.filter(r => !dpState.rides[c.park].has(r.name)).map(r => 20 + expWait(c, r, 14) + r.rmin));
   const more = left.length ? null : roomFor(ctxs, (p, r) => !dpState.rides[p].has(r.name), trial);
+  // only suggest what could still help: the planner has already tried every shorter break (down to FLEX_BRK_MIN_H at the
+  // hotel) and a finish up to FLEX_END_MAX_H later, so a later finish is only worth suggesting when close is later still
+  const W = dpState.win, endAt = W.end === 'set' ? (([h, m]) => h + m / 60)(W.endAt.split(':').map(Number)) : null;
+  const later = endAt != null && Math.max(...[].concat(ctxs).map(c => c.close)) > endAt + FLEX_END_MAX_H + 1e-9;
   fitStatus(document.getElementById('dp-rides'), left, close - end, free,
-    `Press and hold a ride to take it off, ${dpState.brk > 0 ? 'shorten the break, ' : ''}or try a day with longer hours.`, more, adv, glance);
+    `Press and hold a ride to take it off, ${later ? 'pick a later finish, ' : ''}or try a day with longer hours.`, more, adv, glance);
 }
 
 // the restaurant chips' dineAt (see dineChips), called once the plan is made

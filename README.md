@@ -289,7 +289,7 @@ It's a static site: just `index.html`, `shim.js`, `sw.js`, `version.js`, `manife
 - **[GitHub Pages](https://pages.github.com):** in this repository go to *Settings → Pages* and publish from the main branch.
 - **[Netlify Drop](https://app.netlify.com/drop):** drag the folder onto the page.
 
-Once it's on a web address, phones can install it with *Add to Home Screen* and it keeps working offline. If you change any files, bump the version in `version.js` so installed copies pick up the update.
+Once it's on a web address, phones can install it with *Add to Home Screen* and it keeps working offline. If you change any files, bump the version in `version.js` (the date and which version of that day, e.g. `2026/10/26 - v2`) so installed copies pick up the update.
 
 ---
 

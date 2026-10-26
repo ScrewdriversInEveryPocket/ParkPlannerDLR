@@ -52,14 +52,17 @@ if ($Until) { $head = & $set $head 'until' $Until }
 if ($Review) { $head = & $set $head 'review' $Review }
 [IO.File]::WriteAllText($file, $head + $new + "`n" + '`);' + "`n", $utf8)
 
-# bump the offline cache so installed copies of the app download the new data
+# bump the offline cache so installed copies of the app download the new data: "yyyy/MM/dd - vN", N counting up within a day
 $swPath = Join-Path $root 'version.js'
 $sw = [IO.File]::ReadAllText($swPath, $utf8)
-$vm = [regex]::Match($sw, "PDP_VERSION = 'pdp-v(\d+)'")
+$vm = [regex]::Match($sw, "PDP_VERSION = '([^']*)'")
 if ($vm.Success) {
-  $next = [int]$vm.Groups[1].Value + 1
-  [IO.File]::WriteAllText($swPath, $sw.Replace($vm.Value, "PDP_VERSION = 'pdp-v$next'"), $utf8)
-  Write-Host "version.js is now pdp-v$next."
+  $today = (Get-Date).ToString('yyyy/MM/dd', [Globalization.CultureInfo]::InvariantCulture)
+  $dm = [regex]::Match($vm.Groups[1].Value, '^(\d{4}/\d{2}/\d{2}) - v(\d+)$')
+  $n = if ($dm.Success -and $dm.Groups[1].Value -eq $today) { [int]$dm.Groups[2].Value + 1 } else { 1 }
+  $next = "$today - v$n"
+  [IO.File]::WriteAllText($swPath, $sw.Replace($vm.Value, "PDP_VERSION = '$next'"), $utf8)
+  Write-Host "version.js is now $next."
 }
 $oldRows = ($oldCsv -split "`n").Count - 1; $newRows = ($new -split "`n").Count - 1
 Write-Host "Updated data\$Id.js: $oldRows rows before, $newRows now; pulled $Pulled$(if ($Until) { ", until $Until" })$(if ($Review) { ", review $Review" })."

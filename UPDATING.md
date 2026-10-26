@@ -97,7 +97,7 @@ it's a small world,Disneyland,2026-10-30,2026-11-12,Closed for its holiday overl
 4. **Update the header.**
    - Set `pulled` to today, and change `until` and `review` if they've moved.
    - Change `source` and `url` if the source changed, and keep any `license` credit.
-5. **Bump the cache.** Raise the version in `version.js` by one (e.g. `pdp-v27` → `pdp-v28`) so installed copies download the new files. The app shows this number at the top (e.g. v28), so you can tell which version you're looking at. `import-dataset.ps1` does this too.
+5. **Bump the cache.** Raise the version in `version.js`: the date, then which version of that day (e.g. `2026/10/26 - v1` → `2026/10/26 - v2`; the first change on a new day is `v1` again, e.g. `2026/10/27 - v1`). Installed copies then download the new files, and the app shows the label at the top so you can tell which version you're looking at. `import-dataset.ps1` does this too.
 6. **Check.**
    - Run the tests: `powershell -ExecutionPolicy Bypass -File .\scripts\test.ps1`. It checks every dataset, plans 288 sample days and a wizard trip, and lists any plans that changed (see `tests/README.md`).
    - New data changes some plans on purpose. Look over the differences it lists, then save them as the expected plans with `.\scripts\test.ps1 -Update`.

@@ -1,7 +1,8 @@
 // DLR Planner offline cache. The version lives in version.js: raise it there when files change.
 // The dataset list comes from data/manifest.js, so a new data file is cached without editing this one.
 importScripts('./version.js', './data/manifest.js');
-const VERSION = self.PDP_VERSION;
+// the cache name: the version with only letters, digits and dashes ("2026/10/26 - v1" -> pdp-2026-10-26-v1)
+const VERSION = 'pdp-' + String(self.PDP_VERSION).replace(/[^A-Za-z0-9]+/g, '-');
 const FILES = ['./', './index.html', './shim.js', './vendor/d3.min.js', './vendor/jspdf.umd.min.js', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './data/manifest.js', './version.js', './css/app.css']
   .concat(['./js/settings.js', './js/core.js', './js/charts.js', './js/explore.js', './js/controls.js', './js/day.js', './js/walks.js', './js/scheduler.js', './js/meals.js', './js/restrooms.js', './js/hopper.js', './js/fit.js', './js/plan-day.js', './js/take.js', './js/trip.js', './js/wizard.js', './js/time-of-day.js', './js/walk-explorer.js', './js/state.js', './js/pdf.js', './js/app.js'])
   .concat(self.PDP_FILES.map((f) => './data/' + f + '.js'));
