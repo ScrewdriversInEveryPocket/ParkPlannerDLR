@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data check</title>
+<!-- DLR Planner: checks every bundled dataset, then plans sample days in the real app. Open it after
+     any data update (see UPDATING.md). It changes nothing; your saved settings are put back afterwards. -->
+<style>
+  :root { --bg: #fffaf3; --fg: #2b2440; --muted: #6b6480; --line: #eadfce; --ok: #0f9d8f; --warn: #b7791f; --bad: #d6336c; --panel: #fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #17141f; --fg: #ece8f5; --muted: #a9a3bb; --line: #3a3348; --ok: #3ddbc9; --warn: #fbbf24; --bad: #ff7eb6; --panel: #211c2c; } }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; } h2 { font-size: 1.1rem; margin: 28px 0 8px; }
+  p { margin: 0 0 10px; } .muted { color: var(--muted); }
+  .box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  td.n { text-align: right; font-variant-numeric: tabular-nums; }
+  .ok { color: var(--ok); } .warn { color: var(--warn); } .bad { color: var(--bad); } .info { color: var(--muted); }
+  .big { font-size: 1.05rem; font-weight: 600; }
+  button { font: inherit; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); cursor: pointer; }
+  iframe { width: 1px; height: 1px; border: 0; position: absolute; left: -9999px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>DLR Planner: data check</h1>
+  <p class="muted">Checks every file in the data folder against the columns its header promises, then plans sample days in the app. Run it after any data update.</p>
+  <p id="sum" class="big"></p>
+
+  <h2>1. Datasets</h2>
+  <div class="box"><table id="ds"><thead><tr><th>File</th><th class="n">Rows</th><th>Pulled</th><th>Covers to</th><th>Status</th><th>Problems</th></tr></thead><tbody></tbody></table></div>
+
+  <h2>2. Notes</h2>
+  <div class="box" id="notes"></div>
+
+  <h2>3. Sample plans</h2>
+  <div class="box">
+    <p class="muted">Plans 12 days (both parks and park hopping, from next week to about a year out, with every ride picked) in the real app and checks each one comes out with rides in it. Needs the app opened from a web address (GitHub Pages, or a local server), not straight from a file.</p>
+    <p><button type="button" id="run">Run sample plans</button></p>
+    <table id="plans"><thead><tr><th>Day</th><th>Park</th><th>Result</th></tr></thead><tbody></tbody></table>
+  </div>
+</main>
+<script src="vendor/d3.min.js"></script>
+<script src="data/manifest.js"></script>
+<script>window.PDP_NO_FORECAST = true;</script>
+<script src="shim.js"></script>
+<script>
+(function () {
+  const $ = (s) => document.querySelector(s);
+  const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  const pad = (n) => String(n).padStart(2, '0');
+  const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const today = iso(new Date());
+  const issues = window.PDP_DATA_ISSUES || [];
+  const LBL = { current: ['ok', 'Current'], soon: ['warn', 'Ends soon'], ended: ['bad', 'Past its end date'], review: ['warn', 'Due for a refresh'] };
+  let errors = 0, warns = 0;
+  dash.datasets().forEach(id => {
+    const m = dash.meta(id) || {}, d = dash.data(id), mine = issues.filter(x => x.id === id && x.level !== 'info');
+    const tr = el('tr'); const st = LBL[dash.dataStatus(id, today)];
+    tr.append(el('td', '', 'data/' + id + '.js'), el('td', 'n', d.status === 'ok' ? String(d.data.length) : '-'), el('td', '', m.pulled || ''), el('td', '', m.until || 'Any date'), el('td', st[0], st[1]));
+    const p = el('td'); if (!mine.length) p.append(el('span', 'ok', 'None'));
+    mine.forEach(x => { if (x.level === 'error') errors++; else warns++; p.append(el('div', x.level === 'error' ? 'bad' : 'warn', x.msg)); });
+    tr.append(p); $('#ds tbody').append(tr);
+  });
+  const info = issues.filter(x => x.level === 'info');
+  if (!info.length) $('#notes').append(el('p', 'muted', 'Nothing to note.'));
+  info.forEach(x => $('#notes').append(el('p', 'info', `data/${x.id}.js: ${x.msg}.`)));
+  const sum = () => $('#sum').replaceChildren(el('span', errors ? 'bad' : warns ? 'warn' : 'ok',
+    errors ? `${errors} problem${errors > 1 ? 's' : ''} to fix (see the table).` : warns ? `Loads, with ${warns} warning${warns > 1 ? 's' : ''} (see the table).` : 'All datasets passed.'));
+  sum();
+
+  // ---- sample plans: drive the real app in a hidden frame, then put the viewer's saved settings back
+  $('#run').addEventListener('click', () => {
+    if (!location.protocol.startsWith('http')) { $('#plans tbody').replaceChildren(el('tr')); $('#plans tbody tr').append(el('td', 'warn', 'Open this page from a web address to run the sample plans.')); return; }
+    $('#run').disabled = true; $('#plans tbody').textContent = '';
+    let saved = null; try { saved = localStorage.getItem('pdp-state'); } catch (e) { /* private window */ }
+    const f = el('iframe'); f.src = 'index.html'; document.body.append(f);
+    const wait = (ms) => new Promise(r => setTimeout(r, ms));
+    f.addEventListener('load', async () => {
+      const w = f.contentWindow, doc = f.contentDocument, errs = [];
+      w.addEventListener('error', (e) => errs.push(e.message));
+      await wait(1500);
+      doc.getElementById('tab-plan').click(); await wait(300);
+      const days = [7, 45, 120, 300].map(n => { const d = new Date(); d.setDate(d.getDate() + n); return iso(d); });
+      let bad = 0;
+      for (const park of ['Disneyland', 'California Adventure', 'Hopper']) {
+        const pb = doc.querySelector(`#dp-park button[data-v="${park}"]`); if (pb) pb.click(); await wait(300);
+        const all = [...doc.querySelectorAll('#dp-rides button.qt-link')].find(b => b.textContent === 'Everything'); if (all) all.click(); await wait(200);
+        for (const day of days) {
+          const inp = doc.getElementById('dp-date'); inp.value = day; inp.dispatchEvent(new Event('change', { bubbles: true })); await wait(700);
+          const text = doc.getElementById('panel-plan').innerText, m = text.match(/(\d+) of (\d+) rides/), n0 = errs.length;
+          const ok = m && +m[1] > 0 && !errs.length;
+          if (!ok) bad++;
+          const tr = el('tr'); tr.append(el('td', '', day), el('td', '', park), el('td', ok ? 'ok' : 'bad', ok ? `${m[1]} of ${m[2]} rides planned` : (errs[n0 - 1] || errs[0] || 'No plan came out')));
+          $('#plans tbody').append(tr);
+        }
+      }
+      f.remove(); await wait(600);
+      try { if (saved == null) localStorage.removeItem('pdp-state'); else localStorage.setItem('pdp-state', saved); } catch (e) { /* ignore */ }
+      $('#run').disabled = false;
+      if (bad) { errors += bad; sum(); }
+      const tr = el('tr'); tr.append(el('td', bad ? 'bad big' : 'ok big', bad ? `${bad} of 12 plans failed` : 'All 12 plans worked')); tr.firstChild.colSpan = 3; $('#plans tbody').append(tr);
+    }, { once: true });
+  });
+})();
+</script>
+</body>
+</html>

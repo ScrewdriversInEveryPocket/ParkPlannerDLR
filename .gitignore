@@ -1,0 +1,21 @@
+# Only what the app needs to run, and what someone needs to work on it, goes to GitHub.
+# Everything else in this folder (backups, raw source downloads, old or scratch files) stays local.
+/*
+!/.gitignore
+!/index.html
+!/shim.js
+!/sw.js
+!/manifest.webmanifest
+!/check.html
+!/data/
+!/vendor/
+!/icons/
+!/scripts/
+!/README.md
+!/UPDATING.md
+!/CLAUDE.md
+!/LICENSE
+# system clutter inside the folders above
+Thumbs.db
+desktop.ini
+.DS_Store

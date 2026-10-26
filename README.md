@@ -1,0 +1,276 @@
+# Disneyland Resort Planning Tool by ScrewdriversInEveryPocket
+
+Plan a Disneyland Resort trip around quieter days, better weather and shorter lines. This planner (DLR Planner once installed) picks your best dates, chooses which days to spend in which park, and builds a ride-by-ride schedule for each day, with Lightning Lane order, meal ideas and a printable PDF.
+
+It runs entirely in your browser. There's no account, no install and no tracking, and once it's loaded it works offline (except the live weather forecast).
+
+> **Unofficial.** This is a fan-made tool and is not affiliated with, endorsed by or connected to Disney. Wait times and crowds are estimates from historical data, not promises.
+
+---
+
+## Contents
+
+- [Getting started](#getting-started)
+- [Trip wizard: plan a whole trip](#trip-wizard-plan-a-whole-trip)
+- [Plan a day: plan one visit](#plan-a-day-plan-one-visit)
+- [Picking rides (and riding them more than once)](#picking-rides-and-riding-them-more-than-once)
+- [The data tabs](#the-data-tabs)
+- [Settings, saving and privacy](#settings-saving-and-privacy)
+- [Where the data comes from](#where-the-data-comes-from)
+- [Updating the data](#updating-the-data)
+- [Hosting your own copy](#hosting-your-own-copy)
+- [License](#license)
+
+---
+
+## Getting started
+
+**Online:** open the hosted page and start with the **Trip wizard** tab. On a phone, use your browser's *Add to Home Screen* and it will work like an app, even without signal in the park.
+
+**On your computer:** download or clone this repository and double-click `index.html`. It opens in your browser. Everything works except installing it as a phone app, which needs a web address (see [Hosting your own copy](#hosting-your-own-copy)).
+
+Which tab should you use?
+
+| You are... | Use |
+|---|---|
+| Planning a multi-day trip, staying in a hotel | **Trip wizard** |
+| A local, or doing a single day | **Plan a day** |
+| Curious when the parks are quietest, hottest or wettest | **When to go**, **Weather**, **Time of day**, **Explore** |
+
+---
+
+## Trip wizard: plan a whole trip
+
+The wizard walks you through a trip from "how long?" to a PDF you can take to the park. The steps are shown as buttons along the top, and you can jump back to any step you've finished.
+
+### 1. Trip
+
+- **Park days:** how many full days you want in the parks (1 to 10).
+- **Break days:** days with no park at all, for resting, the pool or other plans (0 to 5).
+- **Ticket:** one park per day, Park Hopper, or a single park only. You can also ask it to visit each park at least once.
+- **Hotel check-in and checkout times** (defaults 3 pm and 11 am).
+
+The wizard adds a **check-in day** before your first park day and a **checkout day** after your last. Those travel days aren't counted as park days and aren't on your ticket. A summary shows your nights and how many ticket days you need.
+
+**Trip settings** below hold things that stay the same all trip:
+
+- **Your group:** group pace (which sets your walking speed, see [How the schedule is built](#how-the-schedule-is-built)) and the **shortest rider's height**. Rides they're too short for are still pickable but show "(40 in and up)", and the plan reminds you about Rider Switch so the adults can take turns. Plans and PDFs show the height for every ride that has one, since your children may be different heights.
+- **Where you're staying and Lightning Lane:** a line shows your hotel and Lightning Lane choices. Change them with **Change in Settings** (or the **Settings** button at the top). They're shared by every tab. The hotel list shows each hotel's time for your pace, because it's a walk (see [Hotel times](#hotel-times)).
+- **Your park days:** when to **start** (rope drop, mid-morning at 10 am, after lunch at 1 pm, or a set time) and **finish** (at close, or leave by a set time), the midday hotel break, and on Park Hopper trips which park to start in. A day that starts after lunch or finishes by 4 pm has no midday break, and the plan says so.
+- **Rides and lines:** whether repeat rides may go back to back, and the *shorter waits ↔ fewer steps* slider.
+
+Start, finish, the break and the slider are starting points: each day's step lets you change them for that day.
+
+### 2. Dates
+
+Move the sliders to say what matters to you: short waits, low crowds, comfortable temperatures, avoiding rain, rides being open, long park hours, late sunsets and lower ticket prices. **School holidays** lets you say *Don't care*, *Avoid school breaks and holiday weekends*, or *Only during school breaks* (summer, spring, winter, Presidents' week and Thanksgiving week).
+
+- The **week chart** scores every week of the year from 0 (worst for you) to 100 (best), with holidays and events shaded.
+- **Best trips for you** lists exact date windows in the next 12 months that fit your trip length, best first. Each card shows check-in, the park days (with which park), break days and checkout, plus typical waits, weather and rain.
+- Tap **Show trips this week** on any week to see trips around it.
+- Already booked? Type your **first full park day** instead.
+
+### 3. Days
+
+Your trip from check-in to checkout, day by day. Park days are put on the best days of your stay and break days on the weakest, never two break days in a row. You can change any day to a break day, to Disneyland or to California Adventure. Changing a day locks in your dates, so the wizard won't pick new ones over your change.
+
+This step also compares ticket prices: the multi-day ticket price against separate 1-day tickets for your exact dates.
+
+### 4. Rides
+
+Pick every ride you want across the whole trip. Each ride shows its typical wait, how long it lasts, how intense it is (gentle, some thrills, big thrills: our own rating), indoor or outdoor, and its height limit; **Hide ride details** turns that off. **Quick picks** at the top: **Headliners only**, **Good for little kids** (gentle rides with no height limit), **Everything** and **Nothing** (takes every ride off, to start from scratch). To ride something more than once, tap it again (see [Picking rides](#picking-rides-and-riding-them-more-than-once)); you can do a ride up to 6 times on a trip and 3 times on any one day. The two permanent character meets, **Meet Disney Princesses at Royal Hall** and **Mickey's House and Meet Mickey Mouse**, are listed under **Characters** after the rides and plan like a ride, with their own typical waits.
+
+Then press **Spread across my park days**. Rides are shared out so each day has about the same amount, and repeats go on different days first. If you chose Park Hopper but all your rides fit with one park per day, it offers to drop the hopper and save you the upgrade fee.
+
+### 5. Day 1, Day 2, ...
+
+One page per park day, with that day's hours, weather, events and full schedule. For each day you can:
+
+- change the **start** and **finish** times, the **break length**, **break around** (a time you'd like the break near, such as noon for a nap, or leave it to the planner) and the **waits ↔ steps** slider for just that day;
+- tap rides under **On this day** to ride them more times, or press and hold to take them off;
+- add a ride from **Add more**, or from **On other days** (it stays on the other day too).
+
+As you add rides, a banner sums up the plan (when you'd leave, how many rides fit, time in lines, any free time) with a **See the plan** link, and tells you whether there's **room for more** or the **day is full**. When there's room, it names the rides that would still fit and ticks them ✓ in the list. When the day is full, it lists the rides you picked that take the most time and what taking each one off would make room for. If the plan has spare time before a break or before park hopping opens at 11 am, it shows it as free time with rides that would fit there.
+
+### 6. Export
+
+**Save trip as PDF** makes a document to print or keep on your phone:
+
+- **Page 1:** a trip overview with your check-in day, park days, break days and checkout, and every ride you picked, grouped by park and day, with how many times you'll ride it.
+- **One page per park day** with tick boxes: the schedule, Lightning Lane booking order, weather, meal ideas, closures and events.
+
+On a phone it opens the share sheet so you can save or email it. On a computer it downloads.
+
+---
+
+## Plan a day: plan one visit
+
+A quick, self-contained planner for a single day, ideal for locals and annual passholders. It doesn't touch your Trip wizard plan.
+
+1. Pick a **date** and a **park** (Disneyland, California Adventure or Park Hopper).
+2. Set your **group pace** and **shortest rider's height**, your **start** and **finish** times, a **break length** (no break, or a 1 to 5 hour midday break at your hotel) and when you'd like it (**break around**), and the **waits ↔ steps** slider. Your hotel and Lightning Lane choices come from the Trip wizard's Trip settings.
+3. Pick your **rides**.
+
+You get:
+
+- A summary line for the date: published hours, sunset, expected high, rain chance and how busy waits usually are, plus any seasonal event.
+- A full **schedule** with times, walking order, meal stops and which rides to use Lightning Lane on. If you picked a break, it shows a **split day** and how it compares with staying all day.
+- The **Lightning Lane order**: which ride to book first, second and so on. You can't choose a return time: the Disneyland app gives you the next one it has. So the schedule has 📱 **Book now** steps that say when to book each one (the first as soon as you tap in, then each next one once you've used the last or 2 hours after booking). Rides on Lightning Lane say *around this time*, because where they sit depends on the return window you get.
+- **Tonight:** at the end of the plan, the day's fireworks and nighttime shows with their times, in case you have the energy to stay. Dates Disney has published showtimes for use Disney's times; later dates show our typical estimate, labelled as such, and tell you to check the Disneyland app.
+- **How the day plays out:** a chart of expected waits, feels-like temperature and rain through the day.
+- **That week, day by day:** suggested times for every day of that week. Click one to plan it instead.
+
+**Take it with you:** switch between the *Stay all day* and *Split day* plans, open a **Day-of checklist** to tick off rides as you go, **Copy plan as text** to paste into a message or notes app, or **Save day as PDF** for a one-page itinerary.
+
+### How the schedule is built
+
+- Waits come from each ride's average wait for that hour, adjusted for the month, the day of the week and how busy that week usually is.
+- Park hours are Disney's published hours where they're out (about six weeks ahead), otherwise the typical schedule.
+- **Walking time between any two rides** runs from one ride's exit to the next ride's entrance: the straight-line distance, stretched by about a third because paths wind, at your group's walking speed. It also looks one ride ahead so you don't zigzag across the park. Slide towards **Fewer steps** to stay in one area longer, or towards **Shorter waits** to chase the shortest lines.
+- **Group pace sets the walking speed:**
+
+  | Pace | Who it's for | Speed through park crowds |
+  |---|---|---|
+  | Relaxed | Seniors or small children | about 50 m a minute, plus rest breaks |
+  | Normal | Middle-aged adults | about 65 m a minute |
+  | Go-go | Young adults | about 80 m a minute, quicker meals |
+
+  Everyone walks up to 15% slower in the busiest weeks of the year.
+- **Start and finish:** rope drop means arriving 30 minutes before opening. Any other start, or a finish before close, plans only those hours.
+- **Hotel times:** see [Hotel times](#hotel-times).
+- **Security and tap-in:** every time you come in from your hotel (the morning, and after a break), the plan adds our estimate of the bag-check and turnstile line: longest around opening (about 18 minutes on a typical day), shorter later on, and scaled up on busy days and down on quiet ones. The plan shows it next to *Leave hotel by*.
+- **Grand Californian guests** starting in California Adventure, or going back to it after a break, use the hotel's own entrance at Grizzly Peak, with a shorter line, and the first walk starts from there. For Disneyland, or when that entrance is closed, they walk to the Esplanade.
+- **Before a hotel break or a park hop** the plan walks you back to the gate. A hop then adds the walk across the Esplanade and the tap-in line at the other park (about 15 minutes on a typical day, longer when it's busy). There's no bag check on a hop.
+- **Spare time:** when your rides are done well before the end, the plan spreads the spare time through the day as longer meals (up to 20 minutes more) and 20 to 30 minute rest breaks, and then leaves when it's done instead of padding the day with free time. Lunch is never before 11. Each step shows the walk to it.
+- **Meals** are always in the park, never during the hotel break. Each meal is planned at the nearest quick-service place to where you are (on your way in from the gate after a break), with other options nearby, and the next walk starts from there.
+- **Free time** names the nearest show or character spot.
+- **Character meets** are only planned in the hours they usually run (Royal Hall about 10 am to 8 pm, by our estimate; Mickey's House all day). Character times change, so check the Disneyland app.
+- Rides that are closed for refurbishment, or often closed that month, are marked ⚠. A ride Disney has announced as closed for refurbishment on that date is left out of the plan (it stays picked for other dates), and the wizard only puts it on days when it's open.
+
+### Hotel times
+
+The three Disneyland Resort hotels are measured as a walk from an average room to the park turnstiles along the footpaths in OpenStreetMap, plus a little for elevators and hallways, at your group's pace:
+
+| Hotel | Normal | Relaxed | Go-go |
+|---|---|---|---|
+| Grand Californian, to Disneyland | 8 min | 10 min | 7 min |
+| Grand Californian, into California Adventure by its own entrance | 6 min | 7 min | 5 min |
+| Disneyland Hotel, either park | 15 min | 19 min | 13 min |
+| Pixar Place Hotel, either park | 15 min | 19 min | 13 min |
+| Harbor Blvd walking-distance hotel | 15 min | 20 min | 12 min |
+| ART shuttle (off-site) | 40 min | 40 min | 40 min |
+
+Or set your own minutes with **Custom travel time**.
+
+---
+
+## Picking rides (and riding them more than once)
+
+Rides are shown as chips. The same controls work in both planners:
+
+| Do this | What happens |
+|---|---|
+| **Tap** a ride that's off | It's added (ride once) |
+| **Tap** it again | Ride it twice (**×2**), then three times (**×3**) |
+| **Tap** once more after the limit | It's taken off again |
+| **Press and hold** | Take it off straight away |
+
+The limit is 3 per day in Plan a day and on each wizard day page, and 6 per trip on the wizard's Rides step.
+
+Repeats are spaced at least an hour apart unless you tick **Allow repeat rides back to back**. Lightning Lane is only used for your first ride on each attraction; repeats use the standby line.
+
+---
+
+## The data tabs
+
+**When to go** has its own tab. **Weather**, **Time of day**, **Explore** and **About the data** are under **More**. These tabs show the raw history behind the planners. They're useful on their own when you're deciding when to go, or just curious.
+
+### When to go
+
+Crowds and waits through the year.
+
+- **Average wait by week** and **crowd rating by week:** which weeks are quietest, with holidays and school breaks shaded.
+- **By month** and **by day of the week:** the same idea at a coarser level. Useful for "is a Tuesday really quieter than a Saturday?"
+- **Park hours by week:** shorter days usually mean a ticketed party night, when the park closes early to day guests.
+- **Seasonal events and party nights:** typical windows for Halloween Time, the holidays, Lunar New Year, Food & Wine and more.
+- **Ride closures by month:** how often each ride is closed all day, which shows refurbishment seasons and overlay changeovers such as Haunted Mansion Holiday.
+
+### Weather
+
+- **Next 15 days:** a live hourly forecast for Anaheim.
+- **Weather through the year:** 10 years of Anaheim records by week, covering highs, "feels like" highs, overnight lows, chance of rain and soaking rain, hot days, chilly nights and windy days. Rain and wind matter because outdoor rides can pause and fireworks can be cancelled.
+- **Weather by month:** a sortable table of the same averages, plus daylight hours.
+
+### Time of day
+
+- **Average wait by hour** for each park: the first two hours after opening and the last two before close are usually the shortest.
+- **When each ride is shortest:** an hour-by-hour heat map for every major ride, so you can see each one's best window.
+
+### Explore
+
+- **Overlay explorer:** lay any measures over each other week by week, such as waits against heat, crowds against rain, or park hours against sunset. *Scaled* lets different units share one chart; *Actual values* shows the real numbers. Presets like *Waits vs weather* are a quick start.
+- **Every week, side by side:** one row per week with every measure. Sort by any column, search by month or holiday, or click a row to plan a day that week.
+
+### About the data
+
+**How current the data is** lists every dataset with its source, when it was pulled, the last date it covers and whether it's current, ending soon or due for a refresh. Below that are the full sources and methods, including how each score is calculated.
+
+---
+
+## Settings, saving and privacy
+
+- **Settings** (top of the page) holds your hotel, Lightning Lane choices and optional weather keys, used by every tab.
+- Your choices (sliders, rides, hotel, trip dates and settings) are saved **in your browser only**, on that device. Nothing is sent anywhere. The only thing the app downloads is the weather forecast. **Settings → Reset saved settings** clears them.
+- The live forecast uses [Open-Meteo](https://open-meteo.com) by default, with no key needed. If you have a [Vaisala Xweather](https://www.xweather.com) account you can enter your own client ID and secret in **Settings** to use it instead. Keys stay in your browser. If you host a public copy, don't build your keys into it.
+- Outside the forecast range, or offline, weather falls back to 10-year averages.
+
+---
+
+## Where the data comes from
+
+| Data | Source |
+|---|---|
+| Average wait times by date | [Thrill Data](https://www.thrill-data.com), 2023 onwards |
+| Crowd ratings, ride history, hourly waits, closures | [Queue-Times](https://queue-times.com), 2015–2019 and 2023–Oct 2026 (2020–2022 skipped because of COVID closures and reservations) |
+| Park hours, ticket prices, refurbishments | Disney's official calendars at [disneyland.disney.go.com](https://disneyland.disney.go.com); published hours through Dec 5, 2026, ticket prices through Jun 30, 2027 |
+| Holidays and school breaks | Actual dates for Nov 2026 to Oct 2027 (federal holidays and Orange County / Los Angeles school calendars) |
+| Weather history | Anaheim daily records, 2016–2025 |
+| Restaurants, lands, park gates, Lightning Lane rules | Compiled by hand from Disney's listings and [MickeyVisit](https://www.mickeyvisit.com)'s 2026 Lightning Lane guide; the gates and land map are our own estimates |
+| Live forecast | [Open-Meteo](https://open-meteo.com), or [Vaisala Xweather](https://www.xweather.com) with your own keys |
+| Ride, restaurant and show locations | © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), extracted Oct 25, 2026 and built into the app as `data/park_places.js`. Each ride's entrance and exit are our best guess from the doors mapped on its building; [ThemeParks.wiki](https://www.themeparks.wiki/)'s published ride locations were used once, by hand, as a reference to choose between doors. None of their data is in the app and the app never contacts them. |
+
+The historical data is a snapshot from October 2026 and doesn't update by itself; only the forecast is live. When you plan a day past what a dataset covers (Disney's published hours, announced event dates, announced refurbishments), the planner falls back to typical values and says so on that day's plan. Walks run from one ride's exit to the next ride's entrance, as a straight line stretched for winding paths, so they're approximate; a restaurant without a location falls back to a simpler land-by-land map. Dates past Disney's published hours use the typical schedule.
+
+---
+
+## Updating the data
+
+Every dataset is its own file in the `data` folder: CSV text with a short header giving its source, the date it was pulled, the last date it covers and when to refresh it. `data/manifest.js` lists them all.
+
+- **[UPDATING.md](UPDATING.md)** is the step-by-step guide: what each dataset is, where it comes from, how to refresh it and what to check, in order of how soon each one goes out of date.
+- **`scripts/`** has small PowerShell helpers that copy a dataset out to a CSV for editing and put it back (with a backup and a cache bump), plus downloaders for the OpenStreetMap and weather sources.
+- **`check.html`** checks every dataset and then plans sample days in the app. Open it after any change.
+- The app checks the data each time it loads, and **About the data** shows anything it found.
+
+If you use Claude Code, `CLAUDE.md` gives it the same pointers and the project's rules, so "update the park hours" is enough to get started.
+
+---
+
+## Hosting your own copy
+
+It's a static site: just `index.html`, `shim.js`, `sw.js`, `manifest.webmanifest` and the `data`, `vendor` and `icons` folders (`check.html`, `scripts` and the guides are optional). Upload the folder unchanged to any static host:
+
+- **[GitHub Pages](https://pages.github.com):** in this repository go to *Settings → Pages* and publish from the main branch.
+- **[Netlify Drop](https://app.netlify.com/drop):** drag the folder onto the page.
+
+Once it's on a web address, phones can install it with *Add to Home Screen* and it keeps working offline. If you change any files, bump `VERSION` in `sw.js` so installed copies pick up the update.
+
+---
+
+## License
+
+The code is under the [GNU General Public License v3.0](LICENSE). You're free to use, change and share it under the same terms.
+
+The `park_places` table (`data/park_places.js`) is derived from OpenStreetMap and is available under the [Open Database License](https://opendatacommons.org/licenses/odbl/) (© OpenStreetMap contributors). If you reuse or change that table, keep the credit and share it under the same licence.
+
+Disneyland, California Adventure and attraction names are trademarks of Disney. This project is not affiliated with Disney.
