@@ -156,7 +156,7 @@ Excel rewrites dates such as `2026-11-05` and `01-01` unless you import every co
 | 7 | Rides, Lightning Lane, restaurants | `ride_profiles`, `lightning_lane`, `dining` | when the parks change | when something opens, closes or changes |
 | 8 | Typical hours | `park_hours_2025`, `hours_by_week` | slowly | once a year, in January |
 | 9 | Crowds and waits | `crowd_*`, `wait_by_date`, `waits_by_hour`, `ride_closures_by_month`, `closures_by_week` | slowly | once a year |
-| 10 | Locations | `park_places`, `gates`, `lands`, `restrooms` | when the parks change | once a year |
+| 10 | Locations | `park_places`, `gates`, `hotels`, `lands`, `restrooms` | when the parks change | once a year |
 | 11 | Weather and sun | `weather_*`, `sun_by_week` | very slowly | every two years |
 | 12 | Security and tap-in lines | `security_waits` | doesn't | only if Disney changes how screening works |
 | 13 | Showtimes | `disney_showtimes`, `show_estimates` | at `until` (Disney's) | every few weeks with the hours; estimates twice a year |
@@ -337,6 +337,15 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
   - The two Esplanade rows are our own estimate, since OpenStreetMap doesn't name those turnstiles.
   - The `gc` row is the Grand Californian's own entrance into California Adventure (OpenStreetMap node 1424633555). Its hours are our estimate; outside them, plans send guests through the Esplanade.
   - Change it only if the entrances or that entrance's hours change.
+
+### `hotels`: hotel to turnstiles (our estimate)
+
+- One row per hotel choice in the app: `id` (the value in the Hotel list), `name` (on plans), `label` (in the Hotel list, before the minutes), `summary` (on Plan a day's "Staying at" line).
+- `to_dl_m` and `to_dca_m`: footpath metres from an average room to each park's turnstiles, routed on OpenStreetMap paths; `to_gc_m` to the Grand Californian's own entrance (gate `gc` in `gates`). The app walks them at the group's pace and adds `lift_min` for elevators and hallways.
+- `fixed_min`: a time that doesn't change with pace (the ART shuttle), used when there are no metres.
+- "Your own minutes" (`custom`) isn't a row: it's typed in the app.
+- The Hotel list in `index.html` (`dp-hotel`) still has its own options: a new row needs an option there too. The app rewrites each option's text from `label` with the minutes.
+- Change it only if a hotel's entrance or the paths change.
 
 ### `restrooms`: restrooms in the parks
 

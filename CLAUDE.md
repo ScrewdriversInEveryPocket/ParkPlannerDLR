@@ -29,10 +29,11 @@ The scripts load in this order, and they share one set of top-level names (every
 
 | File | What's in it |
 |---|---|
+| `js/settings.js` | The planner's tuning numbers (walking speeds, meal lengths, restroom stops, break and hop limits, repeat limits), one comment each |
 | `js/core.js` | Saved settings, month names, forecast loaders, derived data (waits by week and month, highlights), colour legends |
 | `js/charts.js` | Chart helpers (tooltips, axes, redraw on resize), week charts, grouped bars, the ride table |
 | `js/explore.js` | Hourly and planner data, the best-dates finder (wizard Dates step), best time of day heatmaps, events chart |
-| `js/controls.js` | Shared settings (`dpState`), repeat rides, ride details, tap-to-cycle and restaurant chips, hotels (`HOTEL_WALK`), start and finish, break |
+| `js/controls.js` | Shared settings (`dpState`, and `SETTINGS`: one list of every setting with a control, used to bind both tabs' copies, `syncGlobals` and saving), repeat rides, ride details, tap-to-cycle and restaurant chips, hotels (`HOTELS`, `HOTEL_WALK` and `travelMin`, from `data/hotels.js`), start and finish, break |
 | `js/day.js` | The planner's day: day context (`dayContext`), closure and data notes, the About-the-data table, expected waits |
 | `js/walks.js` | Gates (`GATE`, `GC_GATE`), security and tap-in lines (`SEC`, `entryInfo`), Lightning Lane settings (`LL`), places (`PLACES`), walking times (`walkMin`), meal and show spots |
 | `js/scheduler.js` | The scheduler: break timing, free time, fit advice, Lightning Lane bookings, `scheduleBlock`, `llPlan`, `planDay` |
@@ -50,6 +51,7 @@ The scripts load in this order, and they share one set of top-level names (every
 | `js/app.js` | Settings dialog, redraw when data loads, tabs, startup |
 
 - Put new code in the file it belongs to. Functions can be used from any file once the page has loaded.
+- The planner (`planDay`, `planHopper`, `planHopperBoth`, `scheduleBlock` via `opts.S`, and helpers such as `travelMin`, `hotelGate`, `entryInfo`, `paceWalk`, `dinePicked`) takes a settings object, `dpState` (Plan a day) when none is passed. The wizard and the trip PDF pass `wzSettings(day)`, a day's own rides, break, walking choice, start and finish and meals on top of the shared settings. Don't change `dpState` to plan a wizard day.
 - **Code that runs while the page loads** (not inside a function, e.g. hooking up a button) may only call functions from its own file or an earlier one, since later files haven't loaded yet.
 - A new file goes in three places: a script tag in `index.html` (in order, with `onerror="pdpMissing(this)"` so a missing file is named on screen), the `js` list in `sw.js`, and the table above.
 
@@ -90,7 +92,7 @@ Follow **[UPDATING.md](UPDATING.md)**. If you're asked to "update all the data" 
   - Relaxed is 50 m/min, Normal 65, Go-go 80.
   - Walks are up to 15% slower in the busiest weeks.
   - Before a break or a park hop, the plan walks to the gate.
-  - Hotel times (`HOTEL_WALK` in `js/controls.js`): routed footpath metres from an average room to the turnstiles, at the group's pace, plus elevator minutes. The Grand Californian has its own California Adventure entrance. Every entry from the hotel (morning, return from a break) adds the security and tap-in line from `data/security_waits.js` (by time from opening, scaled by how busy the day is). Hops only tap in. Grand Californian guests use its own California Adventure entrance (gate `gc` in `data/gates.js`) when it's open; hops always use the Esplanade.
+  - Hotel times (`data/hotels.js`, read into `HOTEL_WALK` in `js/controls.js`): routed footpath metres from an average room to the turnstiles, at the group's pace, plus elevator minutes. The Grand Californian has its own California Adventure entrance. Every entry from the hotel (morning, return from a break) adds the security and tap-in line from `data/security_waits.js` (by time from opening, scaled by how busy the day is). Hops only tap in. Grand Californian guests use its own California Adventure entrance (gate `gc` in `data/gates.js`) when it's open; hops always use the Esplanade.
 - **Restrooms:** 🚻 marks come from `data/restrooms.js` (Disney's map points) via `annotateRestrooms` in `js/restrooms.js`: within 2 min walk (3 before a 30+ min line or the walk out), only before such lines, before a break or hop, or every 90 min. Island restrooms are skipped. PDFs write the word "Restrooms" (PDF fonts have no emoji).
 - **Start and finish:** each day can start at rope drop, 10 am, 1 pm or a set time, and finish at close or a set time. A start after lunch or a finish by 4 pm turns the midday break off for that day, and the plan says so.
 - **Shortest rider:** rides above their height (`min_height_in` in `ride_profiles`) stay pickable but are flagged "(N in and up)" on chips and "Riders must be at least N in tall" on plans, with a Rider Switch note. Every ride's height is shown on plans and PDFs, since families may have children of different heights.

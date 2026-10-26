@@ -27,7 +27,7 @@ function dayContext(iso, park, D) {
   const wm = D.wait_by_month.find(r => r.month === monName) || {};
   const weekFactor = ww[pk] && wm[pk] ? ww[pk] / wm[pk] : 1;
   // the busiest weeks (waits about 25% over the year's average) walk up to 15% slower
-  const wAll = d3.mean(D.wait_by_week, r => r[pk]), walkBusy = ww[pk] && wAll ? 1 + 0.15 * Math.max(0, Math.min(1, (ww[pk] / wAll - 1) / 0.25)) : 1;
+  const wAll = d3.mean(D.wait_by_week, r => r[pk]), walkBusy = ww[pk] && wAll ? 1 + WALK_BUSY_MAX * Math.max(0, Math.min(1, (ww[pk] / wAll - 1) / 0.25)) : 1;
   const evs = D.events.filter(e => wkN >= Number(e.start_week) && wkN <= Number(e.end_week) && (e.park === 'Both' || e.park === park));
   const closedSet = new Set(D.ride_closures_by_month.filter(r => r.park === park && r.month === monName && Number(r.closed_pct) >= 50).map(r => r.ride));
   // announced refurbishments covering this date (blank end = no reopening date yet)

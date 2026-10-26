@@ -22,6 +22,8 @@ It takes about two minutes and prints what passed and what failed. It doesn't ch
    - repeat rides are at least an hour apart unless back to back is allowed;
    - a day in the park from 11:30 to 2 includes lunch;
    - the day PDF is made (once per park).
+
+   One more check taps a restaurant on a Park Hopper day: it should be picked for the meal when you're in its park.
 3. **Trip wizard:** a 3-day Park Hopper trip with a break day, through every step, then the trip PDF.
 4. **Expected plans:** 72 of the plans (10 and 130 days out) are compared line by line with `tests/golden/plans.json`. Any difference is listed.
 

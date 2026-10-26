@@ -7,6 +7,8 @@ function dpFitStatus(ctxs, left, end, close, trial, adv, glance) {
     `Press and hold a ride to take it off, ${dpState.brk > 0 ? 'shorten the break, ' : ''}or try a day with longer hours.`, more, adv, glance);
 }
 
+// the restaurant chips' dineAt (see dineChips), called once the plan is made
+let dpDineAt = null;
 function buildRideChips(ctxs) {
   ctxs = [].concat(ctxs);
   const box = document.getElementById('dp-rides'); box.textContent = '';
@@ -38,7 +40,7 @@ function buildRideChips(ctxs) {
       box.append(b);
     });
   });
-  dineChips(box, ctxs.map(c => c.park), dpState.dine, () => { drawDay(); drawTrip(); });
+  dpDineAt = dineChips(box, ctxs.map(c => c.park), dpState.dine, () => { drawDay(); drawTrip(); });
 }
 
 // the day's key moments as a timeline: time on the left, a dot, then the moment and its details one per line
@@ -294,7 +296,8 @@ function drawTonight() {
     const parks = P.hop ? Object.keys(P.H.ctxs) : [dpLast.ctx.park];
     dineNote(document.getElementById('dp-dinenote'), steps || [], parks, { chips: document.getElementById('dp-rides'),
       hop: () => { const b = document.querySelector('#dp-park button[data-v="Hopper"]'); if (b) b.click(); },
-      clear: (x) => { dpState.dine[x.kind] = null; drawDay(); const c = document.querySelector('#dp-rides .qt-chip.dine'); if (c) c.scrollIntoView({ block: 'center' }); } }); }
+      clear: (x) => { dpState.dine[x.kind] = null; drawDay(); const c = document.querySelector('#dp-rides .qt-chip.dine'); if (c) c.scrollIntoView({ block: 'center' }); } });
+    if (dpDineAt) dpDineAt(mealWhere(planSegs(P, dpLast.ctx.park))); }
   const T = tonightText(dpLast.ctx.iso, tonightCtxs(dpLast)); el.hidden = !T; el.textContent = '';
   if (T) tonightInto(el, T);
 }
@@ -339,7 +342,7 @@ function drawHopperDay(D) {
   else if (dca.close <= 19) notes.push('The matching 2025 day was an early‑close party night at California Adventure (closed to day guests at ' +
     fmtClock(dca.close) + '). Check the official calendar for your date.');
   if (dpState.brk > 0 && winWhy(H.win)) notes.push(winWhy(H.win));
-  notes.push(`Park Hopper rules used here: no more than 2 hops in a day, about ${HOP_MIN} min for each hop on this day ` +
+  notes.push(`Park Hopper rules used here: no more than 2 hops in a day, about ${H.hopMin} min for each hop on this day ` +
     `(the walk across the Esplanade at your pace, then the tap-in line, which is longer on busy days; no bag check, since the Esplanade is inside security) ` +
     `after walking to the gate, and the first hop is not before ${fmtClock(HOP_FIRST)}.`);
   notes.forEach(n => { const p = document.createElement('p'); p.textContent = n; warn.append(p); });

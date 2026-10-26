@@ -19,8 +19,7 @@ const DINE_PICKS = {};
     walkup: r.walkup === 'yes'
   })); });
 const DINE_BY_KEY = {}; Object.values(DINE_PICKS).flat().forEach(r => { DINE_BY_KEY[r.key] = r; });
-const BOOK_DAYS = 60;
-const sitMin = (r) => (r.kind === 'lounge' ? 45 : 60) + (dpState.pace === 'relaxed' ? 10 : dpState.pace === 'fast' ? -10 : 0);
+const sitMin = (r, S = dpState) => (r.kind === 'lounge' ? LOUNGE_MIN : SIT_MIN) + (S.pace === 'relaxed' ? SIT_PACE_MIN : S.pace === 'fast' ? -SIT_PACE_MIN : 0);
 const addDaysISO = (iso, n) => { const d = new Date(iso + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
 const fmtDay = (iso) => new Date(iso + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
 // what to tell people about a picked restaurant: when to book, or the walk-up list
@@ -48,13 +47,13 @@ const bookingLine = (b) => `${b.r.name}, ${b.meal} on Day ${b.n} (${fmtDay(b.iso
     '; walk-up list on the day if you miss it' : '') : b.r.walkup ? 'walk-up list only: join it in the app on the day' : 'no booking needed'}.`;
 const dineSpot = (park, name) => ({ name, kind: 'table service', land: (DINE_BY_KEY[park + '|' + name] || {}).land, pos: lookupPlace(park, name, 'food', 'mid'), sit: DINE_BY_KEY[park + '|' + name] });
 // the restaurant picked for a meal on this day, if it's in this park
-const dinePicked = (park, kind) => { const k = dpState.dine && dpState.dine[kind]; if (!k) return null; const [p, n] = k.split('|'); return p === park && DINE_BY_KEY[k] ? dineSpot(p, n) : null; };
+const dinePicked = (park, kind, S = dpState) => { const k = S.dine && S.dine[kind]; if (!k) return null; const [p, n] = k.split('|'); return p === park && DINE_BY_KEY[k] ? dineSpot(p, n) : null; };
 // picked meals that didn't make it into the plan, and why: the restaurant is in a park the day doesn't visit ('park'),
 // you're in the other park at that meal ('where'), it didn't fit ('fit'), or the plan has no such meal ('none')
-function dineIssues(steps, parks) {
+function dineIssues(steps, parks, S = dpState) {
   const out = [];
   ['lunch', 'dinner'].forEach(kind => {
-    const k = dpState.dine && dpState.dine[kind]; if (!k || !DINE_BY_KEY[k]) return;
+    const k = S.dine && S.dine[kind]; if (!k || !DINE_BY_KEY[k]) return;
     const m = steps.find(s => s.mealKind === kind);
     if (m && m.sit && m.sit.key === k) return;
     const r = DINE_BY_KEY[k];
@@ -70,11 +69,11 @@ function dineIssueText(x, parks) {
   if (x.why === 'none') return `There's no ${x.kind} in this plan, so ${r.name} isn't used.`;
   return `${Meal} at ${r.name} (${r.park}) didn't fit in this plan, so it eats somewhere nearer. Try fewer rides, or pick it for a different meal or day.`;
 }
-function dineMiss(steps, parks) { return dineIssues(steps, parks).map(x => dineIssueText(x, parks)).join(' '); }
+function dineMiss(steps, parks, S = dpState) { return dineIssues(steps, parks, S).map(x => dineIssueText(x, parks)).join(' '); }
 // the note under a plan, with a way out when the restaurant is in a park the day doesn't visit:
-// hop (when the ticket allows it) or pick a restaurant in this park instead. Picked chips that missed get a ⚠.
+// hop (when the ticket allows it) or pick a restaurant in this park instead. opts.S: the settings whose meals to check (default dpState). Picked chips that missed get a ⚠.
 function dineNote(el, steps, parks, opts) {
-  const xs = dineIssues(steps, parks); el.textContent = ''; el.hidden = !xs.length;
+  const xs = dineIssues(steps, parks, opts.S); el.textContent = ''; el.hidden = !xs.length;
   xs.forEach(x => {
     const line = document.createElement('span'); line.textContent = dineIssueText(x, parks) + ' '; el.append(line);
     if (x.why !== 'park') return;
@@ -91,6 +90,26 @@ function dineNote(el, steps, parks, opts) {
       c.title = dineIssueText(x, parks); }
   });
   return xs;
+}
+// a plan as parts in time order, [{ park, start, steps }]: a Park Hopper plan's own parts (the one with the break when the
+// group takes one), the morning and evening around a break, or the whole day
+function planSegs(P, park, S = dpState) {
+  if (P.segs) return P.segs;
+  if (P.hop) return ((S.brk > 0 && P.Hb) || P.H).segs;
+  if (P.split) return [{ park, start: P.split.arrive, steps: P.split.morning.steps }, { park, start: P.split.ret, steps: P.split.evening.steps }];
+  return [{ park, start: P.stay.arrive, steps: P.stay.plan.steps }];
+}
+// where a plan has you at lunch and at dinner: { lunch: { park, pos }, dinner: { park, pos } }. The plan's own meal when it has one;
+// otherwise the park you're in around 12:30 and 6:30 pm, near the ride closest to that time. pos is null when there's no map point.
+function mealWhere(segs) {
+  if (!segs || !segs.length) return null;
+  const at = (kind, t) => {
+    for (const s of segs) { const m = s.steps.find(x => x.mealKind === kind); if (m) return { park: m.park || s.park, pos: (m.spot && m.spot.pos) || null }; }
+    const seg = segs.filter(s => s.start <= t + 1e-9).pop() || segs[0];
+    const near = seg.steps.filter(x => x.ride && x.r).sort((a, b) => Math.abs(a.t - t) - Math.abs(b.t - t))[0];
+    return { park: seg.park, pos: near ? lookupPlace(seg.park, near.r.name, 'ride', 'exit') : null };
+  };
+  return { lunch: at('lunch', 12.5), dinner: at('dinner', 18.5) };
 }
 (dash.data('lands').data || []).forEach(r => {
   const near = (r.dining_near || '').split(';').map(x => x.trim()).filter(Boolean);

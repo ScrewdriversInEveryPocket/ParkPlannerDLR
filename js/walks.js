@@ -12,8 +12,8 @@ const GC_GATE = (() => { const r = GATE_ROWS.find(x => x.guests === 'Grand Calif
       id: r.id, name: r.name, park: r.park, pos: [Number(r.lat), Number(r.lon)], before: Number(r.opens_before_min) || 0, after: Number(r.closes_after_min) || 0
     } : null; })();
 // the hotel guests' entrance when it's the way in or out of this park at time t, else null (use the Esplanade)
-function hotelGate(ctx, t) {
-  const g = GC_GATE; if (!g || dpState.hotel !== 'gc' || ctx.park !== g.park) return null;
+function hotelGate(ctx, t, S = dpState) {
+  const g = GC_GATE; if (!g || S.hotel !== 'gc' || ctx.park !== g.park) return null;
   const o = ctx.realOpen != null ? ctx.realOpen : ctx.open, c = ctx.realClose != null ? ctx.realClose : ctx.close;
   return t >= o - g.before / 60 - 1e-9 && t <= c + g.after / 60 + 1e-9 ? g : null;
 }
@@ -34,14 +34,12 @@ function secMin(ctx, t, g) {
   return Math.max(2, Math.round(interp(SEC.curve, (t - o) * 60, 15) * crowdMult(ctx) + (g ? SEC.gc : 0)));
 }
 // coming in from the hotel to be at the turnstiles at time t: which way, the walk, the lines, when to leave
-function entryInfo(ctx, t) {
-  const g = hotelGate(ctx, t), min = travelMin(ctx.park, g), sec = secMin(ctx, t, g);
+function entryInfo(ctx, t, S = dpState) {
+  const g = hotelGate(ctx, t, S), min = travelMin(ctx.park, g, S), sec = secMin(ctx, t, g);
   return { g, min, sec, name: g ? g.name : GATE_NAME[ctx.park] || 'park gate', leave: t - (min + sec) / 60 };
 }
-const arrSub = (ctx, t) => { const e = entryInfo(ctx, t); return `Leave hotel by ${fmtClock(e.leave)} · ~${e.sec} min security (${crowdWord(ctx)})${e.g ? ' at the ' + e.g.name : ''}`; };
-const backAt = (ctx, t) => fmtClock((t + travelMin(ctx.park, hotelGate(ctx, t)) / 60) % 24);
-// per-block gates for walks to and from "the gate" (null = the park's Esplanade gate), set by scheduleBlock
-let GATE_IN = null, GATE_OUT = null;
+const arrSub = (ctx, t, S = dpState) => { const e = entryInfo(ctx, t, S); return `Leave hotel by ${fmtClock(e.leave)} · ~${e.sec} min security (${crowdWord(ctx)})${e.g ? ' at the ' + e.g.name : ''}`; };
+const backAt = (ctx, t, S = dpState) => fmtClock((t + travelMin(ctx.park, hotelGate(ctx, t, S), S) / 60) % 24);
 // Lightning Lane planning settings from data/lightning_lane.js (which rides are Multi or Single Pass is in ride_profiles)
 const LL = (() => {
   const m = Object.fromEntries((dash.data('lightning_lane').data || []).map(r => [r.setting, r.value]));
@@ -64,30 +62,22 @@ const PLACES = (() => {
 const lookupPlace = (park, name, kind, end) => { const q = PLACES.pos.get(park + '|' + kind + '|' + name); return q ? q[end || 'ent'] : null; };
 // a place is a ride (from ride_profiles), a meal stop { name, land, pos }, or null for the park gate.
 // Walks leave a ride from its exit and reach the next one at its entrance.
-const posOf = (park, x, end) => x == null ? ((end === 'ent' ? GATE_OUT : GATE_IN) || GATE[park]) : x.pos !== undefined ? x.pos : lookupPlace(park, x.name, 'ride', end);
+// gates: { in, out }, the positions a scheduleBlock enters and leaves by (null or missing = the park's Esplanade gate)
+const posOf = (park, x, end, gates) => x == null ? ((gates && (end === 'ent' ? gates.out : gates.in)) || GATE[park]) : x.pos !== undefined ? x.pos : lookupPlace(park, x.name, 'ride', end);
 const distM = (a, b) => Math.hypot((a[0] - b[0]) * 111320, (a[1] - b[1]) * 111320 * Math.cos(33.81 * Math.PI / 180));
 
 // Rough walking positions of each land, in minutes from the park's central hub (the gate is 'Entrance'),
 // from data/lands.js: the fallback when a place has no location. Same-land moves take SAME_LAND_MIN.
 const LAND_POS = {};
 (dash.data('lands').data || []).forEach(r => { (LAND_POS[r.park] = LAND_POS[r.park] || {})[r.land] = [Number(r.map_x), Number(r.map_y)]; });
-const WALK_WIND = 1.25, SAME_LAND_MIN = 2;
-// with real locations: paths wind, so the straight line is stretched by PATH_WIND, walked at the group's speed
-// in metres a minute through park crowds (relaxed = seniors or small children, normal = middle-aged adults,
-// go-go = young adults). Minutes are worked out at the normal speed; the pace then scales them.
-const PATH_WIND = 1.35, WALK_SPEED = 65, PACE_SPEED = { relaxed: 50, normal: 65, fast: 80 };
-const paceWalk = () => WALK_SPEED / (PACE_SPEED[dpState.pace] || WALK_SPEED);
-// time between rides on top of walking: restrooms, shops, snacks and distractions
-const MOVE_EXTRA_MIN = 10, GATE_EXTRA_MIN = 8;
-// how much an extra minute of walking counts against a ride, in the same units as the wait-now / best-later ratio
-const WALK_WEIGHT = 0.02;
-// waits-vs-steps slider: 0 = shortest waits (walking only costs time), 2 = balanced, 4 = fewest steps
-const WALK_FACTOR = [0, 0.4, 1, 2.5, 5], WAIT_WEIGHT = [0.02, 0.01, 0, 0, 0];
+// walking speeds and the other tuning numbers are in js/settings.js; minutes are worked out at Normal pace, then scaled by the group's pace
+const paceWalk = (S = dpState) => WALK_SPEED / (PACE_SPEED[S.pace] || WALK_SPEED);
+// waits-vs-steps slider labels (its weights are WALK_FACTOR and WAIT_WEIGHT in js/settings.js)
 const WALK_LABEL = ['shortest waits first', 'shorter waits first', 'balanced waits and steps', 'fewer steps first', 'fewest steps first'];
 const walkPref = (v) => WALK_LABEL[v == null ? 2 : v];
 // minutes at normal pace between two places (null = the park gate)
-function walkMin(park, from, to) {
-  const a = posOf(park, from, 'exit'), b = posOf(park, to, 'ent');
+function walkMin(park, from, to, gates) {
+  const a = posOf(park, from, 'exit', gates), b = posOf(park, to, 'ent', gates);
   if (a && b) return Math.max(1, Math.round(distM(a, b) * PATH_WIND / WALK_SPEED));
   const la = from ? from.land : 'Entrance', lb = to ? to.land : 'Entrance';
   if (la === lb) return SAME_LAND_MIN;
@@ -96,20 +86,20 @@ function walkMin(park, from, to) {
   return Math.round(Math.hypot(p[0] - q[0], p[1] - q[1]) * WALK_WIND);
 }
 // meals: the nearest quick-service place that serves lunch and dinner, from where you are (from the gate, that's on your way in)
-function mealSpot(park, from) {
+function mealSpot(park, from, gates) {
   const all = Object.entries(DINING[park] || {}).flatMap(([land, xs]) => xs.filter(([, k,
           m]) => k === 'quick service' && (!m || /lunch|dinner/.test(m))).map(([n, k]) => ({ name: n, kind: k, land, pos: lookupPlace(park, n, 'food', 'mid')
         })));
   const here = from ? from.land : ENTRY_LAND[park];
   const located = all.filter(x => x.pos);
-  if (located.length && posOf(park, from, 'exit')) return located.reduce((b, x) => walkMin(park, from, x) < walkMin(park, from, b) ? x : b);
+  if (located.length && posOf(park, from, 'exit', gates)) return located.reduce((b, x) => walkMin(park, from, x, gates) < walkMin(park, from, b, gates) ? x : b);
   const same = all.filter(x => x.land === here);
   return same[0] || ((DINING_NEAR[park] || {})[here] || []).map(l => all.find(x => x.land === l)).find(Boolean) || null;
 }
 // free time: the nearest theater, stage or character spot (night spectaculars were left out of park_places)
-function showNear(park, from) {
-  const a = posOf(park, from, 'exit'), list = PLACES.shows[park] || []; if (!a || !list.length) return null;
+function showNear(park, from, gates) {
+  const a = posOf(park, from, 'exit', gates), list = PLACES.shows[park] || []; if (!a || !list.length) return null;
   return list.reduce((b, e) => distM(a, e.p) < distM(a, b.p) ? e : b).n;
 }
-const freeText = (park, from, what) => { const sh = showNear(park, from); return `Free time: ${what}${sh ? ` (nearby: ${sh}; check today's times)` : ''}`; };
+const freeText = (park, from, what, gates) => { const sh = showNear(park, from, gates); return `Free time: ${what}${sh ? ` (nearby: ${sh}; check today's times)` : ''}`; };
 

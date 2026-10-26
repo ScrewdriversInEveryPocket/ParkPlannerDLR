@@ -4,6 +4,10 @@ What changed in each version. The number is the one in `version.js` (shown at th
 
 | Version | Date | What changed |
 |---|---|---|
+| v50 | 2026-10-26 | Restaurant picker: a line says which park you're in at lunch and at dinner, a tap picks the meal you're in that restaurant's park for (or the meal not yet taken), and the closest one or two places for each meal are marked "Good for lunch" or "Good for dinner". Plan a day and wizard day pages. New test check. |
+| v49 | 2026-10-26 | One list of shared settings (`SETTINGS` in `js/controls.js`) keeps the Plan a day and Trip wizard controls in step and drives saving and restoring. Saved settings carry a version number (old ones still load); wizard days no longer save an unused pace. No change to plans. |
+| v48 | 2026-10-26 | The planner's tuning numbers are in one place, `js/settings.js`. Hotel walking times and names moved to a new dataset, `data/hotels.js`. No change to plans. |
+| v47 | 2026-10-26 | The planner takes a settings object (Plan a day's by default) instead of the wizard and trip PDF swapping a day's settings into Plan a day's; gates and hop times are passed along instead of kept in shared variables. No change to plans. |
 | v46 | 2026-10-26 | Code split into smaller files: `js/engine.js` became `day`, `walks`, `scheduler`, `meals`, `restrooms`, `hopper` and `fit`; checklist and copy text moved to `js/take.js`; the wizard's first steps to `js/trip.js`. Code moved only. |
 | v45 | 2026-10-26 | Code layout: long lines in `js/*.js` and `shim.js` broken up (about 160 characters at most). No change to how the app works. |
 | v44 | 2026-10-26 | One-command tests: `scripts\test.ps1` (data checks, 288 sample plans against the planner's rules, a wizard trip, both PDFs, 72 plans compared with `tests/golden`). `scripts\serve.ps1`, a local web server in PowerShell. A banner when part of the app crashes. Refresh scripts in `_sources` work from any folder and default to today. Disney's downloaded pages, feeds and website code are no longer uploaded. This changelog. |

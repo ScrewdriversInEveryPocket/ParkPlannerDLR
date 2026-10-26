@@ -1,7 +1,7 @@
 // DLR Planner: the scheduler: break timing, free time, advice when rides don't fit, Lightning Lane bookings, planning a day.
 // Part of the app script. The js files load in the order of their script tags in index.html (listed in CLAUDE.md).
 // break start s fits the group's "Break around" choice (within half an hour of it), or any time on auto
-const brkNear = (s, at = dpState.brkAt) => at == null || at === 'auto' || Math.abs(s - Number(at)) <= 0.5 + 1e-9;
+const brkNear = (s, at = dpState.brkAt) => at == null || at === 'auto' || Math.abs(s - Number(at)) <= BREAK_NEAR_H + 1e-9;
 const brkAtLbl = (at) => fmtClock(Number(at)).replace(':00', '');
 // time a block can't use before a break or a hop (the list ran out early, or hopping only opens at 11):
 // move the walk out to the end and show the wait as free time with rides that would fit, so the clock never jumps
@@ -36,10 +36,6 @@ function fullAdvice(steps, left, drop) {
 const advLine = (o) => `${o.name}${o.n > 1 ? ` (all ${o.n} times)` : ''}: about ${Math.round(o.min)} min in line and riding. ${o.all ?
   'Taking it off makes room for everything else.' : o.now.length ? `Taking it off makes room for ${o.now.join(', ')}.` :
   "Taking it off isn't enough on its own."}`;
-function scheduleBlock(ctx, start, end, pool, opts) {
-  GATE_IN = opts.gateIn ? opts.gateIn.pos : null; GATE_OUT = opts.gateOut ? opts.gateOut.pos : null;
-  try { return scheduleBlock0(ctx, start, end, pool, opts); } finally { GATE_IN = GATE_OUT = null; }
-}
 // Lightning Lane Multi Pass booking steps: you can't choose a return time, so the plan says when to book each one.
 // The first is booked as soon as you tap in; each next one as soon as you've scanned in for the previous one.
 // lists: the day's step arrays in time order (edited in place). Returns the Multi Pass rides in the order used.
@@ -82,7 +78,9 @@ function scheduleSpread(ctx, start, end, pool, opts) {
   if (opts.seen) { opts.seen.clear(); s1.forEach((v, k) => opts.seen.set(k, v)); }
   return b2;
 }
-function scheduleBlock0(ctx, start, end, pool, opts) {
+// opts.S: the settings to plan with (default: Plan a day's dpState); opts.gateIn / gateOut: the gates the block enters and leaves by
+function scheduleBlock(ctx, start, end, pool, opts) {
+  const S = opts.S || dpState, gates = { in: opts.gateIn ? opts.gateIn.pos : null, out: opts.gateOut ? opts.gateOut.pos : null };
   let t = start, prev = null; const steps = []; const left = pool.slice();
   // opts.meals is shared across the park segments of a hopper day so each meal happens once
   const eaten = opts.meals || { lunch: !opts.lunch, dinner: !opts.dinner }; let totalWait = 0, saved = 0, lastRest = start, lastLL = -9;
@@ -91,12 +89,12 @@ function scheduleBlock0(ctx, start, end, pool, opts) {
   const seen = opts.seen || new Map(), REP_GAP = 1;
   // lunch from 11:45 as a rule, or from 11 when a hotel break starts by 1 pm, so it still fits before you leave
   const earlyLunch = opts.exit === 'break' && end <= 13 + 1e-9 ? 11 : 11.75;
-  const blocked = (r, t) => (!dpState.b2b && seen.has(r.name) && t < seen.get(r.name).end + REP_GAP) || (r.meetFrom != null && t < r.meetFrom) || (r.meetTo != null && t + 0.5 > r.meetTo);
+  const blocked = (r, t) => (!S.b2b && seen.has(r.name) && t < seen.get(r.name).end + REP_GAP) || (r.meetFrom != null && t < r.meetFrom) || (r.meetTo != null && t + 0.5 > r.meetTo);
   // group pace: relaxed adds rest breaks, longer meals and slower walking; go-go does the opposite
   // walking speed by group pace, a little slower again on the busiest weeks
-  const pace = dpState.pace, walkMult = paceWalk() * (ctx.walkBusy || 1);
+  const pace = S.pace, walkMult = paceWalk(S) * (ctx.walkBusy || 1);
   // before a hotel break or a hop, leave time to walk from the last stop to the gate
-  const exitMin = (x) => opts.exit && x ? walkMin(ctx.park, x, null) * walkMult : 0;
+  const exitMin = (x) => opts.exit && x ? walkMin(ctx.park, x, null, gates) * walkMult : 0;
   // opts.pad: spare time spread through the day as longer meals and rest breaks (see scheduleSpread)
   const pad = opts.pad || {};
   const restBreaks = pace === 'relaxed' || (pace === 'normal' && opts.relaxed) || !!pad.rest, restMin = pad.rest || 20;
@@ -104,7 +102,7 @@ function scheduleBlock0(ctx, start, end, pool, opts) {
   // before a break or a hop, everything has to be done by `end` (no few-minute overrun past the break time)
   const tol = opts.exit ? 0 : 0.05;
   let afterMeal = false; // the first walk after a meal counts double, so the plan doesn't cross the park straight after eating
-  const LOOK_WIDTH = 6, LOOK_WEIGHT = 0.6, wv = dpState.walk == null ? 2 : dpState.walk, walkW = WALK_WEIGHT * WALK_FACTOR[wv], waitW = WAIT_WEIGHT[wv];
+  const LOOK_WIDTH = 6, LOOK_WEIGHT = 0.6, wv = S.walk == null ? 2 : S.walk, walkW = WALK_WEIGHT * WALK_FACTOR[wv], waitW = WAIT_WEIGHT[wv];
   // cost of riding r next at time t, coming from land `from` (null = the gate); lower is better
   const rideCost = (r, t, from, lastLL) => {
     const w = wxAt(ctx, t);
@@ -118,7 +116,7 @@ function scheduleBlock0(ctx, start, end, pool, opts) {
     if (r.wet && w.feels < 68) score += 0.25;
     if (r.head) score -= 0.05;
     score += waitW * wait;
-    const wm = walkMin(r.park, from, r);
+    const wm = walkMin(r.park, from, r, gates);
     score += walkW * wm * (afterMeal ? 2 : 1);
     const walk = ((from == null ? GATE_EXTRA_MIN : MOVE_EXTRA_MIN) + wm) * walkMult;
     const dur = walk + wait + r.rmin;
@@ -128,9 +126,9 @@ function scheduleBlock0(ctx, start, end, pool, opts) {
   let walked = 0;
   // walk to the nearest quick-service place, eat, and carry on from there
   // a restaurant picked for this meal (sit-down or walk-up list) takes the place of the nearest quick-service spot, and about an hour
-  const mealLen = (kind) => { const ps = kind && dinePicked(ctx.park, kind); return ps ? sitMin(ps.sit) + (pad.meal || 0) : mealMin; };
-  const mealFits = (from, kind) => { const ps = kind && dinePicked(ctx.park, kind), sp = ps || mealSpot(ctx.park, from), len = mealLen(kind);
-    const w = sp ? walkMin(ctx.park, from, sp) * walkMult : 0; return { sp, w, len, ok: t + (w + len + exitMin(sp || from)) / 60 <= end + tol }; };
+  const mealLen = (kind) => { const ps = kind && dinePicked(ctx.park, kind, S); return ps ? sitMin(ps.sit, S) + (pad.meal || 0) : mealMin; };
+  const mealFits = (from, kind) => { const ps = kind && dinePicked(ctx.park, kind, S), sp = ps || mealSpot(ctx.park, from, gates), len = mealLen(kind);
+    const w = sp ? walkMin(ctx.park, from, sp, gates) * walkMult : 0; return { sp, w, len, ok: t + (w + len + exitMin(sp || from)) / 60 <= end + tol }; };
   const eat = (kind, m) => {
     const lbl = kind === 'lunch' ? 'Lunch' : 'Dinner', at = t + m.w / 60, sit = m.sp && m.sp.sit;
     const qs = !sit && m.sp && (dash.data('dining').data || []).find(r => r.park === ctx.park && r.name === m.sp.name);
@@ -155,10 +153,10 @@ function scheduleBlock0(ctx, start, end, pool, opts) {
     const cands = left.filter(r => !blocked(r, t)).map(r => rideCost(r, t, prev, lastLL)).filter(c => c && (!lunchDue || t + c.dur / 60 <= lunchLatest + 0.01)).sort((a, b) => a.score - b.score);
     // only repeats that are too soon, or character meets not started yet, are left: fill the gap until the next one may go
     if (!cands.length && left.length && left.every(r => blocked(r, t))) {
-      const next = d3.min(left, r => r.meetTo != null && t + 0.5 > r.meetTo ? Infinity : Math.max(seen.has(r.name) && !dpState.b2b ?
+      const next = d3.min(left, r => r.meetTo != null && t + 0.5 > r.meetTo ? Infinity : Math.max(seen.has(r.name) && !S.b2b ?
           seen.get(r.name).end + REP_GAP : t, r.meetFrom != null ? r.meetFrom : t));
       if (next < end - 0.1 && next > t) { steps.push({
-            t, meal: freeText(ctx.park, prev, 'catch a show, grab a snack or shop'), dur: Math.round((next - t) * 60), free: true }); t = next; lastRest = t;
+            t, meal: freeText(ctx.park, prev, 'catch a show, grab a snack or shop', gates), dur: Math.round((next - t) * 60), free: true }); t = next; lastRest = t;
         continue; }
       break;
     }
@@ -166,7 +164,7 @@ function scheduleBlock0(ctx, start, end, pool, opts) {
     if (!cands.length && lunchDue && t >= lunchFrom0 - 1) {
       const t0 = t, at = Math.max(t, 11); t = at; const m = mealFits(prev, 'lunch');
       if (!m.ok) { t = t0; break; }
-      if (at - t0 >= 5 / 60) steps.push({ t: t0, meal: freeText(ctx.park, prev, 'catch a show, grab a snack or shop'), dur: Math.round((at - t0) * 60), free: true });
+      if (at - t0 >= 5 / 60) steps.push({ t: t0, meal: freeText(ctx.park, prev, 'catch a show, grab a snack or shop', gates), dur: Math.round((at - t0) * 60), free: true });
       eat('lunch', m); continue;
     }
     let best = null, bestTotal = Infinity;
@@ -174,7 +172,7 @@ function scheduleBlock0(ctx, start, end, pool, opts) {
       const t2 = t + c.dur / 60, ll2 = c.isLL && c.r.ll !== 'Single Pass' ? t : lastLL;
       let follow = 0;
       if (left.length > 1 && t2 < end - 0.1) {
-        let f = null; for (const r2 of left) { if (r2 === c.r || (!dpState.b2b && r2.name === c.r.name)) continue;
+        let f = null; for (const r2 of left) { if (r2 === c.r || (!S.b2b && r2.name === c.r.name)) continue;
           const c2 = rideCost(r2, t2, c.r, ll2); if (c2 && (!f || c2.score < f.score)) f = c2; }
         follow = f ? f.score : 0;
       }
@@ -197,7 +195,7 @@ function scheduleBlock0(ctx, start, end, pool, opts) {
       if (eaten[kind] || t >= by) return;
       const t0 = t, at = Math.max(t, from); if (at - t0 > maxWait) return;
       t = at; const m = mealFits(prev, kind); if (!m.ok) { t = t0; return; }
-      if (at - t0 >= 5 / 60) steps.push({ t: t0, meal: freeText(ctx.park, prev, 'catch a show, grab a snack or shop'), dur: Math.round((at - t0) * 60), free: true });
+      if (at - t0 >= 5 / 60) steps.push({ t: t0, meal: freeText(ctx.park, prev, 'catch a show, grab a snack or shop', gates), dur: Math.round((at - t0) * 60), free: true });
       eat(kind, m);
     };
     meal('lunch', opts.exit === 'break' ? (opts.lunchFrom || earlyLunch) : 11.5, 14.5, 1.5);
@@ -211,43 +209,44 @@ function scheduleBlock0(ctx, start, end, pool, opts) {
 const roundUp15 = (t) => Math.ceil(t * 4) / 4;
 const roundDn15 = (t) => Math.floor(t * 4) / 4;
 
-function llPlan(ctx, pool, hoursInPark) {
+function llPlan(ctx, pool, hoursInPark, S = dpState) {
   const avgW = (r) => d3.mean(d3.range(Math.max(9, Math.ceil(ctx.open)), Math.min(22, ctx.close)), h => expWait(ctx, r, h)) || r.avg;
   pool = pool.filter(r => !r.lap); // Lightning Lane is once per ride per day; repeats wait in standby
-  const elig = dpState.ll ? pool.filter(r => r.ll === 'Multi Pass').sort((a, b) => avgW(b) - avgW(a)) : [];
+  const elig = S.ll ? pool.filter(r => r.ll === 'Multi Pass').sort((a, b) => avgW(b) - avgW(a)) : [];
   const K = Math.min(elig.length, Math.max(1, Math.min(LL.max, Math.floor(hoursInPark / LL.per))));
   const multi = elig.slice(0, K);
-  const single = dpState.single ? pool.filter(r => r.ll === 'Single Pass') : [];
+  const single = S.single ? pool.filter(r => r.ll === 'Single Pass') : [];
   return { set: new Set(multi.concat(single)), multi, single };
 }
-function planDay(ctx, pool) {
+// S: the settings to plan with (default: Plan a day's dpState; the wizard passes a day's own)
+function planDay(ctx, pool, S = dpState) {
   // o..c: the hours the group is in the park (park hours cut to their start and finish times)
-  const W = dayWin(ctx.open, ctx.close), o = W.t0, c = W.t1;
+  const W = dayWin(ctx.open, ctx.close, S.win || {}), o = W.t0, c = W.t1;
   const arrive = W.rope ? ctx.open - 0.5 : o;
-  const llStay = llPlan(ctx, pool, c - o);
-  const hg = (t) => hotelGate(ctx, t);
-  const stay = scheduleSpread(ctx, o, c, pool, { lunch: true, dinner: true, ll: llStay.set, relaxed: true, gateIn: hg(arrive), tail: true });
+  const llStay = llPlan(ctx, pool, c - o, S);
+  const hg = (t) => hotelGate(ctx, t, S);
+  const stay = scheduleSpread(ctx, o, c, pool, { lunch: true, dinner: true, ll: llStay.set, relaxed: true, gateIn: hg(arrive), tail: true, S });
   // break window
-  const L = W.why ? 0 : dpState.brk;
+  const L = W.why ? 0 : S.brk;
   const relIdx = (h) => d3.mean(pool, r => expWait(ctx, r, h) / Math.max(5, r.avg)) || 1;
   let bestS = null, bestP = -Infinity, brkMoved = false;
-  const sMin = Math.max(o + 2.5, 11), sMax = Math.min(c - L - 1.5, 17);
+  const sMin = Math.max(o + 2.5, BREAK_FIRST), sMax = Math.min(c - L - 1.5, BREAK_LAST);
   // the quietest, coolest hours, kept near the group's "Break around" time when they picked one
   const pickS = (near) => { for (let s = sMin; s <= sMax + 1e-9; s += 0.5) {
-    if (near && !brkNear(s)) continue;
+    if (near && !brkNear(s, S.brkAt)) continue;
     let p = 0; for (let h = s; h < s + L; h += 1) { const w = wxAt(ctx, h); p += relIdx(h) + Math.max(0, w.feels - 78) / 10 + w.rain / 20; }
     if (p > bestP) { bestP = p; bestS = s; }
   } };
   pickS(true);
-  if (bestS == null && L > 0 && dpState.brkAt !== 'auto') { pickS(false); brkMoved = bestS != null; }
+  if (bestS == null && L > 0 && S.brkAt !== 'auto') { pickS(false); brkMoved = bestS != null; }
   let split = null;
   if (L > 0 && bestS != null) {
-    const llSplit = llPlan(ctx, pool, (bestS - o) + (c - bestS - L));
+    const llSplit = llPlan(ctx, pool, (bestS - o) + (c - bestS - L), S);
     const meals = { lunch: false, dinner: false }, seen = new Map();
-    const morning = scheduleBlock(ctx, o, bestS, pool, { meals, seen, lunchFrom: bestS <= 12.5 ? 11 : null, ll: llSplit.set, exit: 'break', gateIn: hg(arrive), gateOut: hg(bestS) });
+    const morning = scheduleBlock(ctx, o, bestS, pool, { meals, seen, lunchFrom: bestS <= 12.5 ? 11 : null, ll: llSplit.set, exit: 'break', gateIn: hg(arrive), gateOut: hg(bestS), S });
     gapFill(ctx, morning, bestS, new Set(pool.map(r => r.name)), 'before your break');
     const evening = scheduleSpread(ctx, bestS + L, c, morning.left, {
-        meals, seen, lunchBy: meals.lunch ? 16.5 : Math.max(16.5, bestS + L + 1), dinnerBy: 21, ll: llSplit.set, gateIn: hg(bestS + L), tail: true });
+        meals, seen, lunchBy: meals.lunch ? 16.5 : Math.max(16.5, bestS + L + 1), dinnerBy: 21, ll: llSplit.set, gateIn: hg(bestS + L), tail: true, S });
     split = { arrive, brk: bestS, ret: bestS + L, leave: null, morning, evening, llp: llSplit, saved: morning.saved + evening.saved,
       totalWait: morning.totalWait + evening.totalWait, done: morning.steps.filter(s => s.ride).length + evening.steps.filter(s => s.ride).length,
       left: evening.left };
@@ -256,7 +255,8 @@ function planDay(ctx, pool) {
   const stayLeave = Math.min(c, stay.left.length ? c : roundUp15(stay.end));
   if (split) split.leave = Math.min(c, split.evening.left.length ? c : roundUp15(Math.max(split.evening.end, split.ret + 0.5)));
   annotateMeals(stay.steps); if (split) { annotateMeals(split.morning.steps); annotateMeals(split.evening.steps); }
-  annotateRestrooms(stay.steps, ctx.park, arrive); if (split) { annotateRestrooms(split.morning.steps, ctx.park, arrive); annotateRestrooms(split.evening.steps, ctx.park, split.ret); }
+  annotateRestrooms(stay.steps, ctx.park, arrive, S);
+  if (split) { annotateRestrooms(split.morning.steps, ctx.park, arrive, S); annotateRestrooms(split.evening.steps, ctx.park, split.ret, S); }
   llStay.order = addLLBooking([stay.steps]);
   if (split) split.llp.order = addLLBooking([split.morning.steps, split.evening.steps]);
   const heatHours = (a, b, skip) => { let n = 0; for (let h = Math.ceil(a); h < b; h++) { if (skip && h >= skip[0] && h < skip[1]) continue; if (wxAt(ctx, h).feels >= 85) n++; } return n; };

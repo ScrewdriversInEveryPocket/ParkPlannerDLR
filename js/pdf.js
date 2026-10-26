@@ -152,24 +152,24 @@ async function exportTripPDF() {
     for (const i of parkDays) {
       const iso = days[i], o = chosen.get(i);
       const dayCfg = wz.days && wz.days[iso];
-      const restoreDay = dayCfg ? wzApply(dayCfg) : null;
-      try {
+      const cfg = dayCfg ? wzSettings(dayCfg) : dpState;
+      {
         const kindPref = dayCfg ? (dayCfg.brk > 0 ? 'split' : 'stay') : takeState.which;
         let ctx, P;
-        if (o.parks.length > 1) { P = planHopperBoth(iso, D); ctx = P.ctx; }
+        if (o.parks.length > 1) { P = planHopperBoth(iso, D, cfg); ctx = P.ctx; }
         else {
           ctx = dayContext(iso, o.parks[0], D);
-          const sel = dpState.rides[o.parks[0]] || new Set(ctx.rides.filter(r => r.head).map(r => r.name));
-          P = planDay(ctx, expandPool(ctx.rides.filter(r => sel.has(r.name)), dpState.reps[o.parks[0]]));
+          const sel = cfg.rides[o.parks[0]] || new Set(ctx.rides.filter(r => r.head).map(r => r.name));
+          P = planDay(ctx, expandPool(ctx.rides.filter(r => sel.has(r.name)), cfg.reps[o.parks[0]]), cfg);
         }
-        dpLast = { ctx, P, T: travelMin(P.hop ? P.H.first : ctx.park) };
+        dpLast = { ctx, P, T: travelMin(P.hop ? P.H.first : ctx.park, null, cfg) };
         const pi = planItems(kindPref);
         const notes = [];
         const tk = D.ticket_tiers.find(r => r.date === iso); if (tk) notes.push(`1-day ticket for this date: $${tk.price_usd} (tier ${tk.tier})`);
         (P.hop ? [P.H.ctxs['Disneyland'], P.H.ctxs['California Adventure']] : [ctx]).forEach(c => {
             c.evs.forEach(e => notes.push(`${e.name}: ${e.notes}`)); closedNotes(c, P.hop).forEach(n => notes.push(n));
             dataNotes(c).forEach(n => notes.push(n)); });
-        { const sn = shortNote(pickedOf(P.hop ? [P.H.ctxs['Disneyland'], P.H.ctxs['California Adventure']] : [ctx])); if (sn) notes.push(sn); }
+        { const sn = shortNote(pickedOf(P.hop ? [P.H.ctxs['Disneyland'], P.H.ctxs['California Adventure']] : [ctx], cfg)); if (sn) notes.push(sn); }
         if (dayCfg) notes.push(`Pace: ${{ relaxed: 'relaxed', normal: 'normal', fast: 'go-go'
             }[dpState.pace]} · ${walkPref(dayCfg.walk)} · ${brkOf(dayCfg) ? dayCfg.brk + '-hour midday break' : 'no midday break'}${winLabel(dayCfg.win) ?
             ' · ' + winLabel(dayCfg.win) : ''} · ${wzCount(dayCfg)} rides`);
@@ -177,7 +177,7 @@ async function exportTripPDF() {
         const llNames = (pi.llp && pi.llp.multi || []).map(r => r.name);
         doc.addPage();
         pdfDayPage(doc, pi, { title: `Day ${dayNo.get(iso)} · ${fmtLong(iso)} · ${o.label}`, kind: kindOf(P, ctx), lines: dayHeadLines(ctx, P), ll: llNames, notes: [...new Set(notes)] });
-      } finally { if (restoreDay) restoreDay(); }
+      }
     }
   } finally { dpLast = savedLast; }
   pdfFooters(doc);

@@ -4,25 +4,26 @@
 // a hop = the walk across the Esplanade between the gates at your pace, plus tapping in at the other park.
 // The walk to the gate and on to the first ride are counted in the park schedules themselves.
 // the tap-in line comes from data/security_waits.js, scaled by how busy the park you're hopping into is
-const HOP_FIRST = 11; let HOP_MIN = 20;
-const hopMin = (toCtx) => Math.round(distM(GATE['Disneyland'], GATE['California Adventure']) * PATH_WIND / WALK_SPEED * paceWalk() + SEC.tap * crowdMult(toCtx));
-function poolFor(ctx) {
-  if (!dpState.rides[ctx.park]) dpState.rides[ctx.park] = new Set(ctx.rides.filter(r => r.head).map(r => r.name));
-  return expandPool(ctx.rides.filter(r => dpState.rides[ctx.park].has(r.name)), dpState.reps[ctx.park]);
+// (HOP_FIRST, the earliest hop, is in js/settings.js)
+const hopMin = (toCtx, S = dpState) => Math.round(distM(GATE['Disneyland'], GATE['California Adventure']) * PATH_WIND / WALK_SPEED * paceWalk(S) + SEC.tap * crowdMult(toCtx));
+function poolFor(ctx, S = dpState) {
+  if (!S.rides[ctx.park]) S.rides[ctx.park] = new Set(ctx.rides.filter(r => r.head).map(r => r.name));
+  return expandPool(ctx.rides.filter(r => S.rides[ctx.park].has(r.name)), S.reps[ctx.park]);
 }
-function planHopper(iso, D, withBreak) {
+// S: the settings to plan with (default: Plan a day's dpState; the wizard passes a day's own)
+function planHopper(iso, D, withBreak, S = dpState) {
   const PARKS = ['Disneyland', 'California Adventure'];
   // C: each park's hours cut to the group's start and finish times (C0 keeps the real hours for display)
   const C0 = Object.fromEntries(PARKS.map(p => [p, dayContext(iso, p, D)]));
-  const WW = Object.fromEntries(PARKS.map(p => [p, dayWin(C0[p].open, C0[p].close)]));
+  const WW = Object.fromEntries(PARKS.map(p => [p, dayWin(C0[p].open, C0[p].close, S.win || {})]));
   if (withBreak && WW[PARKS[0]].why) return null;
   const C = Object.fromEntries(PARKS.map(p => [p, Object.assign({}, C0[p], { open: WW[p].t0, close: WW[p].t1, realOpen: C0[p].open, realClose: C0[p].close })]));
-  const pools = Object.fromEntries(PARKS.map(p => [p, poolFor(C[p])]));
+  const pools = Object.fromEntries(PARKS.map(p => [p, poolFor(C[p], S)]));
   const total = pools[PARKS[0]].length + pools[PARKS[1]].length;
-  const L = dpState.brk;
+  const L = S.brk;
   const picks = Object.fromEntries(PARKS.map(p => [p, new Set(pools[p].map(r => r.name))]));
-  let near = true, brkFloor = 11; // breaks never start before 11; with "Break around" set, not before half an hour ahead of it
-  HOP_MIN = Math.round(d3.mean(PARKS, p => hopMin(C[p])));
+  let near = true, brkFloor = BREAK_FIRST; // breaks never start before 11; with "Break around" set, not before half an hour ahead of it
+  const HOP_MIN = Math.round(d3.mean(PARKS, p => hopMin(C[p], S)));
   const run = (plan, spread) => {
     // plan: [{ park, to, gap }, ...]; gap is how you get here from the previous entry: 'hop' or 'break' (at the hotel)
     const meals = { lunch: false, dinner: false }, seen = new Map();
@@ -33,7 +34,7 @@ function planHopper(iso, D, withBreak) {
     const segs = []; let tw = 0, saved = 0, idle = 0;
     for (let i = 0; i < plan.length; i++) {
       const g = plan[i], c = C[g.park];
-      const hm = g.gap === 'hop' ? hopMin(c) : 0;
+      const hm = g.gap === 'hop' ? hopMin(c, S) : 0;
       const start = i === 0 ? c.open : Math.max(from + (g.gap === 'break' ? L : hm / 60), c.open);
       const stop = Math.min(g.to, c.close);
       if (stop - start < 0.5) return null;
@@ -41,7 +42,7 @@ function planHopper(iso, D, withBreak) {
       const b = (spread && !plan[i + 1] ? scheduleSpread : scheduleBlock)(c, start, stop, left[g.park], {
           tail: !plan[i + 1], meals, seen, lunchFrom: preBrk ? 11 : null, lunchBy: g.gap === 'break' ? (meals.lunch ? 16.5 : Math.max(16.5, start + 1)) : null,
           dinnerBy: g.gap === 'break' ? 21 : null, ll: llps[g.park].set, exit: plan[i + 1] ? plan[i + 1].gap : null,
-          gateIn: i === 0 || g.gap === 'break' ? hotelGate(c, start) : null, gateOut: plan[i + 1] && plan[i + 1].gap === 'break' ? hotelGate(c, stop) : null });
+          gateIn: i === 0 || g.gap === 'break' ? hotelGate(c, start, S) : null, gateOut: plan[i + 1] && plan[i + 1].gap === 'break' ? hotelGate(c, stop, S) : null, S });
       left[g.park] = b.left; tw += b.totalWait; saved += b.saved;
       const nx = plan[i + 1];
       let depart = b.end;
@@ -58,8 +59,8 @@ function planHopper(iso, D, withBreak) {
     }
     const done = segs.reduce((n, s) => n + s.steps.filter(x => x.ride).length, 0);
     const flatSteps = segs.flatMap(x => x.steps), miss = ['lunch',
-      'dinner'].filter(k => dpState.dine && dpState.dine[k] && DINE_BY_KEY[dpState.dine[k]] && !flatSteps.some(x => x.mealKind === k && x.sit &&
-        x.sit.key === dpState.dine[k])).length;
+      'dinner'].filter(k => S.dine && S.dine[k] && DINE_BY_KEY[S.dine[k]] && !flatSteps.some(x => x.mealKind === k && x.sit &&
+        x.sit.key === S.dine[k])).length;
     return { segs, done, hops, totalWait: tw, saved, left, llps, idle, plan, miss };
   };
   let best = null;
@@ -72,7 +73,7 @@ function planHopper(iso, D, withBreak) {
           (qi(r) === qi(best) && (r.hops < best.hops || (r.hops === best.hops && r.totalWait < best.totalWait - 1e-9)))))) best = r;
   };
   const search = () => PARKS.forEach((A, ai) => {
-    if (dpState.start !== 'auto' && dpState.start !== A) return;
+    if (S.start !== 'auto' && S.start !== A) return;
     const B = PARKS[1 - ai], cA = C[A], cB = C[B];
     if (!withBreak) {
       consider([{ park: A, to: cA.close }]);
@@ -83,8 +84,8 @@ function planHopper(iso, D, withBreak) {
       return;
     }
     // with a midday break at the hotel: A | break | A or B, or one hop on either side of the break
-    for (let s = Math.max(cA.open + 2.5, 11); s <= Math.min(cA.close - L - 1.5, 17) + 1e-9; s += 0.5) {
-      if (near && !brkNear(s)) continue;
+    for (let s = Math.max(cA.open + 2.5, BREAK_FIRST); s <= Math.min(cA.close - L - 1.5, BREAK_LAST) + 1e-9; s += 0.5) {
+      if (near && !brkNear(s, S.brkAt)) continue;
       [A, B].forEach(P2 => {
         const c2 = C[P2];
         consider([{ park: A, to: s }, { park: P2, to: c2.close, gap: 'break' }]);
@@ -95,14 +96,14 @@ function planHopper(iso, D, withBreak) {
     }
     // hop in the morning, then break, then back to the second park
     for (let h1 = HOP_FIRST; h1 <= cA.close - 4; h1 += 0.5) {
-      for (let s = h1 + HOP_MIN / 60 + 1.5; s <= Math.min(cB.close - L - 1.5, 17) + 1e-9; s += 0.5) if (!near || brkNear(s)) consider([{ park: A, to: h1
+      for (let s = h1 + HOP_MIN / 60 + 1.5; s <= Math.min(cB.close - L - 1.5, BREAK_LAST) + 1e-9; s += 0.5) if (!near || brkNear(s, S.brkAt)) consider([{ park: A, to: h1
           }, { park: B, to: s, gap: 'hop' }, { park: B, to: cB.close, gap: 'break' }]);
     }
   });
-  if (withBreak && dpState.brkAt !== 'auto') brkFloor = Math.max(11, Number(dpState.brkAt) - 0.5);
+  if (withBreak && S.brkAt !== 'auto') brkFloor = Math.max(BREAK_FIRST, Number(S.brkAt) - BREAK_NEAR_H);
   search();
   let brkMoved = false;
-  if (!best && withBreak && dpState.brkAt !== 'auto') { near = false; brkFloor = 11; search(); brkMoved = !!best; }
+  if (!best && withBreak && S.brkAt !== 'auto') { near = false; brkFloor = BREAK_FIRST; search(); brkMoved = !!best; }
   if (!best) return null;
   // spread spare time at the end of the day through the last park visit (longer meals, rest breaks)
   { const sp = run(best.plan, true); if (sp && sp.done === best.done) best = sp; }
@@ -114,16 +115,16 @@ function planHopper(iso, D, withBreak) {
     const nx = best.segs[i + 1];
     if (!nx) return;
     const gap = nx.gapBefore === 'break'
-      ? (() => { const eIn = entryInfo(nx.ctx, nx.start); return {
+      ? (() => { const eIn = entryInfo(nx.ctx, nx.start, S); return {
             t: s.depart, meal: `Break at your hotel (${fmtClock(s.depart + travelMin(s.park, hotelGate(s.ctx,
-                    s.depart)) / 60)} there). Leave the hotel by ${fmtClock(eIn.leave)} to be through security at the ${eIn.name} by ${fmtClock(nx.start)} (about ${eIn.sec} min in line)`,
+                    s.depart, S), S) / 60)} there). Leave the hotel by ${fmtClock(eIn.leave)} to be through security at the ${eIn.name} by ${fmtClock(nx.start)} (about ${eIn.sec} min in line)`,
             hop: true, brk: true, dur: Math.round(L * 60), to: nx.park }; })()
       : { t: s.depart, meal: `Park hop: leave ${s.park}, arrive at ${nx.park} about ${fmtClock((s.depart +
               nx.hopMin / 60) % 24)} (walk across the Esplanade and tap in)`, hop: true, dur: nx.hopMin, to: nx.park };
     flat.push(gap); s.hopStep = gap;
   });
   annotateMeals(flat);
-  best.segs.forEach(s => annotateRestrooms(s.steps, s.park, s.start));
+  best.segs.forEach(s => annotateRestrooms(s.steps, s.park, s.start, S));
   const lastSeg = best.segs[best.segs.length - 1];
   const leftAll = PARKS.flatMap(p => best.left[p]);
   // leave at close only while the park you end in still has rides to do; otherwise when the plan is done
@@ -136,9 +137,11 @@ function planHopper(iso, D, withBreak) {
   const first = best.segs[0].park;
   return { hop: true, withBreak: !!withBreak, ctxs: C0, first, ctx: C0[first], segs: best.segs, flat, hops: best.hops, done: best.done, total, left: leftAll,
     totalWait: best.totalWait, saved: best.saved, llps: best.llps, arrive: WW[first].rope ? C0[first].open - 0.5 : C[first].open, leave, win: WW[first],
-    brkMoved, whyLeft };
+    brkMoved, whyLeft, hopMin: HOP_MIN };
 }
-const planHopperBoth = (iso, D) => { const H = planHopper(iso, D, false); return { hop: true, H, Hb: dpState.brk > 0 ? planHopper(iso, D, true) : null, ctx: H.ctx }; };  function hopLL(H) {
+const planHopperBoth = (iso, D, S = dpState) => { const H = planHopper(iso, D, false, S);
+  return { hop: true, H, Hb: S.brk > 0 ? planHopper(iso, D, true, S) : null, ctx: H.ctx }; };
+function hopLL(H) {
   const m = [], s = [];
   ['Disneyland', 'California Adventure'].forEach(p => { const l = H.llps[p]; if (l) { m.push(...l.multi); s.push(...l.single); } });
   return { multi: m, single: s, set: null };

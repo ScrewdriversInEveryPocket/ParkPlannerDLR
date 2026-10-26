@@ -185,11 +185,12 @@ Repeats are spaced at least an hour apart unless you tick **Allow repeat rides b
 
 Under the rides, on Plan a day and on each wizard day page, **Sit-down meals (optional)** lists the table-service restaurants and lounges in that day's park(s), with price, how booking works and what they serve.
 
+A line above them says where your plan has you at each meal, such as "Lunch: you're in California Adventure · Dinner: you're in Disneyland" (on a one-park day, "Lunch and dinner: you're in Disneyland"). The one or two places closest to where you'll be at each meal are marked **✓ Good for lunch** or **✓ Good for dinner**. Hover over the chip to see the walk.
+
 | Do this | What happens |
 |---|---|
-| **Tap** a restaurant | Have **Lunch** there |
-| **Tap** it again | Have **Dinner** there instead (if it serves dinner) |
-| **Tap** once more | Take it off |
+| **Tap** a restaurant | Have the meal there that you're in its park for. If you're in its park for both meals, it takes the one you haven't picked a restaurant for yet (lunch first). If you're not in its park for either meal, it's lunch. |
+| **Tap** it again | Switch to its other meal (if it serves both), then take it off |
 | **Press and hold** | Take it off straight away |
 
 You can pick one restaurant for lunch and one for dinner each day. The plan books about an hour for a sit-down meal (45 minutes in a lounge, a little longer at a relaxed pace) and fits your rides around it. Every other meal is still planned at the nearest quick-service place, with a tip to **mobile order** in the Disneyland app when that place offers it.
@@ -253,7 +254,7 @@ Crowds and waits through the year.
 | Holidays and school breaks | Actual dates for Nov 2026 to Oct 2027 (federal holidays and Orange County / Los Angeles school calendars) |
 | Weather history | Anaheim daily records, 2016–2025 |
 | Restrooms | [Disney's restroom map](https://disneyland.disney.go.com/guest-services/restrooms/), read Oct 26, 2026 |
-| Restaurants, lands, park gates, Lightning Lane rules | Compiled by hand from Disney's listings and [MickeyVisit](https://www.mickeyvisit.com)'s 2026 Lightning Lane guide; the gates and land map are our own estimates |
+| Restaurants, lands, park gates, Lightning Lane rules | Compiled by hand from Disney's listings and [MickeyVisit](https://www.mickeyvisit.com)'s 2026 Lightning Lane guide; the gates, land map and hotel walking times (`data/hotels.js`, routed on OpenStreetMap paths) are our own estimates |
 | Live forecast | [Open-Meteo](https://open-meteo.com), or [Vaisala Xweather](https://www.xweather.com) with your own keys |
 | Ride, restaurant and show locations | © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), extracted Oct 25, 2026 and built into the app as `data/park_places.js`. Each ride's entrance and exit are our best guess from the doors mapped on its building; [ThemeParks.wiki](https://www.themeparks.wiki/)'s published ride locations were used once, by hand, as a reference to choose between doors. None of their data is in the app and the app never contacts them. |
 

@@ -188,6 +188,22 @@
         }
       }
     }
+    // the restaurant chips on a Park Hopper day: a tap picks the meal you're in that restaurant's park for
+    try {
+      const st = w.eval('dpState');
+      Object.assign(st, JSON.parse(JSON.stringify(base)), { date: addDays(TODAY, 10), park: 'Hopper', dine: { lunch: null, dinner: null } });
+      w.drawDay();
+      const W = w.eval('mealWhere(planSegs(dpLast.P, dpLast.ctx.park))'), p = W.dinner.park;
+      const both = (w.eval('DINE_PICKS')[p] || []).filter(x => x.serves.length === 2);
+      // in that park for both meals: with lunch taken, a new pick goes to dinner
+      if (W.lunch.park === p && both.length > 1) { st.dine = { lunch: both[1].key, dinner: null }; w.drawDay(); }
+      const line = doc.querySelector('#dp-rides .qt-dinewhere'), chip = doc.querySelector(`#dp-rides .qt-chip.dine[data-key="${both[0].key}"]`);
+      chip.click(); await wait(50);
+      const dine = w.eval('dpState.dine');
+      check(S2, 'tapping a restaurant picks the meal you are in its park for', dine.dinner === both[0].key && line && !line.hidden,
+        `picked ${JSON.stringify(dine)}; the plan has you in ${W.lunch.park} at lunch and ${W.dinner.park} at dinner; line: ${line ? line.textContent : 'none'}`);
+      st.dine = { lunch: null, dinner: null };
+    } catch (err) { check(S2, 'restaurant tap', false, 'crashed: ' + (err && err.stack || err)); }
 
     // 3. Trip wizard: a 3-day trip with a break day, every step, then the trip PDF
     const S3 = section('Trip wizard');

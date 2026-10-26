@@ -103,6 +103,8 @@ span.dash-skeleton, b.dash-skeleton, div.v.dash-skeleton { color: transparent; }
 .qt-quick .qt-link { margin-right: var(--cds-gap-sm); }
 .qt-chip.dine { border-style: dashed; } .qt-chip.dine.miss { border-color: var(--sun); } .qt-chip.dine .dmiss { color: var(--color-fg); font-weight: 600; }
 .qt-chip.dine[aria-pressed="true"] { border-style: solid; }
+.qt-chip.dine.good { box-shadow: 0 0 0 2px var(--color-ok); } .qt-chip.dine .dgood { color: var(--color-ok); font-weight: 600; }
+.qt-chipgroup .g.qt-dinewhere { font-weight: 600; }
 .qt-steps .tg.dine { color: var(--color-fg); }
 .qt-chip { font: inherit; font-size: var(--cds-font-size-caption); display: inline-flex; align-items: center; gap: var(--cds-gap-xs); padding: 3px var(--cds-pad-sm); border-radius: 999px; border: 1px solid var(--color-border-line); background: var(--color-bg); color: var(--color-fg-muted); cursor: pointer; }
 .qt-chip[aria-pressed="true"] { color: var(--color-fg); border-color: var(--color-fg-muted); background: var(--color-panel); }

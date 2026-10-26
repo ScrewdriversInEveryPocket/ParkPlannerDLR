@@ -4,7 +4,7 @@
 // within RR_NEAR_MIN (RR_NEAR_MUST_MIN before a long line or the walk out) of where you'll be, but only where a stop matters: before a line of RR_LINE_MIN or more, before
 // leaving for a break or a hop, and otherwise when the last one was RR_EVERY_H ago. Rides use the line entrance,
 // meals the restaurant, the walk out the nearer of the last ride's exit and the gate.
-const RR_NEAR_MIN = 2, RR_NEAR_MUST_MIN = 3, RR_LINE_MIN = 30, RR_EVERY_H = 1.5, RR_SOON_H = 0.33;
+// (the RR_* numbers are in js/settings.js)
 const RESTROOMS = (() => {
   const by = { 'Disneyland': [], 'California Adventure': [] };
   (dash.data('restrooms').data || []).forEach(r => {
@@ -15,16 +15,16 @@ const RESTROOMS = (() => {
   });
   return by;
 })();
-function restroomNear(park, at, max = RR_NEAR_MIN) {
+function restroomNear(park, at, max = RR_NEAR_MIN, S = dpState) {
   if (!at) return null;
   let best = null, bd = Infinity;
   (RESTROOMS[park] || []).forEach(x => { const d = distM(at, x.p); if (d < bd) { bd = d; best = x; } });
   if (!best) return null;
-  const min = bd * PATH_WIND / WALK_SPEED * paceWalk();
+  const min = bd * PATH_WIND / WALK_SPEED * paceWalk(S);
   return min <= max ? { name: best.n.replace(/ Companion Restroom$/, ' Restrooms'), comp: best.comp, min: Math.max(1, Math.round(min)) } : null;
 }
 const rrText = (rr) => `Restrooms ~${rr.min} min away (${rr.name}${rr.comp ? ', companion restroom too' : ''})`;
-function annotateRestrooms(steps, park, start) {
+function annotateRestrooms(steps, park, start, S = dpState) {
   let last = start != null ? start : steps.length ? steps[0].t : 0, prevExit = null;
   steps.forEach(s => {
     delete s.rr;
@@ -33,8 +33,8 @@ function annotateRestrooms(steps, park, start) {
     else if (s.mealKind && s.spot) at = s.spot.pos || null;
     else if (s.exit) must = true;
     let rr = null;
-    if (s.exit) { const a = restroomNear(park, prevExit, RR_NEAR_MUST_MIN), b = restroomNear(park, GATE[park], RR_NEAR_MUST_MIN); rr = a && b ? (b.min < a.min ? b : a) : a || b; }
-    else rr = restroomNear(park, at, must ? RR_NEAR_MUST_MIN : RR_NEAR_MIN);
+    if (s.exit) { const a = restroomNear(park, prevExit, RR_NEAR_MUST_MIN, S), b = restroomNear(park, GATE[park], RR_NEAR_MUST_MIN, S); rr = a && b ? (b.min < a.min ? b : a) : a || b; }
+    else rr = restroomNear(park, at, must ? RR_NEAR_MUST_MIN : RR_NEAR_MIN, S);
     if (s.ride && s.r) prevExit = lookupPlace(park, s.r.name, 'ride', 'exit');
     else if (s.mealKind && s.spot && s.spot.pos) prevExit = s.spot.pos;
     if (!rr) return;
