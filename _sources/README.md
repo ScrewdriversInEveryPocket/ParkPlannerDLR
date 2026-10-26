@@ -1,4 +1,4 @@
-# Raw sources (local only, not on GitHub)
+# Raw sources
 
 Raw downloads behind the files in data/, kept so a refresh can see what was used last time. See UPDATING.md.
 

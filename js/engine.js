@@ -353,7 +353,7 @@ function scheduleBlock0(ctx, start, end, pool, opts) {
   const eat = (kind, m) => {
     const lbl = kind === 'lunch' ? 'Lunch' : 'Dinner', at = t + m.w / 60, sit = m.sp && m.sp.sit;
     const qs = !sit && m.sp && (dash.data('dining').data || []).find(r => r.park === ctx.park && r.name === m.sp.name);
-    steps.push({ t: at, meal: m.sp ? `${lbl} at ${m.sp.name}` : lbl, mealKind: kind, dur: m.len || mealMin, spot: m.sp, walk: Math.round(m.w), sit, tip: sit ? dineTip(sit, ctx.iso, at) : qs && qs.mobile_order === 'yes' ? 'Mobile order in the Disneyland app about 30 min ahead to skip the line.' : '' });
+    steps.push({ t: at, meal: m.sp ? `${lbl} at ${m.sp.name}` : lbl, mealKind: kind, park: ctx.park, dur: m.len || mealMin, spot: m.sp, walk: Math.round(m.w), sit, tip: sit ? dineTip(sit, ctx.iso, at) : qs && qs.mobile_order === 'yes' ? 'Mobile order in the Disneyland app about 30 min ahead to skip the line.' : '' });
     walked += m.w; t += (m.w + (m.len || mealMin)) / 60; eaten[kind] = true; lastRest = t; if (m.sp) prev = m.sp; afterMeal = true;
   };
   while (left.length && t < end - 0.1) {
@@ -515,17 +515,44 @@ const bookingLine = (b) => `${b.r.name}, ${b.meal} on Day ${b.n} (${fmtDay(b.iso
 const dineSpot = (park, name) => ({ name, kind: 'table service', land: (DINE_BY_KEY[park + '|' + name] || {}).land, pos: lookupPlace(park, name, 'food', 'mid'), sit: DINE_BY_KEY[park + '|' + name] });
 // the restaurant picked for a meal on this day, if it's in this park
 const dinePicked = (park, kind) => { const k = dpState.dine && dpState.dine[kind]; if (!k) return null; const [p, n] = k.split('|'); return p === park && DINE_BY_KEY[k] ? dineSpot(p, n) : null; };
-// a picked meal that didn't make it into the plan
-function dineMiss(steps) {
+// picked meals that didn't make it into the plan, and why: the restaurant is in a park the day doesn't visit ('park'),
+// you're in the other park at that meal ('where'), it didn't fit ('fit'), or the plan has no such meal ('none')
+function dineIssues(steps, parks) {
   const out = [];
   ['lunch', 'dinner'].forEach(kind => {
     const k = dpState.dine && dpState.dine[kind]; if (!k || !DINE_BY_KEY[k]) return;
     const m = steps.find(s => s.mealKind === kind);
     if (m && m.sit && m.sit.key === k) return;
     const r = DINE_BY_KEY[k];
-    out.push(m ? `${kind === 'lunch' ? 'Lunch' : 'Dinner'} at ${r.name} (${r.park}) didn't fit in this plan, so it eats somewhere nearer. Try fewer rides, or pick it for a different meal or day.` : `There's no ${kind} in this plan, so ${r.name} isn't used.`);
+    out.push({ kind, r, at: m && m.park, why: parks && !parks.includes(r.park) ? 'park' : !m ? 'none' : m.park && m.park !== r.park ? 'where' : 'fit' });
   });
-  return out.join(' ');
+  return out;
+}
+function dineIssueText(x, parks) {
+  const Meal = x.kind === 'lunch' ? 'Lunch' : 'Dinner', r = x.r;
+  if (x.why === 'park') return `${Meal} at ${r.name} is in ${r.park}, but this day is in ${parks.join(' and ')}.`;
+  if (x.why === 'where') return `${Meal} at ${r.name} is in ${r.park}, but no plan for this day gets you there at ${x.kind} time with all your rides, so ${x.kind} is in ${x.at}. Try fewer rides, or pick a ${x.at} restaurant.`;
+  if (x.why === 'none') return `There's no ${x.kind} in this plan, so ${r.name} isn't used.`;
+  return `${Meal} at ${r.name} (${r.park}) didn't fit in this plan, so it eats somewhere nearer. Try fewer rides, or pick it for a different meal or day.`;
+}
+function dineMiss(steps, parks) { return dineIssues(steps, parks).map(x => dineIssueText(x, parks)).join(' '); }
+// the note under a plan, with a way out when the restaurant is in a park the day doesn't visit:
+// hop (when the ticket allows it) or pick a restaurant in this park instead. Picked chips that missed get a ⚠.
+function dineNote(el, steps, parks, opts) {
+  const xs = dineIssues(steps, parks); el.textContent = ''; el.hidden = !xs.length;
+  xs.forEach(x => {
+    const line = document.createElement('span'); line.textContent = dineIssueText(x, parks) + ' '; el.append(line);
+    if (x.why !== 'park') return;
+    const btn = (t, f) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'qt-link'; b.textContent = t; b.style.marginRight = 'var(--cds-gap-sm)'; b.addEventListener('click', f); el.append(b); };
+    if (opts.hop) btn(`Add a hop for ${x.kind}`, () => opts.hop(x));
+    else if (opts.noHop) el.append(document.createTextNode(opts.noHop + ' '));
+    btn(`Pick a ${parks.length === 1 ? parks[0] + ' ' : ''}restaurant instead`, () => opts.clear(x));
+  });
+  if (opts.chips) opts.chips.querySelectorAll('.qt-chip.dine').forEach(c => {
+    const x = xs.find(y => y.r.key === c.dataset.key); c.classList.toggle('miss', !!x);
+    if (x && !c.querySelector('.dmiss')) { const w = document.createElement('span'); w.className = 'dmiss'; w.textContent = x.why === 'where' ? ` ⚠ you're in ${x.at} at ${x.kind}` : ' ⚠ not in the plan'; c.insertBefore(w, c.querySelector('.ri')); c.title = dineIssueText(x, parks); }
+  });
+  return xs;
 }
 (dash.data('lands').data || []).forEach(r => {
   const near = (r.dining_near || '').split(';').map(x => x.trim()).filter(Boolean);
@@ -626,14 +653,16 @@ function planHopper(iso, D, withBreak) {
       segs.push({ park: g.park, ctx: c, start, end: b.end, steps: b.steps, depart, gapBefore: g.gap || null, hopMin: hm });
     }
     const done = segs.reduce((n, s) => n + s.steps.filter(x => x.ride).length, 0);
-    return { segs, done, hops, totalWait: tw, saved, left, llps, idle, plan };
+    const flatSteps = segs.flatMap(x => x.steps), miss = ['lunch', 'dinner'].filter(k => dpState.dine && dpState.dine[k] && DINE_BY_KEY[dpState.dine[k]] && !flatSteps.some(x => x.mealKind === k && x.sit && x.sit.key === dpState.dine[k])).length;
+    return { segs, done, hops, totalWait: tw, saved, left, llps, idle, plan, miss };
   };
   let best = null;
   const consider = (plan) => {
     const r = run(plan); if (!r) return;
-    // same rides done: prefer less dead time (waiting for a break or for hopping to open), then fewer hops, then shorter lines
+    // a picked sit-down meal sets where you are at that meal: plans that eat there come first, and the rides fit around it;
+    // then the most rides, then less dead time (waiting for a break or for hopping to open), then fewer hops, then shorter lines
     const qi = (x) => Math.round(x.idle * 4);
-    if (!best || r.done > best.done || (r.done === best.done && (qi(r) < qi(best) || (qi(r) === qi(best) && (r.hops < best.hops || (r.hops === best.hops && r.totalWait < best.totalWait - 1e-9)))))) best = r;
+    if (!best || r.miss < best.miss || (r.miss === best.miss && r.done > best.done) || (r.miss === best.miss && r.done === best.done && (qi(r) < qi(best) || (qi(r) === qi(best) && (r.hops < best.hops || (r.hops === best.hops && r.totalWait < best.totalWait - 1e-9)))))) best = r;
   };
   const search = () => PARKS.forEach((A, ai) => {
     if (dpState.start !== 'auto' && dpState.start !== A) return;

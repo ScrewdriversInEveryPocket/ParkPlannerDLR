@@ -26,7 +26,7 @@ If you were asked to update all the data, work through this list in order. It go
 
 Don't commit or push; leave that to the owner.
 
-`_sources` is not on GitHub. A fresh download of the project won't have the raw files, such as the daily crowd history. Datasets built from them then need those raw files collected again from their sources first, as each section explains. If that's too big a job to do safely, say so instead.
+`_sources` is uploaded with the app, so a fresh download of the project has the raw files behind each dataset, such as the daily crowd history. Only `_BACKUP` stays local.
 
 ---
 

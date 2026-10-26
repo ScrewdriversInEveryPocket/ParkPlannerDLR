@@ -178,7 +178,7 @@ Rides are shown as chips. The same controls work in both planners:
 
 The limit is 3 per day in Plan a day and on each wizard day page, and 6 per trip on the wizard's Rides step.
 
-Repeats are spaced at least an hour apart unless you tick **Allow repeat rides back to back**. Lightning Lane is only used for your first ride on each attraction; repeats use the standby line.
+Repeats are spaced at least an hour apart unless you tick **Allow repeat rides back to back**. Lightning Lane is only used for your first ride on each attraction; repeats use the standby line. A quick pick (**Headliners only**, **Good for little kids**, **Everything**, **Nothing**) starts over, so every ride it picks is back to once.
 
 ### Sit-down meals
 
@@ -193,7 +193,7 @@ Under the rides, on Plan a day and on each wizard day page, **Sit-down meals (op
 
 You can pick one restaurant for lunch and one for dinner each day. The plan books about an hour for a sit-down meal (45 minutes in a lounge, a little longer at a relaxed pace) and fits your rides around it. Every other meal is still planned at the nearest quick-service place, with a tip to **mobile order** in the Disneyland app when that place offers it.
 
-Most sit-down places take bookings 60 days ahead. The meal step tells you **the date to book it** in the Disneyland app (at about 6 am, when new days open) and the time to ask for. If you didn't get a booking, it reminds you that you can join the **walk-up list** in the app on the day. Oga's Cantina is walk-up only. If a picked meal doesn't fit in the day, the plan says so and eats somewhere nearer instead.
+Most sit-down places take bookings 60 days ahead. The meal step tells you **the date to book it** in the Disneyland app (at about 6 am, when new days open) and the time to ask for. If you didn't get a booking, it reminds you that you can join the **walk-up list** in the app on the day. Oga's Cantina is walk-up only. If a picked meal doesn't fit in the day, the plan says so and eats somewhere nearer instead. On a Park Hopper day, a pick decides which park you're in for that meal: the hops are timed so you're there, and the rides fit around it. If you pick a restaurant in a park the day doesn't visit (say you changed the park after picking), the plan says so and offers to **add a hop** (on Plan a day) or to **pick a restaurant in this park instead**; the chip of a pick that didn't make it shows ⚠.
 
 ---
 

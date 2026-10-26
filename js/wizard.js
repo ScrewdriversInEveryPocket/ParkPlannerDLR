@@ -402,6 +402,13 @@ function wzSlack(left, end, close, freeCosts, more, adv) {
   return k < 1 ? 'This day is full.' : `${fin}: room for roughly ${k} more ride${k === 1 ? '' : 's'}. Add them below.`;
 }
 const wzMore = (left, ctxs, taken, trial) => left.length ? null : roomFor(Object.values(ctxs), (p, r) => !taken.has(p + '|' + r.name), trial);
+// the picked-restaurant note on a wizard day page; the trip's ticket decides whether a hop can be offered
+function wzDine(el, steps, parks, box, day, D) {
+  dineNote(el, steps, parks, { chips: box.parentElement && box.parentElement.querySelector('.qt-chipgroup'),
+    noHop: tpState.ticket === 'hopper' ? null : 'Your ticket is one park per day, so there’s no hop to add (Park Hopper is a ticket choice on the Trip step).',
+    clear: (x) => { day.dine[x.kind] = null; drawWalk(D); } });
+  if (el.hidden) el.remove();
+}
 function wzRenderPlan(box, iso, opt, day, D) {
   box.textContent = '';
   const mk = (tag, cls) => { const e = document.createElement(tag); if (cls) e.className = cls; box.append(e); return e; };
@@ -433,7 +440,7 @@ function wzRenderPlan(box, iso, opt, day, D) {
         const more = wzMore(X.left, ctxs, taken, qs => { const P2 = planDay(ctx, withRides(ctx, pool, qs)); return !(P2.split || P2.stay.plan).left.length; });
         const adv = fullAdvice(X.morning.steps.concat(X.evening.steps), X.left, (p, name) => { const P2 = planDay(ctx, pool.filter(r => r.name !== name)); return (P2.split || P2.stay.plan).left; });
         note.textContent = wzSlack(X.left, X.leave, P.win.t1, freeCosts, more, adv);
-        { const dm = dineMiss(X.morning.steps.concat(X.evening.steps)); if (dm) mk('p', 'qt-note').textContent = dm; }
+        wzDine(mk('p', 'qt-note'), X.morning.steps.concat(X.evening.steps), [park], box, day, D);
         if (P.brkMoved) mk('p', 'qt-note').textContent = `No break fits around ${brkAtLbl(day.brkAt)} on this day, so the planner picked the best time for it.`;
         return { left: X.left, slack: P.win.t1 - X.leave, freeCosts, more, adv, glance: { text: glanceText(X.leave, X.done, pool.length, X.totalWait, X.morning.steps.concat(X.evening.steps), X.heat), target: times } };
       } else {
@@ -444,7 +451,7 @@ function wzRenderPlan(box, iso, opt, day, D) {
         const more = wzMore(S.plan.left, ctxs, taken, qs => !planDay(ctx, withRides(ctx, pool, qs)).stay.plan.left.length);
         const adv = fullAdvice(S.plan.steps, S.plan.left, (p, name) => planDay(ctx, pool.filter(r => r.name !== name)).stay.plan.left);
         note.textContent = wzSlack(S.plan.left, S.leave, P.win.t1, freeCosts, more, adv);
-        { const dm = dineMiss(S.plan.steps); if (dm) mk('p', 'qt-note').textContent = dm; }
+        wzDine(mk('p', 'qt-note'), S.plan.steps, [park], box, day, D);
         return { left: S.plan.left, slack: P.win.t1 - S.leave, freeCosts, more, adv, glance: { text: glanceText(S.leave, S.done, pool.length, S.plan.totalWait, S.plan.steps, S.heat), target: times } };
       }
     } else {
@@ -461,7 +468,7 @@ function wzRenderPlan(box, iso, opt, day, D) {
       const hopDrop = (p, name) => { const had = day.rides[p].has(name); day.rides[p].delete(name); try { const Y = (day.brk > 0 && planHopper(iso, D, true)) || planHopper(iso, D, false); return Y ? Y.left : H.left; } finally { if (had) day.rides[p].add(name); } };
       const adv = fullAdvice(H.segs.flatMap(s => s.steps), H.left, hopDrop);
       note.textContent = wzSlack(H.left, H.leave, closeH, freeCosts, more, adv);
-      { const dm = dineMiss(H.flat); if (dm) mk('p', 'qt-note').textContent = dm; }
+      wzDine(mk('p', 'qt-note'), H.flat, WZ_PARKS, box, day, D);
       if (H.whyLeft) mk('p', 'qt-note').textContent = H.whyLeft;
       if (H.brkMoved) mk('p', 'qt-note').textContent = `No break fits around ${brkAtLbl(day.brkAt)} on this day, so the planner picked the best time for it.`;
       return { left: H.left, slack: closeH - H.leave, freeCosts, more, adv, glance: { text: glanceText(H.leave, H.done, H.total, H.totalWait, H.flat), target: times } };
@@ -555,11 +562,12 @@ function drawWalk(D) {
     body.append(el('p', 'qt-note', 'Tap a picked ride again to do it more than once (up to 6 times on the trip, 3 on any one day). Press and hold a ride to take it off.'));
     // quick picks first, then every ride with its details
     const quick = el('div', 'qt-controls');
-    const pickAll = (f) => { WZ_PARKS.forEach(p => { wz.sel[p] = new Set(dayContext(pd[0].iso, p, D).rides.filter(f).map(r => r.name)); }); wz.hopperAsk = null; drawWalk(D); };
+    // a quick pick starts over: each picked ride once, any repeats cleared (as on Plan a day)
+    const pickAll = (f) => { WZ_PARKS.forEach(p => { wz.sel[p] = new Set(dayContext(pd[0].iso, p, D).rides.filter(f).map(r => r.name)); wz.reps[p] = new Map(); }); wz.hopperAsk = null; drawWalk(D); };
     const hl = el('button', 'qt-link', 'Headliners only'); hl.type = 'button'; hl.addEventListener('click', () => pickAll(r => r.head));
     const kd = el('button', 'qt-link', 'Good for little kids'); kd.type = 'button'; kd.title = 'Gentle rides with no height limit'; kd.addEventListener('click', () => pickAll(kidPick));
     const ev = el('button', 'qt-link', 'Everything'); ev.type = 'button'; ev.addEventListener('click', () => pickAll(() => true));
-    const no = el('button', 'qt-link', 'Nothing'); no.type = 'button'; no.title = 'Take every ride off'; no.addEventListener('click', () => { WZ_PARKS.forEach(p => { wz.reps[p] = new Map(); }); pickAll(() => false); });
+    const no = el('button', 'qt-link', 'Nothing'); no.type = 'button'; no.title = 'Take every ride off'; no.addEventListener('click', () => pickAll(() => false));
     quick.append('Quick picks:', hl, kd, ev, no, riToggle()); body.append(quick);
     const box = el('div', 'qt-chipgroup');
     WZ_PARKS.forEach(p => {

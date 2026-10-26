@@ -59,7 +59,7 @@ function dineChips(box, parks, dine, onChange) {
   const hint = document.createElement('span'); hint.className = 'g qt-dinehint'; hint.textContent = 'Tap a restaurant once for lunch, again for dinner. Press and hold to take it off. Other meals are planned at the nearest quick-service place.'; box.append(hint);
   parks.forEach(p => (DINE_PICKS[p] || []).forEach(r => {
     const st = dine.lunch === r.key ? 'lunch' : dine.dinner === r.key ? 'dinner' : null;
-    const b = document.createElement('button'); b.type = 'button'; b.className = 'qt-chip dine'; b.setAttribute('aria-pressed', st ? 'true' : 'false');
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'qt-chip dine'; b.dataset.key = r.key; b.setAttribute('aria-pressed', st ? 'true' : 'false');
     b.textContent = r.name + (parks.length > 1 ? ` (${p === 'Disneyland' ? 'DL' : 'DCA'})` : '') + (st ? ` · ${st === 'lunch' ? 'Lunch' : 'Dinner'}` : '');
     const sp = document.createElement('span'); sp.className = 'ri';
     sp.textContent = [r.price, r.book ? `book ${BOOK_DAYS} days ahead` : r.walkup ? 'walk-up list only' : 'no booking for lunch or dinner', r.book && r.walkup ? 'walk-up list on the day' : '', r.serves.join(' and '), r.cuisine].filter(Boolean).join(' · ');

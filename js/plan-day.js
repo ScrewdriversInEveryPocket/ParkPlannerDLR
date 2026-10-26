@@ -243,7 +243,10 @@ const tonightCtxs = (L) => L.P.hop ? L.P.H.ctxs : { [L.ctx.park]: L.ctx };
 function drawTonight() {
   const el = document.getElementById('dp-tonight'); if (!el || !dpLast) return;
   { const P = dpLast.P, steps = P.hop ? ((dpState.brk > 0 && P.Hb) || P.H).flat : P.split ? P.split.morning.steps.concat(P.split.evening.steps) : P.stay.plan.steps;
-    const dn = document.getElementById('dp-dinenote'), m = dineMiss(steps || []); dn.hidden = !m; dn.textContent = m; }
+    const parks = P.hop ? Object.keys(P.H.ctxs) : [dpLast.ctx.park];
+    dineNote(document.getElementById('dp-dinenote'), steps || [], parks, { chips: document.getElementById('dp-rides'),
+      hop: () => { const b = document.querySelector('#dp-park button[data-v="Hopper"]'); if (b) b.click(); },
+      clear: (x) => { dpState.dine[x.kind] = null; drawDay(); const c = document.querySelector('#dp-rides .qt-chip.dine'); if (c) c.scrollIntoView({ block: 'center' }); } }); }
   const T = tonightText(dpLast.ctx.iso, tonightCtxs(dpLast)); el.hidden = !T; el.textContent = '';
   if (T) tonightInto(el, T);
 }
