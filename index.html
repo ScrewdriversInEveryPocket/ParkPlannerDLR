@@ -1081,9 +1081,24 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
   const drawn = new Set();
   function axisClean(g) { g.attr('font-size', null).attr('font-family', null); g.selectAll('text').attr('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)'); g.select('.domain').remove(); g.selectAll('line').attr('stroke', 'var(--cds-chart-grid)'); }
 
+  // Charts size themselves to their box when drawn. A box that is hidden at that moment (a tab or wizard step
+  // not shown yet) has no width, so redraw once it gets one, and again whenever its width changes.
+  const roDrawn = new WeakMap();
+  const roWatch = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver((entries) => {
+    for (const e of entries) {
+      const k = roDrawn.get(e.target), w = e.target.clientWidth;
+      if (k && w && Math.abs(w - k.w) > 2 && !k.pending) { k.pending = true; requestAnimationFrame(() => { k.pending = false; if (e.target.isConnected) k.fn(); }); }
+    }
+  });
+  function redrawOnResize(el, width, fn) {
+    if (!roWatch) return;
+    if (!roDrawn.has(el)) roWatch.observe(el);
+    roDrawn.set(el, { w: width, fn });
+  }
   function weekFrame(el, holidays, opts, yDomain) {
     el.textContent = '';
     const width = el.clientWidth || 600, height = opts.height;
+    redrawOnResize(el, width, () => weekFrame(...arguments));
     const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${width} ${height}`).attr('height', height);
     const y = d3.scaleLinear(yDomain, [height - 24, 8]).nice();
     const probe = svg.append('text').style('font-size', 'var(--cds-font-size-caption)').text(opts.fmtTick(y.ticks(5).slice(-1)[0]));
@@ -1180,6 +1195,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
   function groupedBars(el, rows, cat, opts) {
     el.textContent = '';
     const width = el.clientWidth || 400, height = opts.height;
+    redrawOnResize(el, width, () => groupedBars(...arguments));
     const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${width} ${height}`).attr('height', height);
     const ymax = d3.max(rows, r => Math.max(r.disneyland, r.california_adventure));
     const y = d3.scaleLinear([0, ymax * 1.08], [height - 24, 8]).nice();
@@ -1401,6 +1417,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
     // strip
     strip.textContent = '';
     const width = strip.clientWidth || 600, height = 64;
+    redrawOnResize(strip, width, () => drawPlanner());
     const svg = d3.select(strip).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${width} ${height}`).attr('height', height);
     const x = d3.scaleLinear([0.5, 52.5], [0, width]);
     const bw = x(2) - x(1);
@@ -1462,6 +1479,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
   function hourLine(el, rows) {
     el.textContent = '';
     const width = el.clientWidth || 400, height = 240;
+    redrawOnResize(el, width, () => hourLine(...arguments));
     const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${width} ${height}`).attr('height', height);
     const ymax = d3.max(rows, r => Math.max(r.disneyland || 0, r.california_adventure || 0));
     const y = d3.scaleLinear([0, ymax * 1.1], [height - 24, 8]).nice();
@@ -1493,6 +1511,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
   function heatmap(el, rowNames, colKeys, colLabel, cell, opts) {
     el.textContent = '';
     const width = el.clientWidth || 500;
+    redrawOnResize(el, width, () => heatmap(...arguments));
     const rowH = 22;
     const probe = d3.select(el).append('svg');
     const pt = probe.append('text').style('font-size', 'var(--cds-font-size-caption)');
@@ -1567,6 +1586,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
     const rows = d.data.map(r => ({ ...r, base: r.name.replace(' (end)', ''), s: Number(r.start_week), e: Number(r.end_week) }));
     const names = [...new Set(rows.map(r => r.base))];
     const width = el.clientWidth || 600, rowH = 26, top = 4, height = top + names.length * rowH + 24;
+    redrawOnResize(el, width, () => drawEvents());
     const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${width} ${height}`).attr('height', height);
     const x = d3.scaleLinear([0.5, 52.5], [0, width]);
     const ticks = MONTH_DOY.map(doyToWeek);
@@ -2134,9 +2154,9 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
       // Pick the next ride by its own cost plus the cheapest ride that could follow it (one-ride look-ahead),
       // so the plan doesn't hop across the park for a small gain and then hop back.
       // before an early break, keep room to eat lunch in the park before leaving
-      // (and before any break at all, keep room for lunch and the walk out, since there's no lunch at the hotel)
+      // (and before any break at all, keep room for the walk to lunch, lunch and the walk out (about 22 min of walking), since there's no lunch at the hotel)
       const lunchFrom0 = opts.lunchFrom || (opts.exit === 'break' ? earlyLunch : null);
-      const lunchLatest = end - (mealLen('lunch') + (opts.exit === 'break' ? 12 : 0)) / 60, lunchDue = !eaten.lunch && lunchFrom0 && lunchLatest >= lunchFrom0 - 0.01;
+      const lunchLatest = end - (mealLen('lunch') + (opts.exit === 'break' ? 22 : 0)) / 60, lunchDue = !eaten.lunch && lunchFrom0 && lunchLatest >= lunchFrom0 - 0.01;
       const cands = left.filter(r => !blocked(r, t)).map(r => rideCost(r, t, prev, lastLL)).filter(c => c && (!lunchDue || t + c.dur / 60 <= lunchLatest + 0.01)).sort((a, b) => a.score - b.score);
       // only repeats that are too soon, or character meets not started yet, are left: fill the gap until the next one may go
       if (!cands.length && left.length && left.every(r => blocked(r, t))) {
@@ -2171,8 +2191,8 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
       if (best.isLL && best.r.ll !== 'Single Pass') lastLL = t; totalWait += best.wait; saved += best.isLL ? Math.max(0, best.standby - best.wait) : 0; t += best.dur / 60; prev = best.r;
       left.splice(left.indexOf(best.r), 1);
     }
-    // the list is done before the end of the day: lunch and dinner still happen in the park before you leave
-    if (opts.tail && !left.length) {
+    // the list is done before the end of the day, or before the hotel break: lunch (and dinner) still happen in the park before you leave
+    if ((opts.tail || opts.exit === 'break') && !left.length) {
       const meal = (kind, from, by, maxWait) => {
         if (eaten[kind] || t >= by) return;
         const t0 = t, at = Math.max(t, from); if (at - t0 > maxWait) return;
@@ -2180,7 +2200,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
         if (at - t0 >= 5 / 60) steps.push({ t: t0, meal: freeText(ctx.park, prev, 'catch a show, grab a snack or shop'), dur: Math.round((at - t0) * 60), free: true });
         eat(kind, m);
       };
-      meal('lunch', 11.5, 14.5, 1.5);
+      meal('lunch', opts.exit === 'break' ? (opts.lunchFrom || earlyLunch) : 11.5, 14.5, 1.5);
       if (t >= 16.5) meal('dinner', 17.5, 20.5, 1);
     }
     if (opts.exit && prev) { const w = exitMin(prev); steps.push({ t, meal: `Walk to the ${opts.gateOut ? opts.gateOut.name : ctx.park + ' exit'} (~${Math.max(1, Math.round(w))} min)`, dur: Math.max(1, Math.round(w)), exit: true }); walked += w; t += w / 60; }
@@ -2224,7 +2244,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
       const meals = { lunch: false, dinner: false }, seen = new Map();
       const morning = scheduleBlock(ctx, o, bestS, pool, { meals, seen, lunchFrom: bestS <= 12.5 ? 11 : null, ll: llSplit.set, exit: 'break', gateIn: hg(arrive), gateOut: hg(bestS) });
       gapFill(ctx, morning, bestS, new Set(pool.map(r => r.name)), 'before your break');
-      const evening = scheduleSpread(ctx, bestS + L, c, morning.left, { meals, seen, lunchBy: 16.5, dinnerBy: 21, ll: llSplit.set, gateIn: hg(bestS + L), tail: true });
+      const evening = scheduleSpread(ctx, bestS + L, c, morning.left, { meals, seen, lunchBy: meals.lunch ? 16.5 : Math.max(16.5, bestS + L + 1), dinnerBy: 21, ll: llSplit.set, gateIn: hg(bestS + L), tail: true });
       split = { arrive, brk: bestS, ret: bestS + L, leave: null, morning, evening, llp: llSplit, saved: morning.saved + evening.saved, totalWait: morning.totalWait + evening.totalWait, done: morning.steps.filter(s => s.ride).length + evening.steps.filter(s => s.ride).length, left: evening.left };
     }
     // each plan leaves when it's done (spare time is already spread through the day, and meals happen before leaving)
@@ -2382,7 +2402,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
         const stop = Math.min(g.to, c.close);
         if (stop - start < 0.5) return null;
         const preBrk = plan[i + 1] && plan[i + 1].gap === 'break' && stop <= 12.5;
-        const b = (spread && !plan[i + 1] ? scheduleSpread : scheduleBlock)(c, start, stop, left[g.park], { tail: !plan[i + 1], meals, seen, lunchFrom: preBrk ? 11 : null, lunchBy: g.gap === 'break' ? 16.5 : null, dinnerBy: g.gap === 'break' ? 21 : null, ll: llps[g.park].set, exit: plan[i + 1] ? plan[i + 1].gap : null, gateIn: i === 0 || g.gap === 'break' ? hotelGate(c, start) : null, gateOut: plan[i + 1] && plan[i + 1].gap === 'break' ? hotelGate(c, stop) : null });
+        const b = (spread && !plan[i + 1] ? scheduleSpread : scheduleBlock)(c, start, stop, left[g.park], { tail: !plan[i + 1], meals, seen, lunchFrom: preBrk ? 11 : null, lunchBy: g.gap === 'break' ? (meals.lunch ? 16.5 : Math.max(16.5, start + 1)) : null, dinnerBy: g.gap === 'break' ? 21 : null, ll: llps[g.park].set, exit: plan[i + 1] ? plan[i + 1].gap : null, gateIn: i === 0 || g.gap === 'break' ? hotelGate(c, start) : null, gateOut: plan[i + 1] && plan[i + 1].gap === 'break' ? hotelGate(c, stop) : null });
         left[g.park] = b.left; tw += b.totalWait; saved += b.saved;
         const nx = plan[i + 1];
         let depart = b.end;
@@ -2641,6 +2661,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
   function dayChart(el, ctx, pool, P) {
     el.textContent = '';
     const width = el.clientWidth || 600, height = 220;
+    redrawOnResize(el, width, () => dayChart(...arguments));
     const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${width} ${height}`).attr('height', height);
     const t0 = Math.floor(ctx.open - 1), t1 = Math.ceil(Math.min(ctx.close, 24));
     const hrs = d3.range(Math.max(7, t0), Math.min(24, t1));
@@ -2688,6 +2709,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
   function hopChart(el, X) {
     el.textContent = '';
     const width = el.clientWidth || 600, height = 220;
+    redrawOnResize(el, width, () => hopChart(...arguments));
     const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${width} ${height}`).attr('height', height);
     const ctx = X.ctx;
     const t0 = Math.floor(d3.min(X.segs, s => s.ctx.open) - 1), t1 = Math.ceil(Math.min(d3.max(X.segs, s => s.ctx.close), 24));
@@ -3796,6 +3818,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
     const sel = ovSel.map(id => OV.find(o => o.id === id));
     el.textContent = '';
     const width = el.clientWidth || 600, height = 340;
+    redrawOnResize(el, width, () => drawOverlay());
     const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${width} ${height}`).attr('height', height);
     if (!sel.length) {
       svg.append('text').attr('x', width / 2).attr('y', height / 2).attr('text-anchor', 'middle').attr('fill', 'var(--color-fg-muted)')
