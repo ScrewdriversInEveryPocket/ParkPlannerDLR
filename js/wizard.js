@@ -187,13 +187,14 @@ function wzRenderPlan(box, iso, opt, day, D) {
       const hopDrop = (p, name) => { const had = day.rides[p].has(name); day.rides[p].delete(name); try {
           const Y = (day.brk > 0 && planHopper(iso, D, true, cfg)) || planHopper(iso, D, false, cfg); return Y ? Y.left : H.left; } finally {
           if (had) day.rides[p].add(name); } };
-      const adv = fullAdvice(H.segs.flatMap(s => s.steps), H.left, hopDrop);
-      note.textContent = wzSlack(H.left, H.leave, closeH, freeCosts, more, adv, cfg);
+      // with rides left over, the advice on what to take off fills in a moment after the page shows (later, below)
+      const advLater = () => { const a = fullAdvice(H.segs.flatMap(s => s.steps), H.left, hopDrop); note.textContent = wzSlack(H.left, H.leave, closeH, freeCosts, more, a, cfg); return a; };
+      note.textContent = wzSlack(H.left, H.leave, closeH, freeCosts, more, null, cfg);
       wzDine(mk('p', 'qt-note'), H.flat, WZ_PARKS, box, day, D);
       if (flexText(H)) mk('p', 'qt-note').textContent = flexText(H);
       if (H.whyLeft) mk('p', 'qt-note').textContent = H.whyLeft;
       if (H.brkMoved) mk('p', 'qt-note').textContent = `No break fits around ${brkAtLbl(day.brkAt)} on this day, so the planner picked the best time for it.`;
-      return { left: H.left, slack: closeH - H.leave, freeCosts, more, adv, where: mealWhere(planSegs(H)), glance: { text: glanceText(H.leave, H.done, H.total, H.totalWait, H.flat), target: times } };
+      return { left: H.left, slack: closeH - H.leave, freeCosts, more, adv: null, later: H.left.length ? advLater : null, where: mealWhere(planSegs(H)), glance: { text: glanceText(H.leave, H.done, H.total, H.totalWait, H.flat), target: times } };
     }
   }
 }
@@ -399,8 +400,12 @@ function drawWalk(D) {
     { const cr = el('p', 'qt-wxsrc', 'Walking times use ride, restaurant and show locations © '); const a = document.createElement('a');
       a.href = 'https://www.openstreetmap.org/copyright'; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'OpenStreetMap contributors';
       cr.append(a, '.'); body.append(cr); }
-    if (fit) fitStatus(chips, fit.left, fit.slack, fit.freeCosts, 'Press and hold one under "On this day" to take it off, or move it to another day.', fit.more, fit.adv, fit.glance);
+    const fitHint = 'Press and hold one under "On this day" to take it off, or move it to another day.', tap0 = lastTap;
+    if (fit) fitStatus(chips, fit.left, fit.slack, fit.freeCosts, fitHint, fit.more, fit.adv, fit.glance);
     else lastTap = null;
+    // a Park Hopper day with rides left over: fill in the advice just after, unless the page is drawn again first
+    if (fit && fit.later) { const job = () => { lastTap = tap0; fitStatus(chips, fit.left, fit.slack, fit.freeCosts, fitHint, fit.more, fit.later(), fit.glance); };
+      wz.laterJob = job; setTimeout(() => { if (wz.laterJob === job && chips.isConnected) { wz.laterJob = null; job(); } }, 0); }
     const nav = el('div', 'qt-controls');
     const back = el('button', 'qt-btn', k === 0 ? '← Rides' : `← Day ${k}`); back.type = 'button'; back.addEventListener('click', () => go(wz.step - 1));
     const next = el('button', 'qt-btn', k === nDays - 1 ? 'Finish and export →' : `Next: Day ${k + 2} →`); next.type = 'button'; next.addEventListener('click', () => go(wz.step + 1));

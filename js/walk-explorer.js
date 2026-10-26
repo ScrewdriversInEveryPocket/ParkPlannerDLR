@@ -2,7 +2,7 @@
 // Part of the app script. The js files load in the order of their script tags in index.html (listed in CLAUDE.md).
 // Uses the planner's own walk rules (js/walks.js, js/settings.js), so the minutes match the plans: straight-line distance
 // x PATH_WIND along the paths, at the group's pace, up to WALK_BUSY_MAX slower in the busiest weeks. Rides are left by their
-// exit and reached at their entrance. Between the parks the walk goes through both Esplanade gates and adds the hop tap-in.
+// exit and reached at their entrance. Between the parks the walk goes through both Esplanade gates; lines at the gates aren't counted.
 const WX_PACES = [['relaxed', 'Relaxed', 'seniors or small children'], ['normal', 'Normal', 'most adults'], ['fast', 'Go-go', 'young adults']];
 const WX_CROWDS = [['Quiet', 0], ['Typical', 1 / 3], ['Busy', 2 / 3], ['Very busy', 1]];
 // every spot: { id, park (null for hotels), group, name, at(end) -> [lat, lon] for 'exit' (walking from) or 'ent' (walking to) }
@@ -44,15 +44,15 @@ function wxRoute(a, b) {
   if (a.hotel || b.hotel) {
     const h = HOTELS[a.hotel || b.hotel], s = a.hotel ? b : a, gc = s.park === 'California Adventure' && h.to_gc_m && GC_GATE;
     const gate = gc ? GC_GATE.pos : GATE[s.park], inPark = walkM(a.hotel ? gate : s.at('exit'), a.hotel ? s.at('ent') : gate);
-    if (!h.to_dl_m) return { m: inPark, min: inPark / WALK_SPEED, fixed: Number(h.fixed_min) || 0, via: `with the ART shuttle (about ${h.fixed_min} min whatever the pace), through the ${GATE_NAME[s.park]}` };
+    if (!h.to_dl_m) return { m: inPark, min: inPark / WALK_SPEED, fixed: Number(h.fixed_min) || 0, gates: true, via: `with the ART shuttle (about ${h.fixed_min} min whatever the pace), through the ${GATE_NAME[s.park]}` };
     const hm = Number(gc ? h.to_gc_m : s.park === 'California Adventure' ? h.to_dca_m : h.to_dl_m);
-    return { m: hm + inPark, min: (hm + inPark) / WALK_SPEED, fixed: Number(h.lift_min) || 0,
+    return { m: hm + inPark, min: (hm + inPark) / WALK_SPEED, fixed: Number(h.lift_min) || 0, gates: true,
       via: `through the ${gc ? GC_GATE.name : GATE_NAME[s.park]}, with the hotel's own walk (elevators and hallways included)` };
   }
   if (a.park === b.park) { const m = walkM(a.at('exit'), b.at('ent')); return { m, min: Math.max(1, Math.round(m / WALK_SPEED)), fixed: 0, via: '' }; }
   // between the parks: out through this park's gate, across the Esplanade, tap in at the other
   const m = walkM(a.at('exit'), GATE[a.park]) + walkM(GATE[a.park], GATE[b.park]) + walkM(GATE[b.park], b.at('ent'));
-  return { m, min: m / WALK_SPEED, fixed: SEC.tap, via: `out through the ${GATE_NAME[a.park]}, across the Esplanade, and about ${SEC.tap} min to tap in at the ${GATE_NAME[b.park]}` };
+  return { m, min: m / WALK_SPEED, fixed: 0, gates: true, via: `out through the ${GATE_NAME[a.park]}, across the Esplanade and in at the ${GATE_NAME[b.park]}` };
 }
 function drawWalkTimes() {
   const out = document.getElementById('wx-out'); if (!out) return;
@@ -71,6 +71,7 @@ function drawWalkTimes() {
     WX_CROWDS.forEach(([, f]) => { tr.insertCell().textContent = `${Math.max(1, Math.round(R.min * WALK_SPEED / PACE_SPEED[k] * (1 + f * WALK_BUSY_MAX) + R.fixed))} min`; });
   });
   const wrap = document.createElement('div'); wrap.className = 'qt-tablewrap'; wrap.append(t); out.append(wrap);
+  if (R.gates) out.append(Object.assign(document.createElement('p'), { className: 'qt-note', textContent: 'Going through the park gates may add time (security or tap-in lines).' }));
 }
 {
   const from = document.getElementById('wx-from'), to = document.getElementById('wx-to');

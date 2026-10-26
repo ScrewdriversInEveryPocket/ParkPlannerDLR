@@ -1,5 +1,10 @@
 // DLR Planner: Plan a day: fit banner, ride chips, schedule list, day charts, Tonight.
 // Part of the app script. The js files load in the order of their script tags in index.html (listed in CLAUDE.md).
+// Work that can wait a moment after a plan is drawn (the "take X off to make room" advice, which re-plans the day a few
+// times): it runs just after, unless another draw comes first. dpFlush() runs it straight away (the tests use it).
+let dpLaterJob = null;
+function dpLater(f) { dpLaterJob = f; setTimeout(() => { if (dpLaterJob === f) dpFlush(); }, 0); }
+function dpFlush() { const f = dpLaterJob; dpLaterJob = null; if (f) f(); }
 function dpFitStatus(ctxs, left, end, close, trial, adv, glance) {
   const free = [].concat(ctxs).flatMap(c => c.rides.filter(r => !dpState.rides[c.park].has(r.name)).map(r => 20 + expWait(c, r, 14) + r.rmin));
   const more = left.length ? null : roomFor(ctxs, (p, r) => !dpState.rides[p].has(r.name), trial);
@@ -384,8 +389,11 @@ function drawHopperDay(D) {
     const drop = (p, name) => { const had = dpState.rides[p].has(name); dpState.rides[p].delete(name); try {
         const Y = (Hb && planHopper(dpState.date, D, true)) || planHopper(dpState.date, D, false); return Y ? Y.left : V.left; } finally {
         if (had) dpState.rides[p].add(name); } };
-    dpFitStatus([dl, dca], V.left, last.end, Math.max(dl.close, dca.close), trial, fullAdvice(V.segs.flatMap(s => s.steps), V.left, drop),
-      { text: glanceText(V.leave, V.done, V.total, V.totalWait, V.flat), target: document.getElementById(Hb && dpState.brk > 0 ? 'dp-split' : 'dp-stay') }); }
+    const fit = (adv) => dpFitStatus([dl, dca], V.left, last.end, Math.max(dl.close, dca.close), trial, adv,
+      { text: glanceText(V.leave, V.done, V.total, V.totalWait, V.flat), target: document.getElementById(Hb && dpState.brk > 0 ? 'dp-split' : 'dp-stay') });
+    // with rides left over, the plan shows now and the advice on what to take off fills in a moment later
+    if (!V.left.length) fit(null);
+    else { const tap = lastTap; fit(null); dpLater(() => { lastTap = tap; fit(fullAdvice(V.segs.flatMap(s => s.steps), V.left, drop)); }); } }
   // week at a glance: cheap columns now, the (slower) hop plan for each day filled in one day at a time
   const token = weekToken;
   const tb = document.querySelector('#dp-week tbody'); tb.textContent = '';
@@ -420,6 +428,7 @@ function drawHopperDay(D) {
 }
 
 function drawDay() {
+  dpLaterJob = null;
   const root = document.getElementById('day-plan'); weekToken++;
   const st = statusOf(DAY_IDS);
   if (st !== 'ok') { if (st === 'error') failed(root); else root.classList.add('dash-skeleton'); return; }

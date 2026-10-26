@@ -173,7 +173,7 @@
                 st.dine = { lunch: lunch ? lunch.key : null, dinner: dinner ? dinner.key : null };
               }
             }
-            w.drawDay(); n++;
+            w.drawDay(); w.dpFlush(); n++;
             const errs = errsSince(w, e0);
             const lines = shown(doc);
             if (GOLDEN_AHEAD.includes(ahead)) fresh[key] = lines;
@@ -203,12 +203,12 @@
     try {
       const st = w.eval('dpState');
       Object.assign(st, JSON.parse(JSON.stringify(base)), { date: addDays(TODAY, 10), park: 'Hopper', dine: { lunch: null, dinner: null } });
-      w.drawDay();
+      w.drawDay(); w.dpFlush();
       const where = () => w.eval('mealWhere(planSegs(dpLast.P, dpLast.ctx.park))');
       let W = where(); const p = W.dinner.park;
       const both = (w.eval('DINE_PICKS')[p] || []).filter(x => x.serves.length === 2);
       // in that park for both meals: with lunch taken, a new pick goes to dinner (the plan may move once lunch is picked)
-      if (W.lunch.park === p && both.length > 1) { st.dine = { lunch: both[1].key, dinner: null }; w.drawDay(); W = where(); }
+      if (W.lunch.park === p && both.length > 1) { st.dine = { lunch: both[1].key, dinner: null }; w.drawDay(); w.dpFlush(); W = where(); }
       const inPark = ['lunch', 'dinner'].filter(m => W[m].park === p), want = inPark.find(m => !st.dine[m]) || inPark[0] || 'lunch';
       const line = doc.querySelector('#dp-rides .qt-dinewhere'), chip = doc.querySelector(`#dp-rides .qt-chip.dine[data-key="${both[0].key}"]`);
       chip.click(); await wait(50);
@@ -222,7 +222,7 @@
       const st = w.eval('dpState'), bad = [];
       for (const park of PARKS) {
         Object.assign(st, JSON.parse(JSON.stringify(base)), { date: addDays(TODAY, 10), park, lunchAt: '13', dinnerAt: '18', dine: { lunch: null, dinner: null } });
-        w.drawDay();
+        w.drawDay(); w.dpFlush();
         const P = w.eval('dpLast').P;
         (P.hop ? [P.H, P.Hb] : [P.stay, P.split]).filter(Boolean).forEach((X, i) => {
           const steps = P.hop ? X.flat : X.plan ? X.plan.steps : X.morning.steps.concat(X.evening.steps);
@@ -239,7 +239,7 @@
       if (rf) {
         const iso = rf.start > TODAY ? rf.start : TODAY;
         Object.assign(st, JSON.parse(JSON.stringify(base)), { date: iso, park: rf.park, dine: { lunch: null, dinner: null } }); st.rides[rf.park].add(rf.ride);
-        w.drawDay();
+        w.drawDay(); w.dpFlush();
         const chip = [...doc.querySelectorAll('#dp-rides .qt-chip')].find(b => b.textContent.startsWith(rf.ride));
         check(S2, 'a closed ride\'s chip is greyed out and off the list', !!chip && chip.disabled && !st.rides[rf.park].has(rf.ride), `${rf.ride} on ${iso}: ${chip ? (chip.disabled ? 'disabled' : 'enabled') : 'no chip'}`);
       }

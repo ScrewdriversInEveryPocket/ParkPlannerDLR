@@ -233,7 +233,7 @@ Crowds and waits through the year.
 
 ### Walking times
 
-Pick any two spots (rides, restaurants, shows, restrooms, park gates or a hotel; type in the box to narrow the list, ⇄ swaps them) to see the distance along the paths and the minutes it takes at each pace, from a quiet day to the busiest weeks. It uses the same walk rules as the plans: rides are left by their exit and reached at their entrance, and between the parks the walk goes through both gates across the Esplanade, plus the tap-in line.
+Pick any two spots (rides, restaurants, shows, restrooms, park gates or a hotel; type in the box to narrow the list, ⇄ swaps them) to see the distance along the paths and the minutes it takes at each pace, from a quiet day to the busiest weeks. It uses the same walk rules as the plans: rides are left by their exit and reached at their entrance, and between the parks the walk goes through both gates across the Esplanade. Lines at the gates (security, tap-in) aren't included; the page reminds you they may add time.
 
 ### About the data
 
