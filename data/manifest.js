@@ -25,6 +25,7 @@ self.PDP_FILES = [
   'dining',
   'lands',
   'gates',
+  'restrooms',
   'security_waits',
   'lightning_lane',
   'disney_showtimes',

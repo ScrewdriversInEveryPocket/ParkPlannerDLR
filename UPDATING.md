@@ -153,7 +153,7 @@ Excel rewrites dates such as `2026-11-05` and `01-01` unless you import every co
 | 7 | Rides, Lightning Lane, restaurants | `ride_profiles`, `lightning_lane`, `dining` | when the parks change | when something opens, closes or changes |
 | 8 | Typical hours | `park_hours_2025`, `hours_by_week` | slowly | once a year, in January |
 | 9 | Crowds and waits | `crowd_*`, `wait_by_date`, `waits_by_hour`, `ride_closures_by_month`, `closures_by_week` | slowly | once a year |
-| 10 | Locations | `park_places`, `gates`, `lands` | when the parks change | once a year |
+| 10 | Locations | `park_places`, `gates`, `lands`, `restrooms` | when the parks change | once a year |
 | 11 | Weather and sun | `weather_*`, `sun_by_week` | very slowly | every two years |
 | 12 | Security and tap-in lines | `security_waits` | doesn't | only if Disney changes how screening works |
 | 13 | Showtimes | `disney_showtimes`, `show_estimates` | at `until` (Disney's) | every few weeks with the hours; estimates twice a year |
@@ -334,6 +334,15 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
   - The two Esplanade rows are our own estimate, since OpenStreetMap doesn't name those turnstiles.
   - The `gc` row is the Grand Californian's own entrance into California Adventure (OpenStreetMap node 1424633555). Its hours are our estimate; outside them, plans send guests through the Esplanade.
   - Change it only if the entrances or that entrance's hours change.
+
+### `restrooms`: restrooms in the parks
+
+- **Source:** Disney's restroom map page, [disneyland.disney.go.com/guest-services/restrooms/](https://disneyland.disney.go.com/guest-services/restrooms/). The page carries every restroom's map point in its `guestServicesData` block. (The guest-services list feed only has one sample per park.) Disney's site can't be reached from a cloud sandbox, so run it on a PC.
+- **Columns:** `park`, `name`, `lat`/`lon`, `companion` (`yes` for a companion restroom; most share a point with the main one), `island` (`yes` on Tom Sawyer Island: never suggested, since it needs the raft), `disney_id`.
+- **How plans use it** (`annotateRestrooms` in `js/engine.js`): a step gets 🚻 when a restroom is within 2 minutes' walk at the group's pace (3 before a 30+ minute line or the walk out), only before such a line, before leaving for a break or a hop, or when the last 🚻 was 90 minutes ago.
+- **Refresh:**
+  1. On the PC: `cd _sources\restrooms`, then `.\fetch-restrooms.ps1` and `.\parse-restrooms.ps1`. That saves the page to `raw\` and writes `restrooms.csv`.
+  2. Paste the CSV into `data/restrooms.js` and update `pulled` and `review`.
 
 ### `security_waits`: security and tap-in lines
 

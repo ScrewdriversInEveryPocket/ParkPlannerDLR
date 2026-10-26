@@ -156,6 +156,7 @@ span.dash-skeleton, b.dash-skeleton, div.v.dash-skeleton { color: transparent; }
 .qt-steps li.meal { color: var(--color-fg-muted); }
 .qt-steps .tm { color: var(--color-fg-muted); }
 .qt-steps .tg { display: block; color: var(--color-fg-muted); }
+.qt-steps .rr { display: inline-block; margin-left: 6px; padding: 0 6px; border-radius: 999px; font-size: 0.8em; white-space: nowrap; color: var(--color-fg-muted); border: 1px solid var(--color-border-line); cursor: pointer; }
 .qt-walk { display: inline-flex; align-items: center; gap: var(--cds-gap-sm); }
 .qt-walk input[type="range"] { width: 8rem; }
 .qt-steps .wt { color: var(--color-fg-muted); white-space: nowrap; }
