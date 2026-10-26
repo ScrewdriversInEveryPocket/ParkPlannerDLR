@@ -1,5 +1,5 @@
 // DLR Planner: Time of day overlay chart and its chips.
-// Part of the app script, split from index.html. The js files load in this order: core, charts, explore, controls, engine, plan-day, wizard, time-of-day, state, pdf, app.
+// Part of the app script. The js files load in the order of their script tags in index.html (listed in CLAUDE.md).
 // ---------- overlay explorer ----------
 const fmtMin = (v) => f1(v) + ' min', fmtPct = (v) => f0(v) + '%', fmtDeg = (v) => f1(v) + '°F', fmtH = (v) => f1(v) + ' h', fmtRank = (v) => f0(v);
 const OV = [
@@ -93,7 +93,9 @@ function drawOverlay() {
   if (ovMode === 'actual') {
     units = [...new Set(sel.map(o => o.unit))];
     if (units.length > 2) {
-      note.textContent = `Actual values can show two units at once, so ${sel.filter(o => !units.slice(0, 2).includes(o.unit)).map(o => o.name).join(', ')} ${sel.filter(o => !units.slice(0, 2).includes(o.unit)).length > 1 ? 'are' : 'is'} hidden. Switch to Scaled to see everything.`;
+      note.textContent = `Actual values can show two units at once, so ${sel.filter(o => !units.slice(0,
+            2).includes(o.unit)).map(o => o.name).join(', ')} ${sel.filter(o => !units.slice(0,
+            2).includes(o.unit)).length > 1 ? 'are' : 'is'} hidden. Switch to Scaled to see everything.`;
       units = units.slice(0, 2);
     }
     drawn2 = sel.filter(o => units.includes(o.unit));
@@ -121,13 +123,16 @@ function drawOverlay() {
       .attr('y', 12).attr('height', height - 36).attr('fill', 'var(--color-fg-muted)').attr('fill-opacity', h => h.kind === 'school' ? .12 : .2);
   }
   if (ovMode === 'scaled') {
-    const gy = svg.append('g').attr('transform', `translate(${leftW - 6},0)`).call(d3.axisLeft(yLeft).tickValues([0, 50, 100]).tickSize(-(width - leftW - rightW + 6)).tickFormat(v => v === 0 ? 'Low' : v === 100 ? 'High' : ''));
+    const gy = svg.append('g').attr('transform', `translate(${leftW - 6},0)`).call(d3.axisLeft(yLeft).tickValues([0, 50,
+          100]).tickSize(-(width - leftW - rightW + 6)).tickFormat(v => v === 0 ? 'Low' : v === 100 ? 'High' : ''));
     axisClean(gy);
   } else {
-    const gy = svg.append('g').attr('transform', `translate(${leftW - 6},0)`).call(d3.axisLeft(yLeft).ticks(5).tickSize(-(width - leftW - rightW + 6)).tickFormat(v => yLeft.tickFormat(5)(v) + (v === yLeft.ticks(5).slice(-1)[0] ? ' ' + units[0] : '')));
+    const gy = svg.append('g').attr('transform', `translate(${leftW - 6},0)`).call(d3.axisLeft(yLeft).ticks(5).tickSize(-(width - leftW - rightW +
+          6)).tickFormat(v => yLeft.tickFormat(5)(v) + (v === yLeft.ticks(5).slice(-1)[0] ? ' ' + units[0] : '')));
     axisClean(gy);
     if (yRight) {
-      const gr = svg.append('g').attr('transform', `translate(${width - rightW + 6},0)`).call(d3.axisRight(yRight).ticks(5).tickSize(0).tickFormat(v => yRight.tickFormat(5)(v) + (v === yRight.ticks(5).slice(-1)[0] ? ' ' + units[1] : '')));
+      const gr = svg.append('g').attr('transform', `translate(${width - rightW + 6},0)`).call(d3.axisRight(yRight).ticks(5).tickSize(0).tickFormat(v =>
+          yRight.tickFormat(5)(v) + (v === yRight.ticks(5).slice(-1)[0] ? ' ' + units[1] : '')));
       axisClean(gr);
     }
   }

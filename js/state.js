@@ -1,5 +1,5 @@
 // DLR Planner: restoring and saving your settings (localStorage).
-// Part of the app script, split from index.html. The js files load in this order: core, charts, explore, controls, engine, plan-day, wizard, time-of-day, state, pdf, app.
+// Part of the app script. The js files load in the order of their script tags in index.html (listed in CLAUDE.md).
 // ---------- app: restore saved settings ----------
 (function restore() {
   const S = PDP_SAVED;
@@ -26,7 +26,11 @@
       const W = S.wz; wz.key = W.key || ''; wz.step = 0;
       if (W.sel) wz.sel = Object.fromEntries(WZ_PARKS.map(p => [p, new Set(W.sel[p] || [])]));
       wz.reps = Object.fromEntries(WZ_PARKS.map(p => [p, new Map(Object.entries((W.reps && W.reps[p]) || {}))]));
-      if (W.days) wz.days = Object.fromEntries(Object.entries(W.days).map(([iso, d]) => [iso, { brk: d.brk, brkAt: d.brkAt, walk: d.walk, pace: d.pace, start: d.start, win: d.win && typeof d.win === 'object' ? Object.assign({}, dpState.win, d.win) : Object.assign({}, dpState.win), rides: Object.fromEntries(WZ_PARKS.map(p => [p, new Set((d.rides && d.rides[p]) || [])])), reps: Object.fromEntries(WZ_PARKS.map(p => [p, new Map(Object.entries((d.reps && d.reps[p]) || {}))])), dine: d.dine && typeof d.dine === 'object' ? { lunch: d.dine.lunch || null, dinner: d.dine.dinner || null } : { lunch: null, dinner: null } }]));
+      if (W.days) wz.days = Object.fromEntries(Object.entries(W.days).map(([iso, d]) => [iso, {
+              brk: d.brk, brkAt: d.brkAt, walk: d.walk, pace: d.pace, start: d.start, win: d.win && typeof d.win === 'object' ? Object.assign({}, dpState.win,
+                d.win) : Object.assign({}, dpState.win), rides: Object.fromEntries(WZ_PARKS.map(p => [p, new Set((d.rides && d.rides[p]) || [])])),
+              reps: Object.fromEntries(WZ_PARKS.map(p => [p, new Map(Object.entries((d.reps && d.reps[p]) || {}))])),
+              dine: d.dine && typeof d.dine === 'object' ? { lunch: d.dine.lunch || null, dinner: d.dine.dinner || null } : { lunch: null, dinner: null } }]));
     }
     if (S.take) { if (S.take.which) takeState.which = S.take.which; if (S.take.ticks) Object.entries(S.take.ticks).forEach(([k, v]) => takeState.ticks.set(k, new Set(v))); }
   } catch (e) { console.warn('Could not restore settings', e); }
@@ -52,10 +56,16 @@ function saveState() {
     const ticks = {}; takeState.ticks.forEach((v, k) => { ticks[k] = [...v]; });
     localStorage.setItem('pdp-state', JSON.stringify({
       w: plState.w, pl: { park: plState.park, school: plState.school },
-      dp: { date: dpState.date, park: dpState.park, brk: dpState.brk, brkAt: dpState.brkAt, pace: dpState.pace, walk: dpState.walk, start: dpState.start, height: dpState.height, win: dpState.win, hotel: dpState.hotel, custom: dpState.custom, ll: dpState.ll, single: dpState.single, b2b: dpState.b2b, dine: dpState.dine, rides, reps: repsOut(dpState.reps) },
-      tp: { v: 2, start: tpState.start, auto: tpState.auto, days: tpState.days, rest: tpState.rest, ticket: tpState.ticket, each: tpState.each, manual: tpState.manual, inT: tpState.inT, outT: tpState.outT },
+      dp: { date: dpState.date, park: dpState.park, brk: dpState.brk, brkAt: dpState.brkAt, pace: dpState.pace, walk: dpState.walk, start: dpState.start,
+        height: dpState.height, win: dpState.win, hotel: dpState.hotel, custom: dpState.custom, ll: dpState.ll, single: dpState.single, b2b: dpState.b2b,
+        dine: dpState.dine, rides, reps: repsOut(dpState.reps) },
+      tp: { v: 2, start: tpState.start, auto: tpState.auto, days: tpState.days, rest: tpState.rest, ticket: tpState.ticket, each: tpState.each,
+        manual: tpState.manual, inT: tpState.inT, outT: tpState.outT },
       take: { which: takeState.which, ticks },
-      wz: { key: wz.key, step: wz.step, reps: repsOut(wz.reps), sel: wz.sel ? Object.fromEntries(WZ_PARKS.map(p => [p, [...wz.sel[p]]])) : null, days: wz.days ? Object.fromEntries(Object.entries(wz.days).map(([iso, d]) => [iso, { brk: d.brk, brkAt: d.brkAt, walk: d.walk, pace: d.pace, start: d.start, win: d.win, dine: d.dine, rides: Object.fromEntries(WZ_PARKS.map(p => [p, [...d.rides[p]]])), reps: repsOut(d.reps) }])) : null }
+      wz: { key: wz.key, step: wz.step, reps: repsOut(wz.reps), sel: wz.sel ? Object.fromEntries(WZ_PARKS.map(p => [p, [...wz.sel[p]]])) : null,
+        days: wz.days ? Object.fromEntries(Object.entries(wz.days).map(([iso, d]) => [iso, {
+                brk: d.brk, brkAt: d.brkAt, walk: d.walk, pace: d.pace, start: d.start, win: d.win, dine: d.dine,
+                rides: Object.fromEntries(WZ_PARKS.map(p => [p, [...d.rides[p]]])), reps: repsOut(d.reps) }])) : null }
     }));
   } catch (e) { /* storage unavailable */ }
 }

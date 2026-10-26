@@ -33,9 +33,17 @@ The scripts load in this order, and they share one set of top-level names (every
 | `js/charts.js` | Chart helpers (tooltips, axes, redraw on resize), week charts, grouped bars, the ride table |
 | `js/explore.js` | Hourly and planner data, the best-dates finder (wizard Dates step), best time of day heatmaps, events chart |
 | `js/controls.js` | Shared settings (`dpState`), repeat rides, ride details, tap-to-cycle and restaurant chips, hotels (`HOTEL_WALK`), start and finish, break |
-| `js/engine.js` | The planner: day context, waits, About-the-data table, walks, gates and security, the scheduler, Lightning Lane, meals, restrooms, Park Hopper, fit checks |
-| `js/plan-day.js` | Plan a day: fit banner, ride chips, schedule list, day charts, Tonight, checklist, copy text |
-| `js/wizard.js` | Trip wizard: trip scoring and dates, days, rides, day pages, export step, walking chart |
+| `js/day.js` | The planner's day: day context (`dayContext`), closure and data notes, the About-the-data table, expected waits |
+| `js/walks.js` | Gates (`GATE`, `GC_GATE`), security and tap-in lines (`SEC`, `entryInfo`), Lightning Lane settings (`LL`), places (`PLACES`), walking times (`walkMin`), meal and show spots |
+| `js/scheduler.js` | The scheduler: break timing, free time, fit advice, Lightning Lane bookings, `scheduleBlock`, `llPlan`, `planDay` |
+| `js/meals.js` | Restaurants (`DINING`, `DINE_PICKS`), booking tips, picked meals and their notes, meal stops near the next ride (`annotateMeals`) |
+| `js/restrooms.js` | Restroom stops on plans (`RESTROOMS`, `annotateRestrooms`) |
+| `js/hopper.js` | Park Hopper days (`planHopper`, `planHopperBoth`) |
+| `js/fit.js` | Fit checks: which rides would still fit (`roomFor`), the summary line (`glanceText`, `fitStatus`) |
+| `js/plan-day.js` | Plan a day: fit banner, ride chips, schedule list, day charts, Tonight |
+| `js/take.js` | Plan a day, take it with you: checklist and copy text |
+| `js/trip.js` | Trip wizard, first steps: your trip, trip scoring and best dates |
+| `js/wizard.js` | Trip wizard: days, rides, day pages, export step, walking chart |
 | `js/time-of-day.js` | Time of day overlay chart and its chips |
 | `js/state.js` | Restoring and saving settings (localStorage `pdp-state`) |
 | `js/pdf.js` | Day PDF (Plan a day) and trip PDF (Trip wizard) |
@@ -83,7 +91,7 @@ Follow **[UPDATING.md](UPDATING.md)**. If you're asked to "update all the data" 
   - Walks are up to 15% slower in the busiest weeks.
   - Before a break or a park hop, the plan walks to the gate.
   - Hotel times (`HOTEL_WALK` in `js/controls.js`): routed footpath metres from an average room to the turnstiles, at the group's pace, plus elevator minutes. The Grand Californian has its own California Adventure entrance. Every entry from the hotel (morning, return from a break) adds the security and tap-in line from `data/security_waits.js` (by time from opening, scaled by how busy the day is). Hops only tap in. Grand Californian guests use its own California Adventure entrance (gate `gc` in `data/gates.js`) when it's open; hops always use the Esplanade.
-- **Restrooms:** 🚻 marks come from `data/restrooms.js` (Disney's map points) via `annotateRestrooms` in `js/engine.js`: within 2 min walk (3 before a 30+ min line or the walk out), only before such lines, before a break or hop, or every 90 min. Island restrooms are skipped. PDFs write the word "Restrooms" (PDF fonts have no emoji).
+- **Restrooms:** 🚻 marks come from `data/restrooms.js` (Disney's map points) via `annotateRestrooms` in `js/restrooms.js`: within 2 min walk (3 before a 30+ min line or the walk out), only before such lines, before a break or hop, or every 90 min. Island restrooms are skipped. PDFs write the word "Restrooms" (PDF fonts have no emoji).
 - **Start and finish:** each day can start at rope drop, 10 am, 1 pm or a set time, and finish at close or a set time. A start after lunch or a finish by 4 pm turns the midday break off for that day, and the plan says so.
 - **Shortest rider:** rides above their height (`min_height_in` in `ride_profiles`) stay pickable but are flagged "(N in and up)" on chips and "Riders must be at least N in tall" on plans, with a Rider Switch note. Every ride's height is shown on plans and PDFs, since families may have children of different heights.
 - **Refurbishments:** a ride in `refurbs` on that date is left out of the plan, and the wizard only puts it on days when it's open.

@@ -1,5 +1,5 @@
 // DLR Planner: day PDF (Plan a day) and trip PDF (Trip wizard).
-// Part of the app script, split from index.html. The js files load in this order: core, charts, explore, controls, engine, plan-day, wizard, time-of-day, state, pdf, app.
+// Part of the app script. The js files load in the order of their script tags in index.html (listed in CLAUDE.md).
 // ---------- PDFs: one-page day itinerary (Plan a day) and the whole trip (Trip wizard) ----------
 const pdfText = (t) => String(t).replace(/‑/g, '-').replace(/→/g, '->').replace(/⚠/g, '!').replace(/…/g, '...').replace(/[^\x00-\xff–—‘’“”•]/g, '');
 const PDF_DL = [214, 51, 108], PDF_DCA = [15, 157, 143], PDF_SUN = [245, 158, 11], PDF_ROYAL = [91, 63, 208];
@@ -67,7 +67,9 @@ function pdfDayPage(doc, pi, head) {
 }
 function pdfFooters(doc) {
   const W = doc.internal.pageSize.getWidth(), Hh = doc.internal.pageSize.getHeight(), pages = doc.getNumberOfPages();
-  for (let p = 1; p <= pages; p++) { doc.setPage(p); doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(140); doc.text(pdfText(`Estimates from historical averages and forecasts. Check the Disneyland app on the day for live waits, hours and showtimes. Locations © OpenStreetMap contributors.${pages > 1 ? ` Page ${p} of ${pages}` : ''}`), 40, Hh - 16, { maxWidth: W - 80 }); }
+  for (let p = 1; p <= pages; p++) { doc.setPage(p); doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(140);
+    doc.text(pdfText(`Estimates from historical averages and forecasts. Check the Disneyland app on the day for live waits, hours and showtimes. Locations © OpenStreetMap contributors.${pages > 1 ?
+          ` Page ${p} of ${pages}` : ''}`), 40, Hh - 16, { maxWidth: W - 80 }); }
 }
 async function pdfSave(doc, name, title) {
   const blob = doc.output('blob');
@@ -80,7 +82,8 @@ async function pdfSave(doc, name, title) {
 // the header lines for one planned day (hours, sunset, weather)
 function dayHeadLines(ctx, P) {
   const wx = `${ctx.fc ? `forecast (${ctx.fc.src}): ${ctx.fc.conditions}, ` : 'typical '}high ${f0(Number(ctx.wxd.avg_high_f))}°F, ${f0(Number(ctx.wxd.rain_chance_pct))}% chance of rain`;
-  const hrs = P.hop ? ['Disneyland', 'California Adventure'].map(p => `${p} ${fmtClock(P.H.ctxs[p].open)}-${fmtClock(P.H.ctxs[p].close % 24)}`).join(' · ') : `${ctx.published ? 'Published' : 'Typical'} hours ${fmtClock(ctx.open)}-${fmtClock(ctx.close % 24)}`;
+  const hrs = P.hop ? ['Disneyland', 'California Adventure'].map(p => `${p} ${fmtClock(P.H.ctxs[p].open)}-${fmtClock(P.H.ctxs[p].close % 24)}`).join(' · ') :
+    `${ctx.published ? 'Published' : 'Typical'} hours ${fmtClock(ctx.open)}-${fmtClock(ctx.close % 24)}`;
   return [`${hrs} · sunset ${fmtClock(ctx.sunset)} · ${wx}`];
 }
 const kindOf = (P, ctx) => P.hop ? 'hop' : ctx.park === 'Disneyland' ? 'dl' : 'dca';
@@ -121,16 +124,21 @@ async function exportTripPDF() {
   // ---- page 1: overview
   pdfBanner(doc, 'trip');
   line('Your Disneyland Resort trip', 20, { bold: true, color: PDF_ROYAL });
-  line(`${days.length + 1} nights · ${parkDays.length} park day${parkDays.length === 1 ? '' : 's'}${days.length - parkDays.length ? ` · ${days.length - parkDays.length} break day${days.length - parkDays.length === 1 ? '' : 's'}` : ''} · ${parkDays.length}-day ticket (${ticketLbl}) · ${hotel}`, 10, { muted: true });
+  line(`${days.length + 1} nights · ${parkDays.length} park day${parkDays.length === 1 ? '' : 's'}${days.length - parkDays.length ?
+      ` · ${days.length - parkDays.length} break day${days.length - parkDays.length === 1 ? '' : 's'}` :
+      ''} · ${parkDays.length}-day ticket (${ticketLbl}) · ${hotel}`, 10, { muted: true });
   y += 8; line('Your days', 13, { bold: true });
   line(`${fmtLong(lastTrip.checkin)}: Check-in day. Hotel check-in from ${fmtClock(hhmm(tpState.inT))}.`, 10);
-  days.forEach((iso, i) => { const o = chosen.get(i), wd = wz.days && wz.days[iso]; line(o ? `${fmtLong(iso)}: Day ${dayNo.get(iso)}, ${o.label}${wd ? ` (${wzCount(wd)} rides)` : ''}` : `${fmtLong(iso)}: Break day, no park`, 10, { bold: !!o }); });
+  days.forEach((iso, i) => { const o = chosen.get(i), wd = wz.days && wz.days[iso];
+      line(o ? `${fmtLong(iso)}: Day ${dayNo.get(iso)}, ${o.label}${wd ? ` (${wzCount(wd)} rides)` : ''}` : `${fmtLong(iso)}: Break day, no park`, 10, {
+          bold: !!o }); });
   line(`${fmtLong(lastTrip.checkout)}: Checkout day. Check out by ${fmtClock(hhmm(tpState.outT))}.`, 10);
   // rides grouped by park, then by day, with how many times
   if (wz.days) {
     y += 8; line('Your rides', 13, { bold: true });
     WZ_PARKS.forEach(p => {
-      const rowsP = parkDays.map(i => days[i]).map(iso => { const d = wz.days[iso]; if (!d || !d.rides[p].size) return null; return [iso, [...d.rides[p]].map(nm => nm + (dLaps(d, p, nm) > 1 ? ' ×' + dLaps(d, p, nm) : ''))]; }).filter(Boolean);
+      const rowsP = parkDays.map(i => days[i]).map(iso => { const d = wz.days[iso]; if (!d || !d.rides[p].size) return null;
+          return [iso, [...d.rides[p]].map(nm => nm + (dLaps(d, p, nm) > 1 ? ' ×' + dLaps(d, p, nm) : ''))]; }).filter(Boolean);
       if (!rowsP.length) return;
       y += 2; line(p, 11, { bold: true, color: p === 'Disneyland' ? PDF_DL : PDF_DCA });
       rowsP.forEach(([iso, names]) => line(`Day ${dayNo.get(iso)} · ${shortD(iso)}: ${names.join(', ')}`, 9.5, { x: 8 }));
@@ -158,9 +166,13 @@ async function exportTripPDF() {
         const pi = planItems(kindPref);
         const notes = [];
         const tk = D.ticket_tiers.find(r => r.date === iso); if (tk) notes.push(`1-day ticket for this date: $${tk.price_usd} (tier ${tk.tier})`);
-        (P.hop ? [P.H.ctxs['Disneyland'], P.H.ctxs['California Adventure']] : [ctx]).forEach(c => { c.evs.forEach(e => notes.push(`${e.name}: ${e.notes}`)); closedNotes(c, P.hop).forEach(n => notes.push(n)); dataNotes(c).forEach(n => notes.push(n)); });
+        (P.hop ? [P.H.ctxs['Disneyland'], P.H.ctxs['California Adventure']] : [ctx]).forEach(c => {
+            c.evs.forEach(e => notes.push(`${e.name}: ${e.notes}`)); closedNotes(c, P.hop).forEach(n => notes.push(n));
+            dataNotes(c).forEach(n => notes.push(n)); });
         { const sn = shortNote(pickedOf(P.hop ? [P.H.ctxs['Disneyland'], P.H.ctxs['California Adventure']] : [ctx])); if (sn) notes.push(sn); }
-        if (dayCfg) notes.push(`Pace: ${{ relaxed: 'relaxed', normal: 'normal', fast: 'go-go' }[dpState.pace]} · ${walkPref(dayCfg.walk)} · ${brkOf(dayCfg) ? dayCfg.brk + '-hour midday break' : 'no midday break'}${winLabel(dayCfg.win) ? ' · ' + winLabel(dayCfg.win) : ''} · ${wzCount(dayCfg)} rides`);
+        if (dayCfg) notes.push(`Pace: ${{ relaxed: 'relaxed', normal: 'normal', fast: 'go-go'
+            }[dpState.pace]} · ${walkPref(dayCfg.walk)} · ${brkOf(dayCfg) ? dayCfg.brk + '-hour midday break' : 'no midday break'}${winLabel(dayCfg.win) ?
+            ' · ' + winLabel(dayCfg.win) : ''} · ${wzCount(dayCfg)} rides`);
         { const why = dayCfg && dayCfg.brk > 0 ? winWhy(P.hop ? P.H.win : P.win) : null; if (why) notes.push(why); }
         const llNames = (pi.llp && pi.llp.multi || []).map(r => r.name);
         doc.addPage();

@@ -1,5 +1,5 @@
 // DLR Planner: saved settings, month names, forecast loaders, derived data (waits by week and month, highlights), colour legends.
-// Part of the app script, split from index.html. The js files load in this order: core, charts, explore, controls, engine, plan-day, wizard, time-of-day, state, pdf, app.
+// Part of the app script. The js files load in the order of their script tags in index.html (listed in CLAUDE.md).
 const PDP_SAVED = (() => { try { return JSON.parse(localStorage.getItem('pdp-state') || '{}'); } catch (e) { return {}; } })();
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
@@ -8,7 +8,8 @@ dash.loader('forecast_hourly', {
   fn: ({ answer }) => {
     const a = typeof answer === 'string' ? JSON.parse(answer) : answer;
     if (!a || !Array.isArray(a.forecasts)) throw new Error((a && (a.error || a.message)) || 'Xweather returned no forecast periods.');
-    const rows = a.forecasts.map(f => ({ time: f.dateTimeISO, date: String(f.dateTimeISO).slice(0, 10), hour: Number(String(f.dateTimeISO).slice(11, 13)), temp_f: Number(f.tempF), humidity: Number(f.humidity), rain_chance_pct: Number(f.pop), conditions: f.weather }));
+    const rows = a.forecasts.map(f => ({ time: f.dateTimeISO, date: String(f.dateTimeISO).slice(0, 10), hour: Number(String(f.dateTimeISO).slice(11, 13)),
+          temp_f: Number(f.tempF), humidity: Number(f.humidity), rain_chance_pct: Number(f.pop), conditions: f.weather }));
     return { columns: ['time', 'date', 'hour', 'temp_f', 'humidity', 'rain_chance_pct', 'conditions'], rows };
   }
 });
@@ -18,7 +19,8 @@ dash.loader('forecast_accu', {
   fn: ({ answer }) => {
     const a = typeof answer === 'string' ? JSON.parse(answer) : answer;
     if (!a || !Array.isArray(a.dailyForecast)) throw new Error((a && (a.error || a.message)) || 'AccuWeather returned no daily forecast.');
-    const rows = a.dailyForecast.map(f => ({ date: String(f.date).slice(0, 10), high_f: Number(f.day.temperature), low_f: Number(f.night.temperature), feels_high_f: Number(f.day.realFeelValue), rain_chance_pct: Number(f.day.rainProbabilityValue), conditions: f.day.phrase || f.day.iconPhrase }));
+    const rows = a.dailyForecast.map(f => ({ date: String(f.date).slice(0, 10), high_f: Number(f.day.temperature), low_f: Number(f.night.temperature),
+          feels_high_f: Number(f.day.realFeelValue), rain_chance_pct: Number(f.day.rainProbabilityValue), conditions: f.day.phrase || f.day.iconPhrase }));
     return { columns: ['date', 'high_f', 'low_f', 'feels_high_f', 'rain_chance_pct', 'conditions'], rows };
   }
 });
@@ -26,9 +28,12 @@ dash.loader('forecast_accu', {
 dash.calc('forecast_daily', {
   inputs: ['forecast_hourly'],
   title: 'Forecast by day',
-  description: 'Each forecast day\u2019s high and low (°F), highest feels-like (NWS heat index from temperature and humidity) and highest chance of rain between 8 am and 11 pm, with the most common daytime conditions.',
+  description:
+    'Each forecast day\u2019s high and low (°F), highest feels-like (NWS heat index from temperature and humidity) ' +
+    'and highest chance of rain between 8 am and 11 pm, with the most common daytime conditions.',
   fn: (forecast_hourly) => {
-    const hi = (t, r) => t < 80 ? t : Math.round(-42.379 + 2.04901523 * t + 10.14333127 * r - 0.22475541 * t * r - 0.00683783 * t * t - 0.05481717 * r * r + 0.00122874 * t * t * r + 0.00085282 * t * r * r - 0.00000199 * t * t * r * r);
+    const hi = (t, r) => t < 80 ? t : Math.round(-42.379 + 2.04901523 * t + 10.14333127 * r - 0.22475541 * t * r - 0.00683783 * t * t - 0.05481717 * r * r +
+      0.00122874 * t * t * r + 0.00085282 * t * r * r - 0.00000199 * t * t * r * r);
     const g = new Map();
     for (const r of forecast_hourly) { if (!g.has(r.date)) g.set(r.date, []); g.get(r.date).push(r); }
     return [...g.entries()].filter(([, v]) => v.length >= 12).map(([date, v]) => {
@@ -36,7 +41,9 @@ dash.calc('forecast_daily', {
       const use = day.length ? day : v;
       const counts = new Map(); use.filter(r => r.hour >= 9 && r.hour <= 18).forEach(r => counts.set(r.conditions, (counts.get(r.conditions) || 0) + 1));
       const cond = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
-      return { date, high_f: Math.max(...v.map(r => r.temp_f)), low_f: Math.min(...v.map(r => r.temp_f)), feels_high_f: Math.max(...use.map(r => hi(r.temp_f, r.humidity))), rain_chance_pct: Math.max(...use.map(r => r.rain_chance_pct)), conditions: cond ? cond[0] : '' };
+      return { date, high_f: Math.max(...v.map(r => r.temp_f)), low_f: Math.min(...v.map(r => r.temp_f)),
+        feels_high_f: Math.max(...use.map(r => hi(r.temp_f, r.humidity))), rain_chance_pct: Math.max(...use.map(r => r.rain_chance_pct)),
+        conditions: cond ? cond[0] : '' };
     });
   }
 });
@@ -120,7 +127,8 @@ dash.calc('highlights', {
   description: 'The month with the highest share of rainy days, 2016-2025.',
   fn: (weather_by_month) => {
     const w = weather_by_month.reduce((b, r) => Number(r.rain_chance_pct) > Number(b.rain_chance_pct) ? r : b);
-    const full = { Jan: 'January', Feb: 'February', Mar: 'March', Apr: 'April', May: 'May', Jun: 'June', Jul: 'July', Aug: 'August', Sep: 'September', Oct: 'October', Nov: 'November', Dec: 'December' };
+    const full = { Jan: 'January', Feb: 'February', Mar: 'March', Apr: 'April', May: 'May', Jun: 'June', Jul: 'July', Aug: 'August', Sep: 'September',
+      Oct: 'October', Nov: 'November', Dec: 'December' };
     return [{ scope: 'all', wettest_month: full[w.month], wettest_pct: Math.round(Number(w.rain_chance_pct)) }];
   }
 });
@@ -131,7 +139,8 @@ const parks = [['Disneyland', 'disneyland'], ['California Adventure', 'californi
       const qm = pick(wait_by_month, k, -1);
       const qd = pick(crowd_by_weekday, k, -1), bd = pick(crowd_by_weekday, k, 1);
       const full = { Sun: 'Sunday', Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday' };
-      const fullM = { Jan: 'January', Feb: 'February', Mar: 'March', Apr: 'April', May: 'May', Jun: 'June', Jul: 'July', Aug: 'August', Sep: 'September', Oct: 'October', Nov: 'November', Dec: 'December' };
+      const fullM = { Jan: 'January', Feb: 'February', Mar: 'March', Apr: 'April', May: 'May', Jun: 'June', Jul: 'July', Aug: 'August', Sep: 'September',
+        Oct: 'October', Nov: 'November', Dec: 'December' };
       return {
         park,
         quiet_week: qw.week_label, quiet_wait: qw[k],

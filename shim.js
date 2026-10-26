@@ -63,7 +63,8 @@
         const t = spec.replace('!', ''), set = t === 'ride' ? rideSet : t === 'land' ? landSet : null;
         if (!set || !set.size) continue;
         const miss = [...new Set(store[id].data.filter(r => r[c] && !set.has(r.park + '|' + r[c])).map(r => r[c]))];
-        if (miss.length) note(id, 'warn', `${t === 'ride' ? 'ride' : 'land'}${miss.length > 1 ? 's' : ''} not in ${t === 'ride' ? 'Rides' : 'Lands'}: ${miss.slice(0, 5).join(', ')}${miss.length > 5 ? ` and ${miss.length - 5} more` : ''}`);
+        if (miss.length) note(id, 'warn', `${t === 'ride' ? 'ride' : 'land'}${miss.length > 1 ? 's' : ''} not in ${t === 'ride' ? 'Rides' :
+            'Lands'}: ${miss.slice(0, 5).join(', ')}${miss.length > 5 ? ` and ${miss.length - 5} more` : ''}`);
       }
     }
     if (store.park_places && rideSet.size) {
@@ -136,7 +137,10 @@
 
   // ---- live forecast: Xweather with the viewer's own keys, else Open-Meteo (free, no key)
   const LAT = 33.8121, LON = -117.919;
-  const WMO = { 0: 'Clear', 1: 'Mostly clear', 2: 'Partly cloudy', 3: 'Cloudy', 45: 'Fog', 48: 'Fog', 51: 'Light drizzle', 53: 'Drizzle', 55: 'Heavy drizzle', 56: 'Freezing drizzle', 57: 'Freezing drizzle', 61: 'Light rain', 63: 'Rain', 65: 'Heavy rain', 66: 'Freezing rain', 67: 'Freezing rain', 71: 'Light snow', 73: 'Snow', 75: 'Heavy snow', 77: 'Snow grains', 80: 'Light showers', 81: 'Showers', 82: 'Heavy showers', 85: 'Snow showers', 86: 'Snow showers', 95: 'Thunderstorms', 96: 'Thunderstorms', 99: 'Thunderstorms' };
+  const WMO = { 0: 'Clear', 1: 'Mostly clear', 2: 'Partly cloudy', 3: 'Cloudy', 45: 'Fog', 48: 'Fog', 51: 'Light drizzle', 53: 'Drizzle', 55: 'Heavy drizzle',
+    56: 'Freezing drizzle', 57: 'Freezing drizzle', 61: 'Light rain', 63: 'Rain', 65: 'Heavy rain', 66: 'Freezing rain', 67: 'Freezing rain', 71: 'Light snow',
+    73: 'Snow', 75: 'Heavy snow', 77: 'Snow grains', 80: 'Light showers', 81: 'Showers', 82: 'Heavy showers', 85: 'Snow showers', 86: 'Snow showers',
+    95: 'Thunderstorms', 96: 'Thunderstorms', 99: 'Thunderstorms' };
   function keys() { try { return JSON.parse(localStorage.getItem('pdp-xweather') || 'null'); } catch (e) { return null; } }
   async function fromXweather(k) {
     const u = `https://data.api.xweather.com/forecasts/${LAT},${LON}?filter=1hr&limit=384&client_id=${encodeURIComponent(k.id)}&client_secret=${encodeURIComponent(k.secret)}`;
@@ -145,11 +149,15 @@
     return { forecasts: j.response[0].periods.map(p => ({ dateTimeISO: p.dateTimeISO, tempF: p.tempF, humidity: p.humidity, pop: p.pop, weather: p.weatherPrimary || p.weather })) };
   }
   async function fromOpenMeteo() {
-    const u = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&hourly=temperature_2m,relative_humidity_2m,precipitation_probability,weather_code&temperature_unit=fahrenheit&timezone=America%2FLos_Angeles&forecast_days=16`;
+    const u =
+      `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}` +
+      `&hourly=temperature_2m,relative_humidity_2m,precipitation_probability,weather_code` +
+      `&temperature_unit=fahrenheit&timezone=America%2FLos_Angeles&forecast_days=16`;
     const j = await (await fetch(u)).json();
     if (!j.hourly) throw new Error(j.reason || 'Open-Meteo returned no forecast');
     const H = j.hourly;
-    return { forecasts: H.time.map((t, i) => ({ dateTimeISO: t + ':00', tempF: H.temperature_2m[i], humidity: H.relative_humidity_2m[i], pop: H.precipitation_probability[i] ?? 0, weather: WMO[H.weather_code[i]] || '' })) };
+    return { forecasts: H.time.map((t, i) => ({ dateTimeISO: t + ':00', tempF: H.temperature_2m[i], humidity: H.relative_humidity_2m[i],
+            pop: H.precipitation_probability[i] ?? 0, weather: WMO[H.weather_code[i]] || '' })) };
   }
   async function refreshForecast() {
     store.forecast_hourly = { status: 'loading', data: [] }; version++; run();

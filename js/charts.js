@@ -1,5 +1,5 @@
 // DLR Planner: chart helpers: tooltips, axes, redraw on resize, week charts, grouped bars, the ride table.
-// Part of the app script, split from index.html. The js files load in this order: core, charts, explore, controls, engine, plan-day, wizard, time-of-day, state, pdf, app.
+// Part of the app script. The js files load in the order of their script tags in index.html (listed in CLAUDE.md).
 const isShown = (el) => !!(el && el.getClientRects().length);
 function failed(el) {
   el.classList.remove('dash-skeleton');
@@ -41,7 +41,9 @@ const MONTH_DOY = [1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];
 const doyToWeek = (doy) => (doy - 1) / 7 + 1;
 
 const drawn = new Set();
-function axisClean(g) { g.attr('font-size', null).attr('font-family', null); g.selectAll('text').attr('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)'); g.select('.domain').remove(); g.selectAll('line').attr('stroke', 'var(--cds-chart-grid)'); }
+function axisClean(g) { g.attr('font-size', null).attr('font-family', null);
+  g.selectAll('text').attr('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)'); g.select('.domain').remove();
+  g.selectAll('line').attr('stroke', 'var(--cds-chart-grid)'); }
 
 // Charts size themselves to their box when drawn. A box that is hidden at that moment (a tab or wizard step
 // not shown yet) has no width, so redraw once it gets one, and again whenever its width changes.
@@ -107,7 +109,8 @@ function weekHover(el, f, rows, holidays, S, opts, yOf) {
       const r = byWeek.get(wk); if (!r) return;
       rule.style('display', null).attr('x1', x(wk)).attr('x2', x(wk));
       dots.forEach((d, i) => d.style('display', null).attr('cx', x(wk)).attr('cy', y(r[S[i].key])));
-      const ev2 = [opts.extra ? opts.extra(r) : '', holidays ? holidays.filter(h => wk >= Number(h.start_week) && wk <= Number(h.end_week)).map(h => h.name).join(', ') : ''].filter(Boolean).join(' · ');
+      const ev2 = [opts.extra ? opts.extra(r) : '',
+        holidays ? holidays.filter(h => wk >= Number(h.start_week) && wk <= Number(h.end_week)).map(h => h.name).join(', ') : ''].filter(Boolean).join(' · ');
       tipRows(tip, `Week ${wk} · ${r.week_label}`, S.map(p => ({ c: p.c(), name: p.name, v: opts.fmtVal(r[p.key]) })), ev2);
       const s = el.clientWidth / width;
       placeTip(el, tip, x(wk) * s, y(yOf(r)) * s);

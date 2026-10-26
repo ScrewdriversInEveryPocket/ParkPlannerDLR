@@ -1,5 +1,5 @@
 // DLR Planner: hourly and planner data, the best-dates finder (wizard Dates step), best time of day heatmaps, events chart.
-// Part of the app script, split from index.html. The js files load in this order: core, charts, explore, controls, engine, plan-day, wizard, time-of-day, state, pdf, app.
+// Part of the app script. The js files load in the order of their script tags in index.html (listed in CLAUDE.md).
 // ---------- new calcs ----------
 dash.calc('hourly_park', {
   inputs: ['waits_by_hour'],
@@ -47,7 +47,8 @@ dash.calc('planner_base', {
   }
 });
 
-const fmtClock = (v) => { if (v == null || isNaN(v)) return '—'; let h = Math.floor(v), m = Math.round((v - h) * 60); if (m === 60) { h += 1; m = 0; } const ap = h >= 12 && h < 24 ? 'pm' : 'am'; const h12 = ((h + 11) % 12) + 1; return `${h12}:${String(m).padStart(2, '0')} ${ap}`; };
+const fmtClock = (v) => { if (v == null || isNaN(v)) return '—'; let h = Math.floor(v), m = Math.round((v - h) * 60); if (m === 60) { h += 1; m = 0;
+  } const ap = h >= 12 && h < 24 ? 'pm' : 'am'; const h12 = ((h + 11) % 12) + 1; return `${h12}:${String(m).padStart(2, '0')} ${ap}`; };
 const fmtHour = (h) => { const ap = h >= 12 && h < 24 ? 'p' : 'a'; return ((h + 11) % 12 + 1) + ap; };
 const resolveColor = (c) => { const t = document.createElement('span'); t.style.color = c; document.body.append(t); const v = getComputedStyle(t).color; t.remove(); return v; };
 
@@ -90,7 +91,8 @@ function buildEventChips(evRows) {
   [...new Set(evRows.map(e => e.name.replace(' (end)', '')))].forEach(n => {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'qt-chip'; b.setAttribute('aria-pressed', 'false');
     b.textContent = n;
-    b.addEventListener('click', () => { if (plState.events.has(n)) plState.events.delete(n); else plState.events.add(n); b.setAttribute('aria-pressed', plState.events.has(n) ? 'true' : 'false'); drawPlanner(); });
+    b.addEventListener('click', () => { if (plState.events.has(n)) plState.events.delete(n); else plState.events.add(n);
+        b.setAttribute('aria-pressed', plState.events.has(n) ? 'true' : 'false'); drawPlanner(); });
     box.append(b);
   });
 }
@@ -134,7 +136,11 @@ function drawPlanner() {
   strip.classList.remove('dash-skeleton');
   const evs = dash.data('events'); if (evs.status === 'ok') buildEventChips(evs.data);
   const tt = dash.data('ticket_tiers'), pn = document.getElementById('pl-price-note');
-  if (tt.status === 'ok' && tt.data.length) { const fmtD = (d) => new Date(d + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }); pn.textContent = `Ticket price uses Disney's dated 1‑day ticket prices, published ${fmtD(tt.data[0].date)} to ${fmtD(tt.data[tt.data.length - 1].date)}. Weeks outside that window count as average.`; }
+  if (tt.status === 'ok' && tt.data.length) { const fmtD = (d) => new Date(d + 'T12:00:00Z').toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+    pn.textContent =
+    `Ticket price uses Disney's dated 1‑day ticket prices, published ${fmtD(tt.data[0].date)} to ${fmtD(tt.data[tt.data.length - 1].date)}. Weeks outside that window count as average.`;
+    }
   const S = plannerScores(pb.data);
   const okS = S.filter(s => s.ok);
   const smin = d3.min(okS, s => s.score) ?? 0, smax = d3.max(okS, s => s.score) ?? 100;
@@ -155,7 +161,8 @@ function drawPlanner() {
     .attr('stroke', s => top.has(s.r.week) ? 'var(--color-fg)' : 'none').attr('stroke-width', 1.5);
   const ticks = MONTH_DOY.map(doyToWeek);
   const every = width < 480 ? 2 : 1;
-  const gx = svg.append('g').attr('transform', `translate(0,${height - 22})`).call(d3.axisBottom(x).tickValues(ticks.filter((_, i) => i % every === 0)).tickFormat((t) => MONTHS[ticks.indexOf(t)]).tickSize(3));
+  const gx = svg.append('g').attr('transform', `translate(0,${height - 22})`).call(d3.axisBottom(x).tickValues(ticks.filter((_,
+          i) => i % every === 0)).tickFormat((t) => MONTHS[ticks.indexOf(t)]).tickSize(3));
   axisClean(gx); gx.selectAll('line').attr('stroke', 'var(--cds-chart-axis)'); gx.selectAll('text').attr('text-anchor', 'start').attr('dx', 2);
   const tip = tipFor(strip);
   svg.append('rect').attr('x', 0).attr('y', 0).attr('width', width).attr('height', 40).attr('fill', 'transparent')
@@ -253,7 +260,8 @@ function heatmap(el, rowNames, colKeys, colLabel, cell, opts) {
   const tip = tipFor(el);
   rowNames.forEach((n, ri) => {
     const yy = top + ri * rowH;
-    const label = svg.append('text').attr('x', left - 8).attr('y', yy + rowH / 2 + 4).attr('text-anchor', 'end').attr('fill', 'var(--color-fg)').style('font-size', 'var(--cds-font-size-caption)').text(n);
+    const label = svg.append('text').attr('x', left - 8).attr('y', yy + rowH / 2 + 4).attr('text-anchor', 'end').attr('fill',
+      'var(--color-fg)').style('font-size', 'var(--cds-font-size-caption)').text(n);
     if (lw + 10 > left) { const el2 = label.node(); let s = n; while (el2.getComputedTextLength() > left - 12 && s.length > 4) { s = s.slice(0, -2); label.text(s + '…'); } }
     colKeys.forEach(k => {
       const c = cell(n, k); if (!c) return;
@@ -268,8 +276,10 @@ function heatmap(el, rowNames, colKeys, colLabel, cell, opts) {
 }
 
 let hmPark = 'Disneyland', clPark = 'Disneyland';
-document.querySelectorAll('#hm-park button').forEach(b => b.addEventListener('click', () => { hmPark = b.dataset.v; document.querySelectorAll('#hm-park button').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false')); drawRideHeat(); }));
-document.querySelectorAll('#cl-park button').forEach(b => b.addEventListener('click', () => { clPark = b.dataset.v; document.querySelectorAll('#cl-park button').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false')); drawClosureHeat(); }));
+document.querySelectorAll('#hm-park button').forEach(b => b.addEventListener('click', () => { hmPark = b.dataset.v;
+      document.querySelectorAll('#hm-park button').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false')); drawRideHeat(); }));
+document.querySelectorAll('#cl-park button').forEach(b => b.addEventListener('click', () => { clPark = b.dataset.v;
+      document.querySelectorAll('#cl-park button').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false')); drawClosureHeat(); }));
 
 function drawRideHeat() {
   const el = document.getElementById('hour-ride'); const d = dash.data('waits_by_hour');
@@ -282,7 +292,8 @@ function drawRideHeat() {
   const idx = new Map(rows.map(r => [r.ride + '|' + r.hour, r.v]));
   const hours = d3.range(8, 24);
   const pi = hmPark === 'Disneyland' ? 0 : 1;
-  heatmap(el, names, hours, fmtHour, (n, h) => { const v = idx.get(n + '|' + h); if (v == null) return null; return { alpha: 0.08 + 0.92 * (v / peak.get(n)), text: f0(v) + ' min', show: f0(v) }; }, { color: dash.colors[pi], valName: 'Avg wait' });
+  heatmap(el, names, hours, fmtHour, (n, h) => { const v = idx.get(n + '|' + h); if (v == null) return null; return {
+        alpha: 0.08 + 0.92 * (v / peak.get(n)), text: f0(v) + ' min', show: f0(v) }; }, { color: dash.colors[pi], valName: 'Avg wait' });
 }
 
 function drawClosureHeat() {
@@ -294,14 +305,18 @@ function drawClosureHeat() {
   const tot = d3.rollup(rows, v => d3.sum(v, r => r.v), r => r.ride);
   const names = [...tot.keys()].sort((a, b) => tot.get(b) - tot.get(a) || a.localeCompare(b));
   const idx = new Map(rows.map(r => [r.ride + '|' + r.m, r]));
-  heatmap(el, names, MONTHS, (m) => m, (n, m) => { const r = idx.get(n + '|' + m); if (!r) return null; return { alpha: r.v === 0 ? 0.04 : 0.15 + 0.85 * r.v / 100, text: `closed ${f0(r.v)}% of days (${r.y === 1 ? '2025 only' : r.y === 2 ? '2 years' : '2023–2025'})`, show: r.v > 0 ? f0(r.v) + '%' : '' }; }, { color: 'var(--cds-chart-status-critical)', valName: 'Closures' });
+  heatmap(el, names, MONTHS, (m) => m, (n, m) => { const r = idx.get(n + '|' + m); if (!r) return null; return {
+        alpha: r.v === 0 ? 0.04 : 0.15 + 0.85 * r.v / 100,
+        text: `closed ${f0(r.v)}% of days (${r.y === 1 ? '2025 only' : r.y === 2 ? '2 years' : '2023–2025'})`, show: r.v > 0 ? f0(r.v) + '%' : '' }; }, {
+      color: 'var(--cds-chart-status-critical)', valName: 'Closures' });
 }
 
 // ---------- events gantt ----------
 const EV_COLORS = { 'Festival': () => dash.colors[2], 'Ticketed nights (early close)': () => dash.colors[5] };
 (function () {
   const lg = document.getElementById('ev-legend'); lg.textContent = '';
-  Object.entries(EV_COLORS).forEach(([k, c]) => { const s = document.createElement('span'); const sw = document.createElement('i'); sw.className = 'qt-sw'; sw.style.background = c(); s.append(sw, document.createTextNode(k)); lg.append(s); });
+  Object.entries(EV_COLORS).forEach(([k, c]) => { const s = document.createElement('span'); const sw = document.createElement('i'); sw.className = 'qt-sw';
+      sw.style.background = c(); s.append(sw, document.createTextNode(k)); lg.append(s); });
 })();
 function drawEvents() {
   const el = document.getElementById('events-gantt'); const d = dash.data('events');
@@ -317,7 +332,8 @@ function drawEvents() {
   const ticks = MONTH_DOY.map(doyToWeek);
   svg.append('g').selectAll('line').data(ticks).join('line').attr('x1', t => x(t - 0.5)).attr('x2', t => x(t - 0.5)).attr('y1', 0).attr('y2', height - 24).attr('stroke', 'var(--cds-chart-grid)');
   const every = width < 480 ? 2 : 1;
-  const gx = svg.append('g').attr('transform', `translate(0,${height - 24})`).call(d3.axisBottom(x).tickValues(ticks.filter((_, i) => i % every === 0)).tickFormat((t) => MONTHS[ticks.indexOf(t)]).tickSize(4));
+  const gx = svg.append('g').attr('transform', `translate(0,${height - 24})`).call(d3.axisBottom(x).tickValues(ticks.filter((_,
+          i) => i % every === 0)).tickFormat((t) => MONTHS[ticks.indexOf(t)]).tickSize(4));
   axisClean(gx); gx.selectAll('line').attr('stroke', 'var(--cds-chart-axis)'); gx.selectAll('text').attr('text-anchor', 'start').attr('dx', 2);
   const tip = tipFor(el);
   rows.forEach(r => {
@@ -325,7 +341,8 @@ function drawEvents() {
     const x0 = x(r.s - 0.5), x1 = x(r.e + 0.5);
     const col = (EV_COLORS[r.kind] || (() => dash.colors[0]))();
     svg.append('rect').attr('x', x0).attr('y', yy + 3).attr('width', Math.max(4, x1 - x0)).attr('height', rowH - 6).attr('rx', 4).attr('fill', col).attr('fill-opacity', .85)
-      .on('pointermove', (ev) => { tipRows(tip, r.base, [{ c: col, name: r.park, v: `${r.start.replace('-', '/')} – ${r.end.replace('-', '/')}` }], r.notes); const [mx, my] = d3.pointer(ev, el); placeTip(el, tip, mx, my); })
+      .on('pointermove', (ev) => { tipRows(tip, r.base, [{ c: col, name: r.park, v: `${r.start.replace('-', '/')} – ${r.end.replace('-', '/')}`
+              }], r.notes); const [mx, my] = d3.pointer(ev, el); placeTip(el, tip, mx, my); })
       .on('pointerleave', () => { tip.style.display = 'none'; });
   });
   names.forEach((n, i) => {

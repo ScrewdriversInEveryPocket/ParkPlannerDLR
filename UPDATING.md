@@ -342,7 +342,7 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
 
 - **Source:** Disney's restroom map page, [disneyland.disney.go.com/guest-services/restrooms/](https://disneyland.disney.go.com/guest-services/restrooms/). The page carries every restroom's map point in its `guestServicesData` block. (The guest-services list feed only has one sample per park.) Disney's site can't be reached from a cloud sandbox, so run it on a PC.
 - **Columns:** `park`, `name`, `lat`/`lon`, `companion` (`yes` for a companion restroom; most share a point with the main one), `island` (`yes` on Tom Sawyer Island: never suggested, since it needs the raft), `disney_id`.
-- **How plans use it** (`annotateRestrooms` in `js/engine.js`): a step gets 🚻 when a restroom is within 2 minutes' walk at the group's pace (3 before a 30+ minute line or the walk out), only before such a line, before leaving for a break or a hop, or when the last 🚻 was 90 minutes ago.
+- **How plans use it** (`annotateRestrooms` in `js/restrooms.js`): a step gets 🚻 when a restroom is within 2 minutes' walk at the group's pace (3 before a 30+ minute line or the walk out), only before such a line, before leaving for a break or a hop, or when the last 🚻 was 90 minutes ago.
 - **Refresh:**
   1. On the PC: `.\_sources\restrooms\fetch-restrooms.ps1` and then `.\_sources\restrooms\parse-restrooms.ps1`. That saves the page to `raw\` and writes `restrooms.csv`.
   2. Paste the CSV into `data/restrooms.js` and update `pulled` and `review`.

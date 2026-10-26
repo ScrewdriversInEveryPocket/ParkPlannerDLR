@@ -1,18 +1,23 @@
 // DLR Planner: Settings dialog, redraw when data loads, tabs, startup.
-// Part of the app script, split from index.html. The js files load in this order: core, charts, explore, controls, engine, plan-day, wizard, time-of-day, state, pdf, app.
+// Part of the app script. The js files load in the order of their script tags in index.html (listed in CLAUDE.md).
 // ---------- app: settings ----------
 (function settings() {
   const dlg = document.getElementById('app-settings');
   const id = document.getElementById('xw-id'), sec = document.getElementById('xw-secret'), msg = document.getElementById('xw-msg');
   const load = () => { try { const k = JSON.parse(localStorage.getItem('pdp-xweather') || 'null'); id.value = k ? k.id : ''; sec.value = k ? k.secret : ''; } catch (e) { /* ignore */ } };
-  const status = () => { msg.textContent = window.PDP_FC_SRC ? `Live forecast in use: ${window.PDP_FC_SRC}.` + (window.PDP_FC_ERR && window.PDP_FC_SRC !== 'Xweather' && id.value ? ` Xweather didn't respond (${window.PDP_FC_ERR}), so Open‑Meteo is used.` : '') : (window.PDP_FC_ERR ? `No live forecast: ${window.PDP_FC_ERR}` : 'Checking the forecast…'); };
+  const status = () => { msg.textContent = window.PDP_FC_SRC ? `Live forecast in use: ${window.PDP_FC_SRC}.` + (window.PDP_FC_ERR &&
+      window.PDP_FC_SRC !== 'Xweather' && id.value ? ` Xweather didn't respond (${window.PDP_FC_ERR}), so Open‑Meteo is used.` : '') : (window.PDP_FC_ERR ?
+      `No live forecast: ${window.PDP_FC_ERR}` : 'Checking the forecast…'); };
   document.getElementById('app-settings-btn').addEventListener('click', () => { load(); status(); dlg.showModal(); });
   document.getElementById('xw-save').addEventListener('click', async () => {
-    try { if (id.value.trim() && sec.value.trim()) localStorage.setItem('pdp-xweather', JSON.stringify({ id: id.value.trim(), secret: sec.value.trim() })); else localStorage.removeItem('pdp-xweather'); } catch (e) { /* ignore */ }
+    try { if (id.value.trim() && sec.value.trim()) localStorage.setItem('pdp-xweather', JSON.stringify({ id: id.value.trim(), secret: sec.value.trim() }));
+      else localStorage.removeItem('pdp-xweather'); } catch (e) { /* ignore */ }
     msg.textContent = 'Checking…'; await window.PDP_refreshForecast(); status();
   });
-  document.getElementById('xw-clear').addEventListener('click', async () => { try { localStorage.removeItem('pdp-xweather'); } catch (e) { /* ignore */ } id.value = ''; sec.value = ''; msg.textContent = 'Checking…'; await window.PDP_refreshForecast(); status(); });
-  document.getElementById('app-reset').addEventListener('click', () => { if (confirm('Reset all your saved settings and checklist ticks?')) { try { localStorage.removeItem('pdp-state'); } catch (e) { /* ignore */ } location.reload(); } });
+  document.getElementById('xw-clear').addEventListener('click', async () => { try { localStorage.removeItem('pdp-xweather'); } catch (e) { /* ignore */
+      } id.value = ''; sec.value = ''; msg.textContent = 'Checking…'; await window.PDP_refreshForecast(); status(); });
+  document.getElementById('app-reset').addEventListener('click', () => { if (confirm('Reset all your saved settings and checklist ticks?')) { try {
+          localStorage.removeItem('pdp-state'); } catch (e) { /* ignore */ } location.reload(); } });
   document.addEventListener('pdp-forecast', status);
 })();
 
@@ -36,7 +41,8 @@ const render = () => {
   if (hpd.status === 'ok') { hp.classList.remove('dash-skeleton'); if (isShown(hp)) hourLine(hp, hpd.data); }
   else if (['error', 'declined', 'missing'].includes(hpd.status)) failed(hp); else { hp.textContent = ''; hp.classList.add('dash-skeleton'); }
   drawRideHeat(); drawClosureHeat(); drawEvents();
-  ['dp-sw-wait', 'dp-sw-feels', 'dp-sw-rain'].forEach((id, i) => { document.getElementById(id).style.background = [dpState.park === 'Disneyland' ? dash.colors[0] : dash.colors[1], dash.colors[2], dash.colors[4]][i]; });
+  ['dp-sw-wait', 'dp-sw-feels', 'dp-sw-rain'].forEach((id, i) => {
+      document.getElementById(id).style.background = [dpState.park === 'Disneyland' ? dash.colors[0] : dash.colors[1], dash.colors[2], dash.colors[4]][i]; });
   drawDay();
   drawTrip();
   // highlight marks
@@ -53,7 +59,8 @@ const render = () => {
   // weekly charts
   const ww = document.getElementById('wait-week');
   const s1 = statusOf(['wait_by_week', 'holidays']);
-  if (s1 === 'ok') { ww.classList.remove('dash-skeleton'); weekLine(ww, dash.data('wait_by_week').data, dash.data('holidays').data, { height: 300, fmtTick: (v) => v + ' min', fmtVal: (v) => f1(v) + ' min' }); }
+  if (s1 === 'ok') { ww.classList.remove('dash-skeleton'); weekLine(ww, dash.data('wait_by_week').data, dash.data('holidays').data, {
+        height: 300, fmtTick: (v) => v + ' min', fmtVal: (v) => f1(v) + ' min' }); }
   else if (s1 === 'error') failed(ww); else { ww.textContent = ''; ww.classList.add('dash-skeleton'); }
 
   const cw = document.getElementById('crowd-week');
@@ -75,7 +82,8 @@ const render = () => {
   // monthly + weekday bars
   const wm = document.getElementById('wait-month');
   const s4 = statusOf(['wait_by_month']);
-  if (s4 === 'ok') { wm.classList.remove('dash-skeleton'); groupedBars(wm, dash.data('wait_by_month').data, 'month', { height: 240, fmtTick: (v) => v + ' min', fmtVal: (v) => f1(v) + ' min', title: (r) => r.month }); }
+  if (s4 === 'ok') { wm.classList.remove('dash-skeleton'); groupedBars(wm, dash.data('wait_by_month').data, 'month', {
+        height: 240, fmtTick: (v) => v + ' min', fmtVal: (v) => f1(v) + ' min', title: (r) => r.month }); }
   else if (s4 === 'error') failed(wm); else { wm.textContent = ''; wm.classList.add('dash-skeleton'); }
 
   const cm = document.getElementById('crowd-month');
@@ -90,7 +98,9 @@ const render = () => {
   const s6 = statusOf(['crowd_by_weekday']);
   if (s6 === 'ok') {
     cd.classList.remove('dash-skeleton');
-    const rows = dash.data('crowd_by_weekday').data.map(r => ({ day: r.day, order: Number(r.day_order), disneyland: Number(r.disneyland), california_adventure: Number(r.california_adventure) })).sort((a, b) => a.order - b.order);
+    const rows = dash.data('crowd_by_weekday').data.map(r => ({
+          day: r.day, order: Number(r.day_order), disneyland: Number(r.disneyland), california_adventure: Number(r.california_adventure)
+        })).sort((a, b) => a.order - b.order);
     groupedBars(cd, rows, 'day', { height: 240, fmtTick: (v) => f0(v), fmtVal: (v) => f0(v), title: (r) => r.day });
   } else if (s6 === 'error') failed(cd); else { cd.textContent = ''; cd.classList.add('dash-skeleton'); }
 
@@ -102,8 +112,12 @@ const render = () => {
     return o;
   }) : [];
   const hol = wxs === 'ok' ? dash.data('holidays').data : null;
-  [['temp-week', () => weekLine(document.getElementById('temp-week'), wxRows, hol, { height: 300, series: WX.temp, range: ['avg_low_f', 'avg_high_f'], ref: 90, refLabel: '90°F', fmtTick: (v) => v + '°', fmtVal: (v) => f1(v) + '°F', extra: (r) => `Humidity ${f0(r.humidity_pct)}% · ${f1(r.daylight_hours)} h daylight` })],
-   ['rain-week', () => weekBars(document.getElementById('rain-week'), wxRows, hol, { height: 240, series: WX.rain, fmtTick: (v) => v + '%', fmtVal: (v) => f0(v) + '% of days', extra: (r) => `Avg ${d3.format('.2f')(r.avg_rain_in)} in that week · ${f0(r.rain_hours_on_wet_days)} h of rain on a wet day` })],
+  [['temp-week', () => weekLine(document.getElementById('temp-week'), wxRows, hol, {
+          height: 300, series: WX.temp, range: ['avg_low_f', 'avg_high_f'], ref: 90, refLabel: '90°F', fmtTick: (v) => v + '°', fmtVal: (v) => f1(v) + '°F',
+          extra: (r) => `Humidity ${f0(r.humidity_pct)}% · ${f1(r.daylight_hours)} h daylight` })],
+   ['rain-week', () => weekBars(document.getElementById('rain-week'), wxRows, hol, {
+         height: 240, series: WX.rain, fmtTick: (v) => v + '%', fmtVal: (v) => f0(v) + '% of days',
+         extra: (r) => `Avg ${d3.format('.2f')(r.avg_rain_in)} in that week · ${f0(r.rain_hours_on_wet_days)} h of rain on a wet day` })],
    ['risk-week', () => weekLine(document.getElementById('risk-week'), wxRows, hol, { height: 240, zero: true, series: WX.risk, fmtTick: (v) => v + '%', fmtVal: (v) => f0(v) + '% of days' })]
   ].forEach(([id, draw]) => {
     const el = document.getElementById(id);
@@ -115,7 +129,8 @@ const render = () => {
   if (wm2.status === 'ok') {
     const cols = [['month', (v) => v, 'l'], ['avg_high_f', (v) => f1(v) + '°'], ['avg_low_f', (v) => f1(v) + '°'], ['feels_like_high_f', (v) => f1(v) + '°', 'qt-hide-narrow'],
       ['rain_chance_pct', (v) => f1(v) + '%'], ['heavy_rain_chance_pct', (v) => f1(v) + '%', 'qt-hide-narrow'], ['avg_rain_in', (v) => d3.format('.2f')(v) + ' in', 'qt-hide-narrow'],
-      ['hot_day_pct', (v) => f1(v) + '%'], ['chilly_night_pct', (v) => f1(v) + '%', 'qt-hide-narrow'], ['windy_day_pct', (v) => f1(v) + '%', 'qt-hide-narrow'], ['daylight_hours', (v) => f1(v) + ' h', 'qt-hide-narrow']];
+      ['hot_day_pct', (v) => f1(v) + '%'], ['chilly_night_pct', (v) => f1(v) + '%', 'qt-hide-narrow'], ['windy_day_pct', (v) => f1(v) + '%',
+        'qt-hide-narrow'], ['daylight_hours', (v) => f1(v) + ' h', 'qt-hide-narrow']];
     wm2.data.slice().sort((a, b) => Number(a.month_num) - Number(b.month_num)).forEach(r => {
       const tr = document.createElement('tr');
       cols.forEach(([k, fmt, cls]) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = k === 'month' ? r[k] : fmt(Number(r[k])); tr.append(c); });
@@ -133,22 +148,30 @@ const render = () => {
     fac.data.forEach(r => {
       const tr = document.createElement('tr'); tr.dataset.key = r.date;
       const dl = new Date(r.date + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
-      [[dl, 'l'], [r.conditions, 'l'], [r.high_f + '°'], [r.low_f + '°'], [r.feels_high_f + '°', 'qt-hide-narrow'], [r.rain_chance_pct + '%']].forEach(([v, c]) => { const td = document.createElement('td'); if (c) td.className = c; td.textContent = v; tr.append(td); });
+      [[dl, 'l'], [r.conditions, 'l'], [r.high_f + '°'], [r.low_f + '°'], [r.feels_high_f + '°', 'qt-hide-narrow'],
+        [r.rain_chance_pct + '%']].forEach(([v, c]) => { const td = document.createElement('td'); if (c) td.className = c; td.textContent = v; tr.append(td);
+        });
       atb.append(tr);
     });
   } else if (fdd.status === 'ok') {
-    fmsg.textContent = 'Source: ' + (window.PDP_FC_SRC || 'live') + ' hourly forecast. Feels‑like uses the National Weather Service heat index; rain chance is the highest hourly chance between 8 am and 11 pm.';
+    fmsg.textContent = 'Source: ' + (window.PDP_FC_SRC ||
+      'live') + ' hourly forecast. Feels‑like uses the National Weather Service heat index; rain chance is the highest hourly chance between 8 am and 11 pm.';
     fdd.data.forEach(r => {
       const tr = document.createElement('tr'); tr.dataset.key = r.date;
       const dl = new Date(r.date + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
-      [[dl, 'l'], [r.conditions, 'l'], [r.high_f + '°'], [r.low_f + '°'], [r.feels_high_f + '°', 'qt-hide-narrow'], [r.rain_chance_pct + '%']].forEach(([v, c]) => { const td = document.createElement('td'); if (c) td.className = c; td.textContent = v; tr.append(td); });
+      [[dl, 'l'], [r.conditions, 'l'], [r.high_f + '°'], [r.low_f + '°'], [r.feels_high_f + '°', 'qt-hide-narrow'],
+        [r.rain_chance_pct + '%']].forEach(([v, c]) => { const td = document.createElement('td'); if (c) td.className = c; td.textContent = v; tr.append(td);
+        });
       ftb.append(tr);
     });
   } else if (fdd.status === 'loading' || fac.status === 'loading') fmsg.textContent = 'Loading the forecast…';
   else fmsg.textContent = 'The live forecast could not load. Check your internet connection, or your Xweather keys in Settings. Everything else works offline.';
   const lastFc = fdd.status === 'ok' && fdd.data.length ? fdd.data[fdd.data.length - 1].date : (fac.status === 'ok' && fac.data.length ? fac.data[fac.data.length - 1].date : null);
   const tpw = document.getElementById('tp-wxsrc');
-  if (tpw) { const cap = new Date(); cap.setDate(cap.getDate() + FORECAST_DAYS); const capISO = `${cap.getFullYear()}-${pad2(cap.getMonth() + 1)}-${pad2(cap.getDate())}`; const thru = lastFc && lastFc < capISO ? lastFc : capISO; tpw.textContent = lastFc ? `Live forecast is used for days within ${FORECAST_DAYS} days (through ${new Date(thru + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })}); later dates use 10‑year averages.` : ''; }
+  if (tpw) { const cap = new Date(); cap.setDate(cap.getDate() + FORECAST_DAYS);
+    const capISO = `${cap.getFullYear()}-${pad2(cap.getMonth() + 1)}-${pad2(cap.getDate())}`; const thru = lastFc && lastFc < capISO ? lastFc : capISO;
+    tpw.textContent = lastFc ? `Live forecast is used for days within ${FORECAST_DAYS} days (through ${new Date(thru + 'T12:00:00Z').toLocaleDateString('en-US',
+        { month: 'short', day: 'numeric', timeZone: 'UTC' })}); later dates use 10‑year averages.` : ''; }
 
   // table
   const wt = dash.data('week_table');
@@ -161,7 +184,8 @@ dash.onData(render);
 const tabBtns = [...document.querySelectorAll('.qt-tabs [role=tab]')];
 function showTab(k, focus) {
   if (!document.getElementById('panel-' + k)) return;
-  tabBtns.forEach(b => { const on = b.dataset.tab === k; b.setAttribute('aria-selected', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1; document.getElementById('panel-' + b.dataset.tab).hidden = !on; if (on && focus) b.focus(); });
+  tabBtns.forEach(b => { const on = b.dataset.tab === k; b.setAttribute('aria-selected', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1;
+      document.getElementById('panel-' + b.dataset.tab).hidden = !on; if (on && focus) b.focus(); });
   try { render(); } catch (e) { console.error(e); }
   requestAnimationFrame(() => { try { render(); } catch (e) { console.error(e); } });
   try { dash.setLink(k); } catch (e) { /* link is optional */ }
@@ -169,14 +193,18 @@ function showTab(k, focus) {
 window.qtShowTab = showTab;
 // the extra tabs live under More; More shows the open one's name while it's selected
 { const more = document.getElementById('tab-more'), menu = document.getElementById('tab-menu');
-  const label = () => { const on = tabBtns.find(b => b.classList.contains('tab-extra') && b.getAttribute('aria-selected') === 'true'); more.textContent = (on ? on.textContent : 'More') + ' ▾'; more.classList.toggle('on', !!on); };
-  more.addEventListener('click', (e) => { e.stopPropagation(); menu.hidden = !menu.hidden; more.setAttribute('aria-expanded', String(!menu.hidden)); if (!menu.hidden) { const r = more.getBoundingClientRect(); menu.style.top = (r.bottom + window.scrollY) + 'px'; menu.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 200)) + 'px'; } });
+  const label = () => { const on = tabBtns.find(b => b.classList.contains('tab-extra') && b.getAttribute('aria-selected') === 'true');
+    more.textContent = (on ? on.textContent : 'More') + ' ▾'; more.classList.toggle('on', !!on); };
+  more.addEventListener('click', (e) => { e.stopPropagation(); menu.hidden = !menu.hidden; more.setAttribute('aria-expanded', String(!menu.hidden));
+      if (!menu.hidden) { const r = more.getBoundingClientRect(); menu.style.top = (r.bottom + window.scrollY) + 'px';
+        menu.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 200)) + 'px'; } });
   menu.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { menu.hidden = true; more.setAttribute('aria-expanded', 'false'); showTab(b.dataset.tab); label(); }));
   document.addEventListener('click', () => { menu.hidden = true; more.setAttribute('aria-expanded', 'false'); });
   tabBtns.forEach(b => b.addEventListener('click', () => setTimeout(label, 0))); setTimeout(label, 0); }
 tabBtns.forEach((b, i) => {
   b.addEventListener('click', () => showTab(b.dataset.tab));
-  b.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { const n = tabBtns[(i + (e.key === 'ArrowRight' ? 1 : tabBtns.length - 1)) % tabBtns.length]; showTab(n.dataset.tab, true); e.preventDefault(); } });
+  b.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        const n = tabBtns[(i + (e.key === 'ArrowRight' ? 1 : tabBtns.length - 1)) % tabBtns.length]; showTab(n.dataset.tab, true); e.preventDefault(); } });
 });
 const linked = location.hash.slice(1);
 if (linked) {

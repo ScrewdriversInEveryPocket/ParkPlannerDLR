@@ -4,6 +4,8 @@ What changed in each version. The number is the one in `version.js` (shown at th
 
 | Version | Date | What changed |
 |---|---|---|
+| v46 | 2026-10-26 | Code split into smaller files: `js/engine.js` became `day`, `walks`, `scheduler`, `meals`, `restrooms`, `hopper` and `fit`; checklist and copy text moved to `js/take.js`; the wizard's first steps to `js/trip.js`. Code moved only. |
+| v45 | 2026-10-26 | Code layout: long lines in `js/*.js` and `shim.js` broken up (about 160 characters at most). No change to how the app works. |
 | v44 | 2026-10-26 | One-command tests: `scripts\test.ps1` (data checks, 288 sample plans against the planner's rules, a wizard trip, both PDFs, 72 plans compared with `tests/golden`). `scripts\serve.ps1`, a local web server in PowerShell. A banner when part of the app crashes. Refresh scripts in `_sources` work from any folder and default to today. Disney's downloaded pages, feeds and website code are no longer uploaded. This changelog. |
 | v43 | 2026-10-26 | Restrooms: 🚻 marks from Disney's restroom map (`data/restrooms.js`), before long lines, breaks and hops, and about every 90 minutes. |
 | v42 | 2026-10-26 | Sit-down meals in the other park: the planner adds a hop or says why it can't, with fixes on the Plan a day note and wizard days. Wizard quick picks reset repeats. |
