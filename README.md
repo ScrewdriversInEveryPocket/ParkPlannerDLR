@@ -267,7 +267,8 @@ Every dataset is its own file in the `data` folder: CSV text with a short header
 
 - **[UPDATING.md](UPDATING.md)** is the step-by-step guide: what each dataset is, where it comes from, how to refresh it and what to check, in order of how soon each one goes out of date.
 - **`scripts/`** has small PowerShell helpers that copy a dataset out to a CSV for editing and put it back (with a backup and a cache bump), plus downloaders for the OpenStreetMap and weather sources.
-- **`check.html`** checks every dataset and then plans sample days in the app. Open it after any change.
+- **`scripts\test.ps1`** runs every test in one go (data checks, 288 sample plans, a wizard trip, both PDFs) and prints the result. Run it after any change; see [tests/README.md](tests/README.md).
+- **`check.html`** is a quicker check of every dataset, plus 12 sample days.
 - The app checks the data each time it loads, and **About the data** shows anything it found.
 
 If you use Claude Code, `CLAUDE.md` gives it the same pointers and the project's rules, so "update the park hours" is enough to get started.
@@ -276,7 +277,7 @@ If you use Claude Code, `CLAUDE.md` gives it the same pointers and the project's
 
 ## Hosting your own copy
 
-It's a static site: just `index.html`, `shim.js`, `sw.js`, `version.js`, `manifest.webmanifest` and the `css`, `js`, `data`, `vendor` and `icons` folders (`check.html`, `scripts` and the guides are optional). Upload the folder unchanged to any static host:
+It's a static site: just `index.html`, `shim.js`, `sw.js`, `version.js`, `manifest.webmanifest` and the `css`, `js`, `data`, `vendor` and `icons` folders (`check.html`, `tests`, `scripts`, `_sources` and the guides are optional). Upload the folder unchanged to any static host:
 
 - **[GitHub Pages](https://pages.github.com):** in this repository go to *Settings → Pages* and publish from the main branch.
 - **[Netlify Drop](https://app.netlify.com/drop):** drag the folder onto the page.

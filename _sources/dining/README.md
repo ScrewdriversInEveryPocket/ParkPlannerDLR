@@ -8,11 +8,11 @@ From Disney's own site only (disneyland.disney.go.com), about 1 request a second
 Re-run (PowerShell):
 
 ```
-.\fetch-dining.ps1 -Date 2026-10-26
-.\parse-dining.ps1 -Date 2026-10-26
+.\fetch-dining.ps1     # today's list; or pick a date with -Date 2026-10-26
+.\parse-dining.ps1     # the newest list in raw\; or -Date 2026-10-26
 ```
 
-`fetch-dining.ps1` skips files already in `raw\`, so delete `raw\` first for a fresh pull.
+`fetch-dining.ps1` skips files already in `raw\`, so delete `raw\` first for a fresh pull. The `raw` folder stays on this PC and isn't uploaded (Disney's files).
 
 Outputs:
 - `disney_dining.csv`: one row per dining place in Disneyland park or California Adventure.

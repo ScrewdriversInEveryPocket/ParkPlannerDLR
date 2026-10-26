@@ -26,7 +26,7 @@ If you were asked to update all the data, work through this list in order. It go
 
 Don't commit or push; leave that to the owner.
 
-`_sources` is uploaded with the app, so a fresh download of the project has the raw files behind each dataset, such as the daily crowd history. Only `_BACKUP` stays local.
+`_sources` is uploaded with the app, so a fresh download of the project has the files behind each dataset, such as the daily crowd history and the parsed CSVs. `_BACKUP` stays local, and so do the `raw` folders under `_sources` and `_sources\shows\js`: they're Disney's own pages, feeds and website code. The fetch scripts can download them again.
 
 ---
 
@@ -89,7 +89,7 @@ it's a small world,Disneyland,2026-10-30,2026-11-12,Closed for its holiday overl
 
 ## The routine
 
-1. **Back up.** Copy the files you'll change into `_BACKUP\<date>-<what>\`, for example `_BACKUP\2027-01-10-before-hours`. `import-dataset.ps1` does this for you. `_BACKUP` is local only (see `.gitignore`); `_sources` is uploaded with the app.
+1. **Back up.** Copy the files you'll change into `_BACKUP\<date>-<what>\`, for example `_BACKUP\2027-01-10-before-hours`. `import-dataset.ps1` does this for you. `_BACKUP` is local only (see `.gitignore`); `_sources` is uploaded with the app, except its `raw` folders.
 2. **Get the new data** from the source named in the dataset's section below. Save raw downloads under `_sources\<dataset>\` with the date in the file name, so the next person can see what was used.
 3. **Edit the CSV.**
    - Copy it out with `export-dataset.ps1`, edit it, then put it back with `import-dataset.ps1`.
@@ -99,9 +99,10 @@ it's a small world,Disneyland,2026-10-30,2026-11-12,Closed for its holiday overl
    - Change `source` and `url` if the source changed, and keep any `license` credit.
 5. **Bump the cache.** Raise the version in `version.js` by one (e.g. `pdp-v27` → `pdp-v28`) so installed copies download the new files. The app shows this number at the top (e.g. v28), so you can tell which version you're looking at. `import-dataset.ps1` does this too.
 6. **Check.**
-   - Open `check.html` and look for "All datasets passed".
-   - Then press **Run sample plans**. This needs a web address, so use GitHub Pages or a local server such as `python -m http.server`, then open `http://localhost:8000/check.html`.
+   - Run the tests: `powershell -ExecutionPolicy Bypass -File .\scripts\test.ps1`. It checks every dataset, plans 288 sample days and a wizard trip, and lists any plans that changed (see `tests/README.md`).
+   - New data changes some plans on purpose. Look over the differences it lists, then save them as the expected plans with `.\scripts\test.ps1 -Update`.
    - Then open the app, look at **About the data**, and plan a day in each park.
+   - For a quick look without the full run, open `check.html` (data only from the folder; its sample plans need `.\scripts\serve.ps1` running, then `http://localhost:8000/check.html`).
 7. **Update the words** if what the data covers changed:
    - the **Sources and methods** text in `index.html` (search for `id="method"`);
    - the **Where the data comes from** table in `README.md`.
@@ -124,6 +125,8 @@ powershell -ExecutionPolicy Bypass -File .\scripts\import-dataset.ps1 park_hours
   - bumps `version.js`.
 
   `-Pulled` defaults to today.
+- **`test.ps1 [-Update] [-Show]`** runs every test and prints the result (see `tests/README.md`).
+- **`serve.ps1 [-Port 8000]`** serves the project folder at `http://localhost:8000/` until you press Ctrl+C. Nothing to install.
 - **`fetch-osm.ps1`** downloads a fresh OpenStreetMap extract of both parks to `_sources\osm\`.
 - **`fetch-weather.ps1`** downloads ten years of Anaheim weather history from Open-Meteo to `_sources\weather\`.
 
@@ -299,7 +302,7 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
   - Quick service, table service, snacks and lounges are offered as nearby alternatives. Events, festival booths and members-only places aren't suggested.
   - The **Sit-down meals** picks are the `table service` places that serve lunch or dinner, plus lounges with a walk-up list. `reservations` of `accepted` or `recommended` (and a note that isn't "only for breakfast") gives the 60-day booking reminder; `walkup` = `yes` adds the walk-up list fallback; `mobile_order` = `yes` adds the mobile order tip on quick-service meals.
 - **How:**
-  1. On the PC: `cd _sources\dining`, then `.\fetch-dining.ps1 -Date YYYY-MM-DD` and `.\parse-dining.ps1 -Date YYYY-MM-DD` (see the README there). That writes `disney_dining.csv` (with Disney's map pins) and `disney_dining_hours.csv` (a week of hours).
+  1. On the PC: `.\_sources\dining\fetch-dining.ps1` and then `.\_sources\dining\parse-dining.ps1` (both default to today; see the README there). That writes `disney_dining.csv` (with Disney's map pins) and `disney_dining_hours.csv` (a week of hours).
   2. Turn the CSV into `data/dining.js` with the app's land names (San Fransokyo Square is `Pacific Wharf`, the Performance Corridor wine terraces are `Pacific Wharf`; a place with no land gets the land of the nearest ride), and replace the `food` rows in `park_places` with Disney's pins (`osm` = `disney:<id>`). Carts listed for both parks go in the park where the pin is.
   3. Don't add Downtown Disney or hotel restaurants: meals are always inside the parks.
 - **Check:** `check.html` shows no restaurants without a map point.
@@ -341,7 +344,7 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
 - **Columns:** `park`, `name`, `lat`/`lon`, `companion` (`yes` for a companion restroom; most share a point with the main one), `island` (`yes` on Tom Sawyer Island: never suggested, since it needs the raft), `disney_id`.
 - **How plans use it** (`annotateRestrooms` in `js/engine.js`): a step gets 🚻 when a restroom is within 2 minutes' walk at the group's pace (3 before a 30+ minute line or the walk out), only before such a line, before leaving for a break or a hop, or when the last 🚻 was 90 minutes ago.
 - **Refresh:**
-  1. On the PC: `cd _sources\restrooms`, then `.\fetch-restrooms.ps1` and `.\parse-restrooms.ps1`. That saves the page to `raw\` and writes `restrooms.csv`.
+  1. On the PC: `.\_sources\restrooms\fetch-restrooms.ps1` and then `.\_sources\restrooms\parse-restrooms.ps1`. That saves the page to `raw\` and writes `restrooms.csv`.
   2. Paste the CSV into `data/restrooms.js` and update `pulled` and `review`.
 
 ### `security_waits`: security and tap-in lines
@@ -413,6 +416,6 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
 1. Copy an existing `data/*.js` file, rename it, and fill in the header (`id` must match the file name) and the CSV.
 2. Add its id to `data/manifest.js`.
 3. Read it in the app code (`js/*.js`) with `dash.data('<id>').data` (an array of row objects whose values are all strings).
-4. Bump `version.js`, then run `check.html`.
+4. Bump `version.js`, then run `scripts\test.ps1`.
 
 To add a column, add it to both the CSV header and `columns`. To find every place a dataset is used, search the `js` folder for its id.

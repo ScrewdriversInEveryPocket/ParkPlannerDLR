@@ -1,6 +1,6 @@
 # Builds restrooms.csv from the newest page fetch-restrooms.ps1 saved: the two theme parks only.
 # companion = yes for companion restrooms; island = yes on Tom Sawyer Island (the planner never suggests those).
-param([string]$Out = 'C:\GitHub\ParkPlannerDLR\_sources\restrooms')
+param([string]$Out = $PSScriptRoot)
 $page = Get-ChildItem (Join-Path $Out 'raw') -Filter 'restrooms-page*.html' | Sort-Object Name | Select-Object -Last 1
 $html = [IO.File]::ReadAllText($page.FullName, [Text.Encoding]::UTF8)
 $at = $html.IndexOf('"guestServicesData":')

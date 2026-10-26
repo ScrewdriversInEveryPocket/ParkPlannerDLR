@@ -1,4 +1,4 @@
-param([string]$Out = 'C:\GitHub\ParkPlannerDLR\_sources\shows', [string]$Start = '2026-10-26', [int]$Days = 42)
+param([string]$Out = $PSScriptRoot, [string]$Start = (Get-Date).ToString('yyyy-MM-dd'), [int]$Days = 42)
 $ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36'
 $raw = Join-Path $Out 'raw'; New-Item -ItemType Directory -Force $raw | Out-Null
 $d0 = [datetime]::ParseExact($Start, 'yyyy-MM-dd', $null)

@@ -1,6 +1,6 @@
 # Builds disney_dining.csv (and disney_dining_hours.csv) from the files fetch-dining.ps1 saved.
 # Only places inside Disneyland park or Disney California Adventure; lands use Disney's own labels.
-param([string]$Out = 'C:\GitHub\ParkPlannerDLR\_sources\dining', [string]$Date = '')
+param([string]$Out = $PSScriptRoot, [string]$Date = '')
 $raw = Join-Path $Out 'raw'
 if (-not $Date) { $Date = (Get-ChildItem $raw -Filter 'dining-list-*.json' | Sort-Object Name | Select-Object -Last 1).BaseName.Substring(12) }
 function Read-Json($f) { [IO.File]::ReadAllText($f, [Text.Encoding]::UTF8) | ConvertFrom-Json }

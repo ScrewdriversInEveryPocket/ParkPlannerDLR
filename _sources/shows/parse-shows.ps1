@@ -1,4 +1,4 @@
-﻿param([string]$Dir = 'C:\GitHub\ParkPlannerDLR\_sources\shows')
+param([string]$Dir = $PSScriptRoot)
 $parks = @{ '330339;entityType=theme-park' = 'Disneyland'; '336894;entityType=theme-park' = 'California Adventure' }
 $keep = 'parades', 'nighttimeSpectacularFirework', 'shows', 'event', 'specialTicketedEvent'
 function To24([string]$t) {

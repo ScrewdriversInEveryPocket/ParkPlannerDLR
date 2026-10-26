@@ -15,6 +15,26 @@ function pdpMissing(el) {
   };
   if (document.body) add(); else document.addEventListener('DOMContentLoaded', add);
 }
+// if part of the app crashes (say a mistake in one of the js files), say so instead of leaving a dead tab
+window.addEventListener('error', (e) => {
+  const src = e.filename || '', ours = !src || src.startsWith(location.origin) || (location.protocol === 'file:' && src.startsWith('file:'));
+  if (!ours || /vendor\//.test(src) || /ResizeObserver loop/.test(e.message || '')) return; // the browser's resize notice is harmless
+  const f = src.replace(/^.*?\/(js\/|data\/)?([^/]+)$/, '$1$2'), where = f ? ` (${f}${e.lineno ? ', line ' + e.lineno : ''}: ${e.message})` : '';
+  const add = () => {
+    let box = document.getElementById('pdp-error');
+    if (box) return;
+    box = document.createElement('p'); box.id = 'pdp-error'; box.className = 'qt-warn'; box.setAttribute('role', 'alert'); document.body.prepend(box);
+    box.textContent = `Something in the app went wrong${where}. Try reloading the page. If it keeps happening, a file may be damaged or out of date.`;
+  };
+  if (document.body) add(); else document.addEventListener('DOMContentLoaded', add);
+});
+// tests only: index.html?today=2026-11-02 makes the app act as if that's today, with no live forecast (see tests/)
+(function testToday() {
+  const m = /[?&]today=(\d{4}-\d{2}-\d{2})/.exec(location.search); if (!m) return;
+  const Real = Date, shift = new Real(m[1] + 'T09:00:00').getTime() - Real.now();
+  window.Date = class extends Real { constructor(...a) { super(...(a.length ? a : [Real.now() + shift])); } static now() { return Real.now() + shift; } };
+  window.PDP_NO_FORECAST = true; window.PDP_TODAY = m[1];
+})();
 </script>
 <link rel="stylesheet" href="css/app.css" onerror="pdpMissing(this)"></head>
 <body><div id="dash-root">

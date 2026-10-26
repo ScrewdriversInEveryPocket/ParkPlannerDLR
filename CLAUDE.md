@@ -14,12 +14,14 @@ The Disneyland Resort Planning Tool by ScrewdriversInEveryPocket ("DLR Planner" 
 | `data/manifest.js` | Lists every data file. Both `index.html` and `sw.js` read it. |
 | `version.js` | The app's only version number (`pdp-vNN`). Raise it whenever any file changes: `sw.js` uses it to refresh the offline cache, and the page shows it at the top. |
 | `sw.js` | Offline cache. Reads its version from `version.js`. |
-| `check.html` | Checks every dataset, then plans sample days in the real app. |
-| `scripts/*.ps1` | Windows PowerShell helpers: export or import a dataset CSV, download the OSM and weather sources. |
+| `check.html` | Quick check: every dataset, then 12 sample days in the real app. |
+| `tests/` | The full test run (`tests/run.html`) and the expected plans (`tests/golden/plans.json`). See `tests/README.md`. |
+| `CHANGELOG.md` | One line per version. |
+| `scripts/*.ps1` | Windows PowerShell helpers: `test.ps1` runs all the tests, `serve.ps1` is a local web server, plus export or import a dataset CSV and download the OSM and weather sources. |
 | `vendor/` | d3 and jsPDF, served locally. |
 | `icons/`, `manifest.webmanifest` | App icons and install manifest. |
 | `_BACKUP/` | Local only, gitignored: backups. |
-| `_sources/` | Raw source downloads and the scripts that fetch them (Disney calendar, showtimes, dining, restrooms; Queue-Times; OpenStreetMap). Uploaded with the app. |
+| `_sources/` | Raw source downloads and the scripts that fetch and parse them (Disney calendar, showtimes, dining, restrooms; Queue-Times; OpenStreetMap). Uploaded with the app, except the `raw` folders and `shows/js` (Disney's own files, kept local; see `.gitignore`). |
 
 ## Where the code lives
 
@@ -58,10 +60,11 @@ Follow **[UPDATING.md](UPDATING.md)**. If you're asked to "update all the data" 
 - **Back up before editing.** Copy files to `_BACKUP/<date>-<change>/` first.
 - **Never commit or push without the owner's go-ahead.**
 - **Every change:**
-  - bump the version in `version.js`;
-  - open `check.html`;
-  - run its sample plans, which need http, e.g. `python -m http.server`;
+  - bump the version in `version.js` and add a line to `CHANGELOG.md`;
+  - run the tests: `powershell -ExecutionPolicy Bypass -File .\scripts\test.ps1` (about two minutes; see `tests/README.md`);
+  - if plans changed on purpose, read the listed differences, then save them with `test.ps1 -Update`;
   - plan a day in each park.
+- **No Python or Node on the owner's PC:** helpers are PowerShell only. `scripts\serve.ps1` serves the folder at `http://localhost:8000/` when something needs http.
 - **Keep the docs in step.**
   - Update `README.md` when features or sources change.
   - Update `UPDATING.md` when a dataset's source or format changes.

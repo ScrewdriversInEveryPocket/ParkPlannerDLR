@@ -1,2 +1,8 @@
 # Keep the local backups out of the repository. Everything else is uploaded.
 _BACKUP/
+# Downloads from Disney's site (its pages, feeds and website code) stay on this PC: the parse scripts can
+# re-read them, but they're Disney's files, so they aren't published. The parsed CSVs next to them are.
+_sources/*/raw/
+_sources/shows/js/
+# test results change on every run (the expected plans in tests/golden are kept)
+tests/results/

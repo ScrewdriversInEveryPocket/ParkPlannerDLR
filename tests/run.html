@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App tests</title>
+<!-- DLR Planner: the full test run. scripts\test.ps1 opens it for you and prints the result; you can also open
+     http://localhost:8000/tests/run.html while scripts\serve.ps1 is running. It drives the real app in a hidden
+     frame, as if today were TODAY below, so the results don't drift from day to day. It changes nothing in the
+     app's files, and your saved settings are put back afterwards. See tests/README.md. -->
+<style>
+  :root { --bg: #fffaf3; --fg: #2b2440; --muted: #6b6480; --line: #eadfce; --ok: #0f9d8f; --bad: #d6336c; --warn: #b7791f; --panel: #fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #17141f; --fg: #ece8f5; --muted: #a9a3bb; --line: #3a3348; --ok: #3ddbc9; --bad: #ff7eb6; --warn: #fbbf24; --panel: #211c2c; } }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; } h2 { font-size: 1.1rem; margin: 24px 0 8px; }
+  p { margin: 0 0 10px; } .muted { color: var(--muted); } .ok { color: var(--ok); } .bad { color: var(--bad); } .warn { color: var(--warn); }
+  .big { font-size: 1.05rem; font-weight: 600; }
+  .box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; overflow-x: auto; }
+  pre { white-space: pre-wrap; font-size: 12px; margin: 6px 0 12px; }
+  button { font: inherit; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); cursor: pointer; }
+  iframe { width: 1280px; height: 900px; border: 0; position: absolute; left: -10000px; top: 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>DLR Planner: app tests</h1>
+  <p class="muted">Checks the data, plans about 300 days in Plan a day against the planner's rules, runs a trip through the wizard, makes both PDFs, and compares 72 of the plans line by line with the expected ones in <code>tests/golden/plans.json</code>.</p>
+  <p id="sum" class="big">Not run yet.</p>
+  <p><button type="button" id="run">Run the tests</button> <button type="button" id="upd" title="Save today's plans as the expected ones (after you've checked the changes are wanted)">Save these plans as expected</button></p>
+  <div id="out"></div>
+</main>
+<script>
+(function () {
+  // The app acts as if this were today. Changing it changes every plan, so save new expected plans after (test.ps1 -Update).
+  const TODAY = '2026-11-02';
+  // days ahead of TODAY to plan: published hours and showtimes, then typical hours further out
+  const DAYS_AHEAD = [3, 10, 25, 40, 75, 130, 200, 300];
+  // plans on these days are also compared line by line with tests/golden/plans.json (all 12 settings, all parks)
+  const GOLDEN_AHEAD = [10, 130];
+  const PARKS = ['Disneyland', 'California Adventure', 'Hopper'];
+  const q = new URLSearchParams(location.search), AUTO = q.has('auto'), UPDATE = q.has('update');
+  const $ = (s) => document.querySelector(s);
+  const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  const wait = (ms) => new Promise(r => setTimeout(r, ms));
+  const addDays = (iso, n) => { const d = new Date(iso + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+  const clock = (t) => { const h = Math.floor(t + 1e-9), m = Math.round((t - h) * 60); return `${h}:${String(m).padStart(2, '0')}`; };
+
+  // Settings to plan each day with. Each one changes a few things from the app's defaults.
+  // rides: which quick pick (head = Headliners only, all = Everything, kids = Good for little kids)
+  const VARIANTS = {
+    'default': { rides: 'head' },
+    'everything-no-break': { rides: 'all', brk: 0 },
+    'little-kids-relaxed': { rides: 'kids', pace: 'relaxed', hotel: 'art', height: 40 },
+    'go-go-no-ll-10am': { rides: 'head', pace: 'fast', ll: false, win: { start: '10' } },
+    'repeats-back-to-back': { rides: 'head', b2b: true, reps: 3 },
+    'repeats-hour-apart': { rides: 'head', b2b: false, reps: 3, brk: 0 },
+    'break-2h-at-1pm': { rides: 'all', brk: 2, brkAt: '13', hotel: 'dlh' },
+    'leave-by-4pm': { rides: 'head', win: { end: 'set', endAt: '16:00' } },
+    'start-1pm': { rides: 'head', win: { start: '13' } },
+    'single-pass-fewest-steps': { rides: 'all', single: true, walk: 4, brk: 0 },
+    'sit-down-meals': { rides: 'head', dine: true, hotel: 'pp' },
+    'custom-hotel-4h-break': { rides: 'all', hotel: 'custom', custom: 45, brk: 4, walk: 0 }
+  };
+
+  let results, golden = null, fresh = {};
+  const section = (name) => { const s = { name, pass: 0, fail: 0, items: [] }; results.sections.push(s); return s; };
+  const check = (s, name, ok, msg) => { if (ok) s.pass++; else { s.fail++; s.items.push({ name, msg }); } };
+
+  // ---- the planner's rules, checked on every plan. segs: [{ park, start, end, ctx, steps }], times in hours
+  function rules(segs, o) {
+    const bad = [], all = segs.flatMap(g => g.steps.map(s => Object.assign({ seg: g }, s)));
+    segs.forEach(g => {
+      g.steps.forEach((s, i) => {
+        const n = g.steps[i + 1];
+        if (n && n.t < s.t - 1 / 60) bad.push(`steps out of order at ${clock(s.t)} (${s.ride || s.meal})`);
+        if (s.mealKind === 'lunch' && s.t < 11 - 1e-6) bad.push(`lunch at ${clock(s.t)}, before 11 am`);
+        if (s.mealKind && (s.t < g.start - 0.02 || s.t + (s.dur || 0) / 60 > g.end + 0.05)) bad.push(`${s.mealKind} at ${clock(s.t)} outside the time in the park (${clock(g.start)}–${clock(g.end)})`);
+        if (s.ride && s.r && s.r.refurb) bad.push(`${s.r.name} is planned while closed for refurbishment`);
+        if (s.ride && s.t > g.ctx.close + 0.01) bad.push(`${s.ride} at ${clock(s.t)}, after ${g.park} closes (${clock(g.ctx.close)})`);
+        if (s.ride && /undefined|NaN/.test(s.ride)) bad.push(`ride name reads "${s.ride}"`);
+      });
+    });
+    // repeat rides at least an hour apart unless back to back is allowed
+    if (!o.b2b) {
+      const last = new Map();
+      all.filter(s => s.ride && s.r).forEach(s => { const k = s.r.park + '|' + s.r.name; if (last.has(k) && s.t - last.get(k) < 1 - 0.02) bad.push(`${s.r.name} twice within an hour (${clock(last.get(k))}, ${clock(s.t)})`); last.set(k, s.t); });
+    }
+    // a day in the park over lunchtime eats lunch there
+    const inPark = segs.reduce((h, g) => h + Math.max(0, Math.min(g.end, 14) - Math.max(g.start, 11.5)), 0);
+    if (inPark >= 2.4 && !all.some(s => s.mealKind === 'lunch')) bad.push('no lunch, though the plan is in the park from 11:30 to 2');
+    return bad;
+  }
+  // the plan as the app built it, as segments the rules can read
+  function segsOf(w) {
+    const L = w.eval('dpLast'), P = L.P, out = [];
+    if (P.hop) {
+      [['day', P.H], ['with break', P.Hb]].forEach(([nm, H]) => { if (H) out.push([nm, H.segs.map(g => ({ park: g.park, start: g.start, end: g.end, ctx: g.ctx, steps: g.steps }))]); });
+    } else {
+      const c = L.ctx, W = P.win;
+      out.push(['stay', [{ park: c.park, start: W.t0, end: P.stay.leave, ctx: c, steps: P.stay.plan.steps }]]);
+      if (P.split) out.push(['split', [{ park: c.park, start: W.t0, end: P.split.brk, ctx: c, steps: P.split.morning.steps }, { park: c.park, start: P.split.ret, end: P.split.leave, ctx: c, steps: P.split.evening.steps }]]);
+    }
+    return out;
+  }
+  // what the page shows for the plan, kept as lines so changes are easy to read
+  const SHOWN = ['dp-info', 'dp-warn', 'dp-stay-times', 'dp-stay-stats', 'dp-stay-steps', 'dp-stay-note', 'dp-split-times', 'dp-split-stats', 'dp-split-steps', 'dp-split-note'];
+  // (one line per list item or row; textContent, since the plan not shown on screen is hidden)
+  const tidy = (t) => t.replace(/\s+/g, ' ').trim();
+  const shown = (doc) => SHOWN.flatMap(id => {
+    const e = doc.getElementById(id); if (!e || !tidy(e.textContent)) return [];
+    const line = (c) => c.children.length ? [...c.children].map(x => tidy(x.textContent)).filter(Boolean).join(' | ') : tidy(c.textContent);
+    const lines = e.children.length ? [...e.children].map(line) : [tidy(e.textContent)];
+    return [`[${id.replace('dp-', '')}]`, ...lines.filter(Boolean)];
+  });
+
+  async function loadApp() {
+    const f = el('iframe'); f.src = '../index.html?today=' + TODAY; document.body.append(f);
+    await new Promise(r => f.addEventListener('load', r, { once: true }));
+    const w = f.contentWindow; w.__errs = [];
+    w.addEventListener('error', (e) => w.__errs.push(`${e.message} (${(e.filename || '').replace(/^.*\//, '')}:${e.lineno})`));
+    w.addEventListener('unhandledrejection', (e) => w.__errs.push(String(e.reason && e.reason.stack || e.reason)));
+    for (let i = 0; i < 50 && !w.document.querySelector('#dp-rides button'); i++) await wait(200); // data loaded and drawn
+    return f;
+  }
+  const errsSince = (w, n) => w.__errs.slice(n);
+
+  async function run() {
+    $('#run').disabled = $('#upd').disabled = true; $('#out').textContent = ''; $('#sum').textContent = 'Running…';
+    results = { app: '', today: TODAY, started: new Date().toISOString(), sections: [], golden: null };
+    let saved = {}; try { Object.keys(localStorage).filter(k => k.startsWith('pdp-')).forEach(k => { saved[k] = localStorage.getItem(k); }); } catch (e) { /* private window */ }
+    try { golden = await (await fetch('golden/plans.json', { cache: 'no-store' })).json(); } catch (e) { golden = null; }
+    const f = await loadApp(), w = f.contentWindow, doc = f.contentDocument;
+    results.app = String(w.PDP_VERSION || '');
+
+    // 1. data and loading
+    const S1 = section('Data and loading');
+    (w.PDP_DATA_ISSUES || []).filter(x => x.level === 'error').forEach(x => check(S1, `data/${x.id}.js`, false, x.msg));
+    check(S1, 'every data file checks out', !(w.PDP_DATA_ISSUES || []).some(x => x.level === 'error'), 'see above');
+    check(S1, 'the app loads with no errors', !w.__errs.length, w.__errs.join('; '));
+    check(S1, 'the test date took effect', w.eval('todayISO()') === TODAY, 'todayISO() is ' + w.eval('todayISO()'));
+    for (const b of doc.querySelectorAll('[role=tab][data-tab]')) { const n = w.__errs.length; b.click(); await wait(250); check(S1, `the ${b.textContent.trim()} tab opens`, !errsSince(w, n).length, errsSince(w, n).join('; ')); }
+    const moreErr = /NaN|undefined|Invalid Date/;
+
+    // 2. Plan a day: every park, date and setting
+    const S2 = section('Plan a day: the planner rules');
+    doc.getElementById('tab-plan').click(); await wait(300);
+    w.pdfSave = async (pdf, name) => { w.__pdf = { name, pages: pdf.getNumberOfPages(), text: pdf.output() }; };
+    const base = w.eval('JSON.parse(JSON.stringify({ brk: dpState.brk, brkAt: dpState.brkAt, b2b: dpState.b2b, ll: dpState.ll, single: dpState.single, hotel: dpState.hotel, custom: dpState.custom, pace: dpState.pace, start: dpState.start, walk: dpState.walk, height: dpState.height, win: dpState.win }))');
+    const D = w.eval('Object.fromEntries(DAY_IDS.map(id => [id, dash.data(id).data]))');
+    let n = 0;
+    for (const ahead of DAYS_AHEAD) {
+      const iso = addDays(TODAY, ahead);
+      for (const park of PARKS) {
+        for (const [vn, v] of Object.entries(VARIANTS)) {
+          const key = `${iso} ${park} ${vn}`, e0 = w.__errs.length;
+          try {
+            const st = w.eval('dpState');
+            Object.assign(st, JSON.parse(JSON.stringify(base)), { date: iso, park, dine: { lunch: null, dinner: null } });
+            ['brk', 'brkAt', 'b2b', 'll', 'single', 'hotel', 'custom', 'pace', 'walk', 'height'].forEach(k => { if (v[k] !== undefined) st[k] = v[k]; });
+            if (v.win) st.win = Object.assign({}, st.win, v.win);
+            for (const p of ['Disneyland', 'California Adventure']) {
+              const ctx = w.dayContext(iso, p, D);
+              const pick = v.rides === 'all' ? () => true : v.rides === 'kids' ? w.eval('kidPick') : (r) => r.head;
+              const names = ctx.rides.filter(pick).map(r => r.name);
+              st.rides[p] = new w.Set(names);
+              st.reps[p] = new w.Map(v.reps ? names.slice(0, v.reps).map(x => [x, 2]) : []);
+              if (v.dine && p === (park === 'Hopper' ? 'Disneyland' : park)) {
+                const picks = (w.eval('DINE_PICKS')[p] || []).filter(r => r.walkup || r.book);
+                const lunch = picks.find(r => r.serves.includes('lunch')), dinner = picks.find(r => r.serves.includes('dinner') && r !== lunch);
+                st.dine = { lunch: lunch ? lunch.key : null, dinner: dinner ? dinner.key : null };
+              }
+            }
+            w.drawDay(); n++;
+            const errs = errsSince(w, e0);
+            const lines = shown(doc);
+            if (GOLDEN_AHEAD.includes(ahead)) fresh[key] = lines;
+            const odd = lines.filter(x => moreErr.test(x));
+            const bad = [].concat(errs, odd.map(x => `shows "${x}"`));
+            segsOf(w).forEach(([which, segs]) => rules(segs, { b2b: w.eval('dpState.b2b') }).forEach(b => bad.push(`${which}: ${b}`)));
+            const L = w.eval('dpLast'), P = L.P, picked = ['Disneyland', 'California Adventure'].some(p => w.eval('dpState').rides[p].size);
+            const done = P.hop ? P.H.done : P.stay.done, open = P.hop ? true : L.ctx.close > L.ctx.open;
+            if (picked && open && !done) bad.push('no rides planned');
+            if (ahead === 10 && vn === 'default') { w.__pdf = null; await w.exportDayPDF(); if (!w.__pdf || !w.__pdf.pages) bad.push('day PDF not made'); else if (/\((?:[^)]*?)(NaN|undefined)[^)]*\) Tj/.test(w.__pdf.text)) bad.push('day PDF shows NaN or undefined'); }
+            check(S2, key, !bad.length, [...new Set(bad)].join('; '));
+          } catch (err) { check(S2, key, false, 'crashed: ' + (err && err.stack || err)); }
+          if (n % 12 === 0) { $('#sum').textContent = `Running… ${n} plans`; await wait(0); }
+        }
+      }
+    }
+
+    // 3. Trip wizard: a 3-day trip with a break day, every step, then the trip PDF
+    const S3 = section('Trip wizard');
+    try {
+      doc.getElementById('tab-wizard').click(); await wait(300);
+      const tp = w.eval('tpState'); Object.assign(tp, { days: 3, rest: 1, ticket: 'hopper', auto: false, start: addDays(TODAY, 30), manual: null });
+      w.eval('wz.step = 0; wz.days = null; wz.key = ""'); w.syncGlobals();
+      const steps = [];
+      const visible = (id) => { const b = doc.getElementById(id); return b && b.offsetParent ? b : null; };
+      for (const id of ['wz-trip-next', 'wz-dates-next', 'wz-setup-next']) { const e0 = w.__errs.length, b = visible(id); if (!b) { check(S3, `button ${id}`, false, 'not shown'); continue; } b.click(); await wait(400); steps.push(id); check(S3, `step after ${id}`, !errsSince(w, e0).length, errsSince(w, e0).join('; ')); }
+      // then the rides step (spread them, keeping Park Hopper if asked) and Next through each day page
+      for (let i = 0; i < 12; i++) {
+        const nx = [...doc.querySelectorAll('#panel-wizard button')].find(b => b.offsetParent && /^(Next|Spread across|No, keep)/.test(b.textContent.trim()) && !['wz-trip-next', 'wz-dates-next', 'wz-setup-next'].includes(b.id));
+        if (!nx) break;
+        const e0 = w.__errs.length, label = nx.textContent.trim(); nx.click(); await wait(400);
+        const text = doc.getElementById('panel-wizard').innerText, odd = text.split('\n').filter(x => moreErr.test(x));
+        check(S3, label, !errsSince(w, e0).length && !odd.length, errsSince(w, e0).concat(odd.map(x => `shows "${x.trim()}"`)).join('; '));
+      }
+      const days = w.eval('wz.days ? Object.keys(wz.days).length : 0');
+      check(S3, 'the wizard planned the park days', days >= 3, `${days} days planned`);
+      w.__pdf = null; const e0 = w.__errs.length; await w.exportTripPDF();
+      check(S3, 'trip PDF made', !!(w.__pdf && w.__pdf.pages >= 2) && !errsSince(w, e0).length, w.__pdf ? `${w.__pdf.pages} pages; ${errsSince(w, e0).join('; ')}` : 'no PDF; ' + errsSince(w, e0).join('; '));
+      if (w.__pdf) check(S3, 'trip PDF has no NaN or undefined', !/\((?:[^)]*?)(NaN|undefined)[^)]*\) Tj/.test(w.__pdf.text), 'found in the PDF text');
+    } catch (err) { check(S3, 'wizard run', false, 'crashed: ' + (err && err.stack || err)); }
+
+    // 4. compare every plan with the expected ones
+    const S4 = section('Plans match the expected ones');
+    const G = { compared: 0, changed: [], added: [], missing: [] };
+    if (!golden) { check(S4, 'expected plans', false, 'tests/golden/plans.json not found: save them with  scripts\\test.ps1 -Update  once the plans look right'); }
+    else {
+      Object.keys(fresh).forEach(k => {
+        if (!golden[k]) { G.added.push(k); return; }
+        G.compared++;
+        const a = golden[k], b = fresh[k];
+        if (a.join('\n') === b.join('\n')) { S4.pass++; return; }
+        const gone = a.filter(x => !b.includes(x)), came = b.filter(x => !a.includes(x));
+        G.changed.push(k); S4.fail++;
+        S4.items.push({ name: k, msg: [...gone.slice(0, 6).map(x => '- ' + x), ...came.slice(0, 6).map(x => '+ ' + x)].join('\n') || 'same lines, different order' });
+      });
+      G.missing = Object.keys(golden).filter(k => !fresh[k]);
+      if (G.added.length || G.missing.length) check(S4, 'the same plans were made', false, `${G.added.length} new, ${G.missing.length} no longer made: save expected plans again if the settings list changed`);
+    }
+    results.golden = G;
+    // saving new expected plans: the differences above are what's being accepted, so they don't count as failures
+    if (UPDATE) { S4.pass += S4.fail; S4.fail = 0; S4.items = []; }
+
+    // put things back: remove the app, then restore the viewer's saved settings
+    f.remove(); await wait(300);
+    try { Object.keys(localStorage).filter(k => k.startsWith('pdp-')).forEach(k => localStorage.removeItem(k)); Object.entries(saved).forEach(([k, v]) => localStorage.setItem(k, v)); } catch (e) { /* ignore */ }
+
+    results.finished = new Date().toISOString();
+    results.pass = results.sections.reduce((a, s) => a + s.pass, 0); results.fail = results.sections.reduce((a, s) => a + s.fail, 0);
+    show();
+    if (UPDATE) await save('tests/golden/plans.json', fresh, true);
+    if (AUTO) await save('tests/results/latest.json', results);
+    $('#run').disabled = $('#upd').disabled = false;
+  }
+
+  // saving goes through scripts\serve.ps1, which only writes inside tests\results and tests\golden
+  async function save(file, obj, pretty) {
+    try { const r = await fetch('/__save?file=' + encodeURIComponent(file), { method: 'POST', body: JSON.stringify(obj, null, pretty ? 1 : 0) }); if (!r.ok) throw new Error(r.status); $('#out').prepend(el('p', 'muted', `Saved ${file}.`)); }
+    catch (e) { $('#out').prepend(el('p', 'bad', `Couldn't save ${file} (${e.message}). Saving needs scripts\\serve.ps1.`)); }
+  }
+
+  function show() {
+    const R = results;
+    $('#sum').replaceChildren(el('span', R.fail ? 'bad' : 'ok', R.fail ? `${R.fail} of ${R.pass + R.fail} checks failed.` : `All ${R.pass} checks passed.`));
+    R.sections.forEach(s => {
+      $('#out').append(el('h2', '', `${s.name}: ${s.fail ? s.fail + ' failed, ' : ''}${s.pass} passed`));
+      if (!s.items.length) return;
+      const box = el('div', 'box');
+      s.items.slice(0, 60).forEach(x => { box.append(el('p', 'bad', x.name)); if (x.msg) box.append(el('pre', '', x.msg)); });
+      if (s.items.length > 60) box.append(el('p', 'muted', `…and ${s.items.length - 60} more.`));
+      $('#out').append(box);
+    });
+  }
+
+  $('#run').addEventListener('click', run);
+  $('#upd').addEventListener('click', async () => { if (!results) await run(); await save('tests/golden/plans.json', fresh, true); });
+  if (!location.protocol.startsWith('http')) { $('#sum').textContent = 'Open this page through scripts\\serve.ps1 (http://localhost:8000/tests/run.html), not straight from the folder.'; $('#run').disabled = $('#upd').disabled = true; }
+  else if (AUTO || UPDATE) run().catch(err => { $('#sum').textContent = 'The test run crashed: ' + err; if (AUTO) save('tests/results/latest.json', { crashed: String(err && err.stack || err), fail: 1, pass: 0, sections: [] }); });
+})();
+</script>
+</body>
+</html>
