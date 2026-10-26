@@ -5,7 +5,7 @@
   Replaces the CSV text inside data\<id>.js with the CSV file (default _sources\edit\<id>.csv),
   after checking it has exactly the same header line. Sets the header's "pulled" date (default
   today) and, if given, "until" and "review". Copies the old file to _BACKUP first and bumps the
-  cache version in sw.js so installed copies pick up the change. Afterwards open check.html.
+  app version in version.js so installed copies pick up the change. Afterwards open check.html.
 .EXAMPLE
   .\scripts\import-dataset.ps1 park_hours_published -Until 2027-01-31 -Review 2026-12-20
 .EXAMPLE
@@ -53,13 +53,13 @@ if ($Review) { $head = & $set $head 'review' $Review }
 [IO.File]::WriteAllText($file, $head + $new + "`n" + '`);' + "`n", $utf8)
 
 # bump the offline cache so installed copies of the app download the new data
-$swPath = Join-Path $root 'sw.js'
+$swPath = Join-Path $root 'version.js'
 $sw = [IO.File]::ReadAllText($swPath, $utf8)
-$vm = [regex]::Match($sw, "VERSION = 'pdp-v(\d+)'")
+$vm = [regex]::Match($sw, "PDP_VERSION = 'pdp-v(\d+)'")
 if ($vm.Success) {
   $next = [int]$vm.Groups[1].Value + 1
-  [IO.File]::WriteAllText($swPath, $sw.Replace($vm.Value, "VERSION = 'pdp-v$next'"), $utf8)
-  Write-Host "sw.js cache version is now pdp-v$next."
+  [IO.File]::WriteAllText($swPath, $sw.Replace($vm.Value, "PDP_VERSION = 'pdp-v$next'"), $utf8)
+  Write-Host "version.js is now pdp-v$next."
 }
 $oldRows = ($oldCsv -split "`n").Count - 1; $newRows = ($new -split "`n").Count - 1
 Write-Host "Updated data\$Id.js: $oldRows rows before, $newRows now; pulled $Pulled$(if ($Until) { ", until $Until" })$(if ($Review) { ", review $Review" })."

@@ -4323,16 +4323,14 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
 })();
 
 </script>
+<script src="version.js"></script>
 <script>
-if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
-// app version at the top: the VERSION in sw.js (its only home), from the service worker that served this page,
-// or from sw.js itself on a first visit
+// the offline cache checks version.js too, so a new version is picked up
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).catch(() => {});
+// app version at the top, from version.js (its only home); works when the page is opened straight from the folder too
 (function showVersion() {
-  const el = document.getElementById('app-ver'); if (!el) return;
-  const show = (v) => { const m = /pdp-v(\d+)/.exec(String(v || '')); if (m) el.textContent = 'v' + m[1]; };
-  const sw = navigator.serviceWorker;
-  if (sw && sw.controller) { const ch = new MessageChannel(); ch.port1.onmessage = (e) => show(e.data); sw.controller.postMessage('version', [ch.port2]); }
-  else if (location.protocol.startsWith('http')) fetch('sw.js', { cache: 'no-store' }).then(r => r.text()).then(show).catch(() => {});
+  const el = document.getElementById('app-ver'), m = /pdp-v(\d+)/.exec(String(window.PDP_VERSION || ''));
+  if (el && m) el.textContent = 'v' + m[1];
 })();
 </script>
 </body></html>

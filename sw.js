@@ -1,8 +1,8 @@
-// DLR Planner offline cache. Bump VERSION when files change; the app shows it at the top (e.g. v34).
+// DLR Planner offline cache. The version lives in version.js: raise it there when files change.
 // The dataset list comes from data/manifest.js, so a new data file is cached without editing this one.
-importScripts('./data/manifest.js');
-const VERSION = 'pdp-v39';
-const FILES = ['./', './index.html', './shim.js', './vendor/d3.min.js', './vendor/jspdf.umd.min.js', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './data/manifest.js']
+importScripts('./version.js', './data/manifest.js');
+const VERSION = self.PDP_VERSION;
+const FILES = ['./', './index.html', './shim.js', './vendor/d3.min.js', './vendor/jspdf.umd.min.js', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './data/manifest.js', './version.js']
   .concat(self.PDP_FILES.map((f) => './data/' + f + '.js'));
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(VERSION).then((c) => c.addAll(FILES)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== VERSION).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });

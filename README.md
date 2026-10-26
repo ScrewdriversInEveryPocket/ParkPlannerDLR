@@ -274,12 +274,12 @@ If you use Claude Code, `CLAUDE.md` gives it the same pointers and the project's
 
 ## Hosting your own copy
 
-It's a static site: just `index.html`, `shim.js`, `sw.js`, `manifest.webmanifest` and the `data`, `vendor` and `icons` folders (`check.html`, `scripts` and the guides are optional). Upload the folder unchanged to any static host:
+It's a static site: just `index.html`, `shim.js`, `sw.js`, `version.js`, `manifest.webmanifest` and the `data`, `vendor` and `icons` folders (`check.html`, `scripts` and the guides are optional). Upload the folder unchanged to any static host:
 
 - **[GitHub Pages](https://pages.github.com):** in this repository go to *Settings → Pages* and publish from the main branch.
 - **[Netlify Drop](https://app.netlify.com/drop):** drag the folder onto the page.
 
-Once it's on a web address, phones can install it with *Add to Home Screen* and it keeps working offline. If you change any files, bump `VERSION` in `sw.js` so installed copies pick up the update.
+Once it's on a web address, phones can install it with *Add to Home Screen* and it keeps working offline. If you change any files, bump the version in `version.js` so installed copies pick up the update.
 
 ---
 

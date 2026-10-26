@@ -10,7 +10,8 @@ The Disneyland Resort Planning Tool by ScrewdriversInEveryPocket ("DLR Planner" 
 | `shim.js` | Data layer (`window.dash`). It parses and checks each dataset, runs calcs, and fetches the live forecast. |
 | `data/*.js` | One bundled dataset per file. Each has CSV text plus a header: source, `pulled`, `until`, `review`, `columns`. |
 | `data/manifest.js` | Lists every data file. Both `index.html` and `sw.js` read it. |
-| `sw.js` | Offline cache. Bump `VERSION` whenever any file changes. It's the app's only version number: the page shows it at the top (e.g. v31). |
+| `version.js` | The app's only version number (`pdp-vNN`). Raise it whenever any file changes: `sw.js` uses it to refresh the offline cache, and the page shows it at the top. |
+| `sw.js` | Offline cache. Reads its version from `version.js`. |
 | `check.html` | Checks every dataset, then plans sample days in the real app. |
 | `scripts/*.ps1` | Windows PowerShell helpers: export or import a dataset CSV, download the OSM and weather sources. |
 | `vendor/` | d3 and jsPDF, served locally. |
@@ -33,7 +34,7 @@ Follow **[UPDATING.md](UPDATING.md)**. If you're asked to "update all the data" 
 - **Back up before editing.** Copy files to `_BACKUP/<date>-<change>/` first.
 - **Never commit or push without the owner's go-ahead.**
 - **Every change:**
-  - bump `VERSION` in `sw.js`;
+  - bump the version in `version.js`;
   - open `check.html`;
   - run its sample plans, which need http, e.g. `python -m http.server`;
   - plan a day in each park.

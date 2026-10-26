@@ -17,7 +17,7 @@ If you were asked to update all the data, work through this list in order. It go
    - save the raw download under `_sources`.
 3. If a source hasn't published anything new, leave that dataset alone. For example, Disney may not have announced next year's events yet. Still check it, and set `review` to a date when it's worth looking again.
 4. If a source is blocked or needs a login, stop for that dataset and say so. Never get around a block, and never fill gaps with guesses dressed up as data. A plan that says "typical hours" is better than one built on made-up hours.
-5. Follow **The routine** below for backups, the `sw.js` bump and `check.html`.
+5. Follow **The routine** below for backups, the version bump and `check.html`.
 6. Finish with a short summary for the owner covering:
    - what was updated, and the new "covers to" dates;
    - what had nothing new;
@@ -97,7 +97,7 @@ it's a small world,Disneyland,2026-10-30,2026-11-12,Closed for its holiday overl
 4. **Update the header.**
    - Set `pulled` to today, and change `until` and `review` if they've moved.
    - Change `source` and `url` if the source changed, and keep any `license` credit.
-5. **Bump the cache.** Raise `VERSION` in `sw.js` by one (e.g. `pdp-v27` → `pdp-v28`) so installed copies download the new files. The app shows this number at the top (e.g. v28), so you can tell which version you're looking at. `import-dataset.ps1` does this too.
+5. **Bump the cache.** Raise the version in `version.js` by one (e.g. `pdp-v27` → `pdp-v28`) so installed copies download the new files. The app shows this number at the top (e.g. v28), so you can tell which version you're looking at. `import-dataset.ps1` does this too.
 6. **Check.**
    - Open `check.html` and look for "All datasets passed".
    - Then press **Run sample plans**. This needs a web address, so use GitHub Pages or a local server such as `python -m http.server`, then open `http://localhost:8000/check.html`.
@@ -121,7 +121,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\import-dataset.ps1 park_hours
   - checks the header line matches;
   - backs up the old file to `_BACKUP`;
   - writes the new CSV and dates;
-  - bumps `sw.js`.
+  - bumps `version.js`.
 
   `-Pulled` defaults to today.
 - **`fetch-osm.ps1`** downloads a fresh OpenStreetMap extract of both parks to `_sources\osm\`.
@@ -404,6 +404,6 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
 1. Copy an existing `data/*.js` file, rename it, and fill in the header (`id` must match the file name) and the CSV.
 2. Add its id to `data/manifest.js`.
 3. Read it in `index.html` with `dash.data('<id>').data` (an array of row objects whose values are all strings).
-4. Bump `sw.js`, then run `check.html`.
+4. Bump `version.js`, then run `check.html`.
 
 To add a column, add it to both the CSV header and `columns`. To find every place a dataset is used, search `index.html` for its id.
