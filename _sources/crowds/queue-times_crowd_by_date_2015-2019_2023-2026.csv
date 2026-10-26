@@ -1,0 +1,6437 @@
+date,park,crowd_pct
+2015-01-01,Disneyland,50
+2015-01-02,Disneyland,90
+2015-01-03,Disneyland,70
+2015-01-04,Disneyland,30
+2015-01-05,Disneyland,54
+2015-01-06,Disneyland,54
+2015-01-07,Disneyland,15
+2015-01-08,Disneyland,17
+2015-01-09,Disneyland,16
+2015-01-10,Disneyland,21
+2015-01-11,Disneyland,0
+2015-01-12,Disneyland,9
+2015-01-13,Disneyland,6
+2015-01-14,Disneyland,1
+2015-01-15,Disneyland,2
+2015-01-16,Disneyland,11
+2015-01-17,Disneyland,36
+2015-01-18,Disneyland,53
+2015-01-19,Disneyland,7
+2015-01-20,Disneyland,6
+2015-01-21,Disneyland,0
+2015-01-22,Disneyland,0
+2015-01-23,Disneyland,0
+2015-01-24,Disneyland,9
+2015-01-25,Disneyland,3
+2015-01-26,Disneyland,0
+2015-01-27,Disneyland,1
+2015-01-28,Disneyland,8
+2015-01-29,Disneyland,11
+2015-01-30,Disneyland,7
+2015-01-31,Disneyland,41
+2015-02-01,Disneyland,22
+2015-02-02,Disneyland,2
+2015-02-03,Disneyland,13
+2015-02-04,Disneyland,4
+2015-02-05,Disneyland,8
+2015-02-06,Disneyland,17
+2015-02-07,Disneyland,71
+2015-02-08,Disneyland,31
+2015-02-09,Disneyland,20
+2015-02-10,Disneyland,11
+2015-02-11,Disneyland,3
+2015-02-12,Disneyland,17
+2015-02-13,Disneyland,25
+2015-02-14,Disneyland,86
+2015-02-15,Disneyland,55
+2015-02-16,Disneyland,39
+2015-02-17,Disneyland,46
+2015-02-18,Disneyland,10
+2015-02-19,Disneyland,11
+2015-02-20,Disneyland,33
+2015-02-21,Disneyland,33
+2015-02-22,Disneyland,3
+2015-02-23,Disneyland,22
+2015-02-24,Disneyland,37
+2015-02-25,Disneyland,25
+2015-02-26,Disneyland,55
+2015-02-27,Disneyland,51
+2015-02-28,Disneyland,22
+2015-03-01,Disneyland,15
+2015-03-02,Disneyland,7
+2015-03-03,Disneyland,15
+2015-03-04,Disneyland,2
+2015-03-05,Disneyland,3
+2015-03-06,Disneyland,11
+2015-03-07,Disneyland,46
+2015-03-08,Disneyland,21
+2015-03-09,Disneyland,44
+2015-03-10,Disneyland,36
+2015-03-11,Disneyland,25
+2015-03-12,Disneyland,22
+2015-03-13,Disneyland,18
+2015-03-14,Disneyland,39
+2015-03-15,Disneyland,34
+2015-03-16,Disneyland,35
+2015-03-17,Disneyland,48
+2015-03-18,Disneyland,39
+2015-03-19,Disneyland,28
+2015-03-20,Disneyland,34
+2015-03-21,Disneyland,56
+2015-03-22,Disneyland,26
+2015-03-23,Disneyland,64
+2015-03-24,Disneyland,57
+2015-03-25,Disneyland,29
+2015-03-26,Disneyland,28
+2015-03-27,Disneyland,13
+2015-03-28,Disneyland,34
+2015-03-29,Disneyland,10
+2015-03-30,Disneyland,79
+2015-03-31,Disneyland,71
+2015-04-01,Disneyland,62
+2015-04-02,Disneyland,56
+2015-04-03,Disneyland,25
+2015-04-04,Disneyland,30
+2015-04-05,Disneyland,28
+2015-04-06,Disneyland,83
+2015-04-07,Disneyland,60
+2015-04-08,Disneyland,79
+2015-04-09,Disneyland,76
+2015-04-10,Disneyland,64
+2015-04-11,Disneyland,53
+2015-04-12,Disneyland,32
+2015-04-13,Disneyland,15
+2015-04-14,Disneyland,9
+2015-04-15,Disneyland,5
+2015-04-16,Disneyland,8
+2015-04-17,Disneyland,10
+2015-04-18,Disneyland,26
+2015-04-19,Disneyland,26
+2015-04-20,Disneyland,20
+2015-04-21,Disneyland,9
+2015-04-22,Disneyland,5
+2015-04-23,Disneyland,15
+2015-04-24,Disneyland,57
+2015-04-25,Disneyland,56
+2015-04-26,Disneyland,50
+2015-04-27,Disneyland,15
+2015-04-28,Disneyland,7
+2015-04-29,Disneyland,7
+2015-04-30,Disneyland,8
+2015-05-01,Disneyland,50
+2015-05-02,Disneyland,53
+2015-05-03,Disneyland,33
+2015-05-04,Disneyland,40
+2015-05-05,Disneyland,38
+2015-05-06,Disneyland,18
+2015-05-07,Disneyland,18
+2015-05-08,Disneyland,54
+2015-05-09,Disneyland,70
+2015-05-10,Disneyland,34
+2015-05-11,Disneyland,55
+2015-05-12,Disneyland,41
+2015-05-13,Disneyland,49
+2015-05-14,Disneyland,17
+2015-05-15,Disneyland,28
+2015-05-16,Disneyland,85
+2015-05-17,Disneyland,46
+2015-05-18,Disneyland,69
+2015-05-19,Disneyland,30
+2015-05-20,Disneyland,53
+2015-05-21,Disneyland,17
+2015-05-22,Disneyland,42
+2015-05-23,Disneyland,77
+2015-05-24,Disneyland,61
+2015-05-25,Disneyland,49
+2015-05-26,Disneyland,44
+2015-05-27,Disneyland,40
+2015-05-28,Disneyland,37
+2015-05-29,Disneyland,41
+2015-05-30,Disneyland,50
+2015-05-31,Disneyland,26
+2015-06-01,Disneyland,35
+2015-06-02,Disneyland,49
+2015-06-03,Disneyland,31
+2015-06-04,Disneyland,31
+2015-06-05,Disneyland,19
+2015-06-06,Disneyland,47
+2015-06-07,Disneyland,27
+2015-06-08,Disneyland,40
+2015-06-09,Disneyland,35
+2015-06-10,Disneyland,35
+2015-06-11,Disneyland,47
+2015-06-12,Disneyland,38
+2015-06-13,Disneyland,52
+2015-06-14,Disneyland,48
+2015-06-15,Disneyland,70
+2015-06-16,Disneyland,42
+2015-06-17,Disneyland,53
+2015-06-18,Disneyland,49
+2015-06-19,Disneyland,42
+2015-06-20,Disneyland,38
+2015-06-21,Disneyland,6
+2015-06-22,Disneyland,41
+2015-06-23,Disneyland,41
+2015-06-24,Disneyland,25
+2015-06-25,Disneyland,36
+2015-06-26,Disneyland,46
+2015-06-27,Disneyland,53
+2015-06-28,Disneyland,21
+2015-06-29,Disneyland,49
+2015-06-30,Disneyland,43
+2015-07-01,Disneyland,28
+2015-07-02,Disneyland,25
+2015-07-03,Disneyland,28
+2015-07-04,Disneyland,56
+2015-07-05,Disneyland,3
+2015-07-06,Disneyland,49
+2015-07-07,Disneyland,41
+2015-07-08,Disneyland,36
+2015-07-09,Disneyland,42
+2015-07-10,Disneyland,56
+2015-07-11,Disneyland,44
+2015-07-12,Disneyland,31
+2015-07-13,Disneyland,51
+2015-07-14,Disneyland,64
+2015-07-15,Disneyland,58
+2015-07-16,Disneyland,48
+2015-07-17,Disneyland,43
+2015-07-18,Disneyland,50
+2015-07-19,Disneyland,48
+2015-07-20,Disneyland,66
+2015-07-21,Disneyland,89
+2015-07-22,Disneyland,84
+2015-07-23,Disneyland,73
+2015-07-24,Disneyland,52
+2015-07-25,Disneyland,70
+2015-07-26,Disneyland,63
+2015-07-27,Disneyland,87
+2015-07-28,Disneyland,73
+2015-07-29,Disneyland,66
+2015-07-30,Disneyland,59
+2015-07-31,Disneyland,46
+2017-07-01,California Adventure,16
+2017-07-02,California Adventure,36
+2017-07-03,California Adventure,87
+2017-07-04,California Adventure,14
+2017-07-05,California Adventure,45
+2017-07-06,California Adventure,49
+2017-07-07,California Adventure,11
+2017-07-08,California Adventure,5
+2017-07-09,California Adventure,17
+2017-07-10,California Adventure,22
+2017-07-11,California Adventure,39
+2017-07-12,California Adventure,30
+2017-07-13,California Adventure,23
+2017-07-14,California Adventure,6
+2017-07-15,California Adventure,2
+2017-07-16,California Adventure,16
+2017-07-17,California Adventure,39
+2017-07-18,California Adventure,68
+2017-07-19,California Adventure,48
+2017-07-20,California Adventure,54
+2017-07-21,California Adventure,24
+2017-07-22,California Adventure,23
+2017-07-23,California Adventure,52
+2017-07-24,California Adventure,72
+2017-07-25,California Adventure,64
+2017-07-26,California Adventure,67
+2017-07-27,California Adventure,35
+2017-07-28,California Adventure,26
+2017-07-29,California Adventure,8
+2017-07-30,California Adventure,53
+2017-07-31,California Adventure,30
+2015-08-01,Disneyland,76
+2015-08-02,Disneyland,31
+2015-08-03,Disneyland,64
+2015-08-04,Disneyland,70
+2015-08-05,Disneyland,56
+2015-08-06,Disneyland,74
+2015-08-07,Disneyland,67
+2015-08-08,Disneyland,73
+2015-08-09,Disneyland,50
+2015-08-10,Disneyland,75
+2015-08-11,Disneyland,66
+2015-08-12,Disneyland,41
+2015-08-13,Disneyland,35
+2015-08-14,Disneyland,18
+2015-08-15,Disneyland,46
+2015-08-16,Disneyland,11
+2015-08-17,Disneyland,56
+2015-08-18,Disneyland,69
+2015-08-19,Disneyland,47
+2015-08-20,Disneyland,43
+2015-08-21,Disneyland,13
+2015-08-22,Disneyland,47
+2015-08-23,Disneyland,17
+2015-08-24,Disneyland,20
+2015-08-25,Disneyland,19
+2015-08-26,Disneyland,4
+2015-08-27,Disneyland,4
+2015-08-28,Disneyland,15
+2015-08-29,Disneyland,20
+2015-08-30,Disneyland,5
+2015-08-31,Disneyland,5
+2015-09-01,Disneyland,2
+2015-09-02,Disneyland,1
+2015-09-03,Disneyland,4
+2015-09-04,Disneyland,33
+2015-09-05,Disneyland,54
+2015-09-06,Disneyland,47
+2015-09-07,Disneyland,33
+2015-09-08,Disneyland,10
+2015-09-09,Disneyland,11
+2015-09-10,Disneyland,14
+2015-09-11,Disneyland,11
+2015-09-12,Disneyland,31
+2015-09-13,Disneyland,14
+2015-09-14,Disneyland,42
+2015-09-15,Disneyland,16
+2015-09-16,Disneyland,15
+2015-09-17,Disneyland,19
+2015-09-18,Disneyland,14
+2015-09-19,Disneyland,34
+2015-09-20,Disneyland,19
+2015-09-21,Disneyland,17
+2015-09-22,Disneyland,23
+2015-09-23,Disneyland,16
+2015-09-24,Disneyland,13
+2015-09-25,Disneyland,5
+2015-09-26,Disneyland,59
+2015-09-27,Disneyland,26
+2015-09-28,Disneyland,7
+2015-09-29,Disneyland,16
+2015-09-30,Disneyland,0
+2015-10-01,Disneyland,47
+2015-10-02,Disneyland,39
+2015-10-03,Disneyland,58
+2015-10-04,Disneyland,39
+2015-10-05,Disneyland,64
+2015-10-06,Disneyland,61
+2015-10-07,Disneyland,54
+2015-10-08,Disneyland,58
+2015-10-09,Disneyland,50
+2015-10-10,Disneyland,71
+2015-10-11,Disneyland,46
+2015-10-12,Disneyland,81
+2015-10-13,Disneyland,65
+2015-10-14,Disneyland,55
+2015-10-15,Disneyland,58
+2015-10-16,Disneyland,47
+2015-10-17,Disneyland,63
+2015-10-18,Disneyland,40
+2015-10-19,Disneyland,62
+2015-10-20,Disneyland,56
+2015-10-21,Disneyland,45
+2015-10-22,Disneyland,47
+2015-10-23,Disneyland,34
+2015-10-24,Disneyland,50
+2015-10-25,Disneyland,26
+2015-10-26,Disneyland,49
+2015-10-27,Disneyland,42
+2015-10-28,Disneyland,31
+2015-10-29,Disneyland,33
+2015-10-30,Disneyland,23
+2015-10-31,Disneyland,39
+2015-11-01,Disneyland,18
+2015-11-02,Disneyland,51
+2015-11-03,Disneyland,35
+2015-11-04,Disneyland,27
+2015-11-05,Disneyland,31
+2015-11-06,Disneyland,22
+2015-11-07,Disneyland,40
+2015-11-08,Disneyland,20
+2015-11-09,Disneyland,44
+2015-11-10,Disneyland,41
+2015-11-11,Disneyland,57
+2015-11-12,Disneyland,38
+2015-11-13,Disneyland,29
+2015-11-14,Disneyland,48
+2015-11-15,Disneyland,27
+2015-11-16,Disneyland,52
+2015-11-17,Disneyland,49
+2015-11-18,Disneyland,40
+2015-11-19,Disneyland,45
+2015-11-20,Disneyland,34
+2015-11-21,Disneyland,52
+2015-11-22,Disneyland,30
+2015-11-23,Disneyland,53
+2015-11-24,Disneyland,48
+2015-11-25,Disneyland,37
+2015-11-26,Disneyland,55
+2015-11-27,Disneyland,29
+2015-11-28,Disneyland,45
+2015-11-29,Disneyland,22
+2015-11-30,Disneyland,49
+2015-12-01,Disneyland,38
+2015-12-02,Disneyland,27
+2015-12-03,Disneyland,30
+2015-12-04,Disneyland,20
+2015-12-05,Disneyland,34
+2015-12-06,Disneyland,15
+2015-12-07,Disneyland,36
+2015-12-08,Disneyland,31
+2015-12-09,Disneyland,23
+2015-12-10,Disneyland,27
+2015-12-11,Disneyland,19
+2015-12-12,Disneyland,37
+2015-12-13,Disneyland,19
+2015-12-14,Disneyland,44
+2015-12-15,Disneyland,42
+2015-12-16,Disneyland,51
+2015-12-17,Disneyland,24
+2015-12-18,Disneyland,29
+2015-12-19,Disneyland,69
+2015-12-20,Disneyland,65
+2015-12-21,Disneyland,91
+2015-12-22,Disneyland,52
+2015-12-23,Disneyland,69
+2015-12-24,Disneyland,41
+2015-12-25,Disneyland,80
+2015-12-26,Disneyland,88
+2015-12-27,Disneyland,80
+2015-12-28,Disneyland,96
+2015-12-29,Disneyland,96
+2015-12-30,Disneyland,88
+2015-12-31,Disneyland,77
+2016-01-01,Disneyland,44
+2016-01-02,Disneyland,71
+2016-01-03,Disneyland,58
+2016-01-04,Disneyland,50
+2016-01-05,Disneyland,5
+2016-01-06,Disneyland,0
+2016-01-07,Disneyland,10
+2016-01-08,Disneyland,67
+2016-01-09,Disneyland,37
+2016-01-10,Disneyland,37
+2016-01-11,Disneyland,36
+2016-01-12,Disneyland,14
+2016-01-13,Disneyland,4
+2016-01-14,Disneyland,10
+2016-01-15,Disneyland,39
+2016-01-16,Disneyland,70
+2016-01-17,Disneyland,82
+2016-01-18,Disneyland,73
+2016-01-19,Disneyland,8
+2016-01-20,Disneyland,2
+2016-01-21,Disneyland,3
+2016-01-22,Disneyland,9
+2016-01-23,Disneyland,57
+2016-01-24,Disneyland,39
+2016-01-25,Disneyland,23
+2016-01-26,Disneyland,24
+2016-01-27,Disneyland,10
+2016-01-28,Disneyland,20
+2016-01-29,Disneyland,15
+2016-01-30,Disneyland,31
+2016-01-31,Disneyland,15
+2016-02-01,Disneyland,38
+2016-02-02,Disneyland,36
+2016-02-03,Disneyland,30
+2016-02-04,Disneyland,36
+2016-02-05,Disneyland,29
+2016-02-06,Disneyland,88
+2016-02-07,Disneyland,53
+2016-02-08,Disneyland,43
+2016-02-09,Disneyland,26
+2016-02-10,Disneyland,7
+2016-02-11,Disneyland,20
+2016-02-12,Disneyland,65
+2016-02-13,Disneyland,81
+2016-02-14,Disneyland,95
+2016-02-15,Disneyland,66
+2016-02-16,Disneyland,64
+2016-02-17,Disneyland,55
+2016-02-18,Disneyland,58
+2016-02-19,Disneyland,49
+2016-02-20,Disneyland,65
+2016-02-21,Disneyland,67
+2016-02-22,Disneyland,25
+2016-02-23,Disneyland,39
+2016-02-24,Disneyland,3
+2016-02-25,Disneyland,34
+2016-02-26,Disneyland,58
+2016-02-27,Disneyland,92
+2016-02-28,Disneyland,45
+2016-02-29,Disneyland,47
+2016-03-01,Disneyland,39
+2016-03-02,Disneyland,34
+2016-03-03,Disneyland,55
+2016-03-04,Disneyland,76
+2016-03-05,Disneyland,92
+2016-03-06,Disneyland,11
+2016-03-07,Disneyland,10
+2016-03-08,Disneyland,61
+2016-03-09,Disneyland,20
+2016-03-10,Disneyland,17
+2016-03-11,Disneyland,2
+2016-03-12,Disneyland,56
+2016-03-13,Disneyland,43
+2016-03-14,Disneyland,80
+2016-03-15,Disneyland,82
+2016-03-16,Disneyland,59
+2016-03-17,Disneyland,78
+2016-03-18,Disneyland,74
+2016-03-19,Disneyland,92
+2016-03-20,Disneyland,83
+2016-03-21,Disneyland,90
+2016-03-22,Disneyland,96
+2016-03-23,Disneyland,88
+2016-03-24,Disneyland,75
+2016-03-25,Disneyland,67
+2016-03-26,Disneyland,2
+2016-03-27,Disneyland,63
+2016-03-28,Disneyland,82
+2016-03-29,Disneyland,94
+2016-03-30,Disneyland,86
+2016-03-31,Disneyland,92
+2016-04-01,Disneyland,81
+2016-04-02,Disneyland,72
+2016-04-03,Disneyland,74
+2016-04-04,Disneyland,81
+2016-04-05,Disneyland,79
+2016-04-06,Disneyland,19
+2016-04-07,Disneyland,80
+2016-04-08,Disneyland,38
+2016-04-09,Disneyland,41
+2016-04-10,Disneyland,51
+2016-04-11,Disneyland,79
+2016-04-12,Disneyland,79
+2016-04-13,Disneyland,65
+2016-04-14,Disneyland,81
+2016-04-15,Disneyland,60
+2016-04-16,Disneyland,76
+2016-04-17,Disneyland,50
+2016-04-18,Disneyland,46
+2016-04-19,Disneyland,38
+2016-04-20,Disneyland,27
+2016-04-21,Disneyland,4
+2016-04-22,Disneyland,81
+2016-04-23,Disneyland,91
+2016-04-24,Disneyland,67
+2016-04-25,Disneyland,85
+2016-04-26,Disneyland,86
+2016-04-27,Disneyland,59
+2016-04-28,Disneyland,81
+2016-04-29,Disneyland,90
+2016-04-30,Disneyland,88
+2016-05-01,Disneyland,77
+2016-05-02,Disneyland,54
+2016-05-03,Disneyland,40
+2016-05-04,Disneyland,39
+2016-05-05,Disneyland,28
+2016-05-06,Disneyland,48
+2016-05-07,Disneyland,58
+2016-05-08,Disneyland,48
+2016-05-09,Disneyland,69
+2016-05-10,Disneyland,45
+2016-05-11,Disneyland,46
+2016-05-12,Disneyland,53
+2016-05-13,Disneyland,71
+2016-05-14,Disneyland,92
+2016-05-15,Disneyland,70
+2016-05-16,Disneyland,76
+2016-05-17,Disneyland,52
+2016-05-18,Disneyland,35
+2016-05-19,Disneyland,64
+2016-05-20,Disneyland,82
+2016-05-21,Disneyland,96
+2016-05-22,Disneyland,76
+2016-05-23,Disneyland,81
+2016-05-24,Disneyland,81
+2016-05-25,Disneyland,59
+2016-05-26,Disneyland,79
+2016-05-27,Disneyland,37
+2016-05-28,Disneyland,55
+2016-05-29,Disneyland,52
+2016-05-30,Disneyland,38
+2016-05-31,Disneyland,84
+2016-06-01,Disneyland,60
+2016-06-02,Disneyland,60
+2016-06-03,Disneyland,27
+2016-06-04,Disneyland,34
+2016-06-05,Disneyland,28
+2016-06-06,Disneyland,97
+2016-06-07,Disneyland,96
+2016-06-08,Disneyland,81
+2016-06-09,Disneyland,90
+2016-06-10,Disneyland,59
+2016-06-11,Disneyland,74
+2016-06-12,Disneyland,55
+2016-06-13,Disneyland,88
+2016-06-14,Disneyland,86
+2016-06-15,Disneyland,79
+2016-06-16,Disneyland,72
+2016-06-17,Disneyland,48
+2016-06-18,Disneyland,30
+2016-06-19,Disneyland,1
+2016-06-20,Disneyland,8
+2016-06-21,Disneyland,64
+2016-06-22,Disneyland,34
+2016-06-23,Disneyland,50
+2016-06-24,Disneyland,33
+2016-06-25,Disneyland,45
+2016-06-26,Disneyland,38
+2016-06-27,Disneyland,59
+2016-06-28,Disneyland,52
+2016-06-29,Disneyland,34
+2016-06-30,Disneyland,54
+2016-07-01,Disneyland,17
+2016-07-02,Disneyland,47
+2016-07-03,Disneyland,27
+2016-07-04,Disneyland,12
+2016-07-05,Disneyland,52
+2016-07-06,Disneyland,79
+2016-07-07,Disneyland,70
+2016-07-08,Disneyland,32
+2016-07-09,Disneyland,41
+2016-07-10,Disneyland,21
+2016-07-11,Disneyland,76
+2016-07-12,Disneyland,77
+2016-07-13,Disneyland,66
+2016-07-14,Disneyland,47
+2016-07-15,Disneyland,38
+2016-07-16,Disneyland,56
+2016-07-17,Disneyland,41
+2016-07-18,Disneyland,87
+2016-07-19,Disneyland,85
+2016-07-20,Disneyland,64
+2016-07-21,Disneyland,69
+2016-07-22,Disneyland,36
+2016-07-23,Disneyland,63
+2016-07-24,Disneyland,21
+2016-07-25,Disneyland,79
+2016-07-26,Disneyland,78
+2016-07-27,Disneyland,65
+2016-07-28,Disneyland,74
+2016-07-29,Disneyland,51
+2016-07-30,Disneyland,65
+2016-07-31,Disneyland,28
+2016-08-01,Disneyland,87
+2016-08-02,Disneyland,83
+2016-08-03,Disneyland,74
+2016-08-04,Disneyland,78
+2016-08-05,Disneyland,38
+2016-08-06,Disneyland,60
+2016-08-07,Disneyland,39
+2016-08-08,Disneyland,90
+2016-08-09,Disneyland,90
+2016-08-10,Disneyland,74
+2016-08-11,Disneyland,82
+2016-08-12,Disneyland,66
+2016-08-13,Disneyland,76
+2016-08-14,Disneyland,33
+2016-08-15,Disneyland,44
+2016-08-16,Disneyland,37
+2016-08-17,Disneyland,20
+2016-08-18,Disneyland,39
+2016-08-19,Disneyland,17
+2016-08-20,Disneyland,73
+2016-08-21,Disneyland,12
+2016-08-22,Disneyland,80
+2016-08-23,Disneyland,51
+2016-08-24,Disneyland,31
+2016-08-25,Disneyland,42
+2016-08-26,Disneyland,13
+2016-08-27,Disneyland,71
+2016-08-28,Disneyland,15
+2016-08-29,Disneyland,21
+2016-08-30,Disneyland,4
+2016-08-31,Disneyland,2
+2016-09-01,Disneyland,5
+2016-09-02,Disneyland,40
+2016-09-03,Disneyland,39
+2016-09-04,Disneyland,52
+2016-09-05,Disneyland,59
+2016-09-06,Disneyland,28
+2016-09-07,Disneyland,9
+2016-09-08,Disneyland,21
+2016-09-09,Disneyland,11
+2016-09-10,Disneyland,43
+2016-09-11,Disneyland,7
+2016-09-12,Disneyland,33
+2016-09-13,Disneyland,31
+2016-09-14,Disneyland,5
+2016-09-15,Disneyland,14
+2016-09-16,Disneyland,41
+2016-09-17,Disneyland,53
+2016-09-18,Disneyland,7
+2016-09-19,Disneyland,16
+2016-09-20,Disneyland,24
+2016-09-21,Disneyland,4
+2016-09-22,Disneyland,20
+2016-09-23,Disneyland,4
+2016-09-24,Disneyland,48
+2016-09-25,Disneyland,13
+2016-09-26,Disneyland,0
+2016-09-27,Disneyland,9
+2016-09-28,Disneyland,0
+2016-09-29,Disneyland,4
+2016-09-30,Disneyland,2
+2016-10-01,Disneyland,60
+2016-10-02,Disneyland,70
+2016-10-03,Disneyland,66
+2016-10-04,Disneyland,84
+2016-10-05,Disneyland,6
+2016-10-06,Disneyland,76
+2016-10-07,Disneyland,24
+2016-10-08,Disneyland,98
+2016-10-09,Disneyland,77
+2016-10-10,Disneyland,42
+2016-10-11,Disneyland,99
+2016-10-12,Disneyland,51
+2016-10-13,Disneyland,98
+2016-10-14,Disneyland,48
+2016-10-15,Disneyland,96
+2016-10-16,Disneyland,76
+2016-10-17,Disneyland,22
+2016-10-18,Disneyland,84
+2016-10-19,Disneyland,7
+2016-10-20,Disneyland,81
+2016-10-21,Disneyland,35
+2016-10-22,Disneyland,91
+2016-10-23,Disneyland,74
+2016-10-24,Disneyland,31
+2016-10-25,Disneyland,81
+2016-10-26,Disneyland,9
+2016-10-27,Disneyland,68
+2016-10-28,Disneyland,81
+2016-10-29,Disneyland,42
+2016-10-30,Disneyland,83
+2016-10-31,Disneyland,9
+2016-11-01,Disneyland,36
+2016-11-02,Disneyland,10
+2016-11-03,Disneyland,39
+2016-11-04,Disneyland,37
+2016-11-05,Disneyland,58
+2016-11-06,Disneyland,57
+2016-11-07,Disneyland,50
+2016-11-08,Disneyland,24
+2016-11-09,Disneyland,6
+2016-11-10,Disneyland,55
+2016-11-11,Disneyland,81
+2016-11-12,Disneyland,94
+2016-11-13,Disneyland,37
+2016-11-14,Disneyland,46
+2016-11-15,Disneyland,27
+2016-11-16,Disneyland,27
+2016-11-17,Disneyland,44
+2016-11-18,Disneyland,42
+2016-11-19,Disneyland,62
+2016-11-20,Disneyland,62
+2016-11-21,Disneyland,98
+2016-11-22,Disneyland,98
+2016-11-23,Disneyland,81
+2016-11-24,Disneyland,60
+2016-11-25,Disneyland,88
+2016-11-26,Disneyland,10
+2016-11-27,Disneyland,18
+2016-11-28,Disneyland,21
+2016-11-29,Disneyland,9
+2016-11-30,Disneyland,8
+2016-12-01,Disneyland,8
+2016-12-02,Disneyland,47
+2016-12-03,Disneyland,87
+2016-12-04,Disneyland,49
+2016-12-05,Disneyland,68
+2016-12-06,Disneyland,52
+2016-12-07,Disneyland,37
+2016-12-08,Disneyland,56
+2016-12-09,Disneyland,68
+2016-12-10,Disneyland,91
+2016-12-11,Disneyland,62
+2016-12-12,Disneyland,70
+2016-12-13,Disneyland,50
+2016-12-14,Disneyland,57
+2016-12-15,Disneyland,6
+2016-12-16,Disneyland,11
+2016-12-17,Disneyland,94
+2016-12-18,Disneyland,93
+2016-12-19,Disneyland,89
+2016-12-20,Disneyland,66
+2016-12-21,Disneyland,28
+2016-12-22,Disneyland,35
+2016-12-23,Disneyland,8
+2016-12-24,Disneyland,63
+2016-12-25,Disneyland,95
+2016-12-26,Disneyland,92
+2016-12-27,Disneyland,99
+2016-12-28,Disneyland,99
+2016-12-29,Disneyland,99
+2016-12-30,Disneyland,40
+2016-12-31,Disneyland,92
+2017-01-01,Disneyland,63
+2017-01-02,Disneyland,77
+2017-01-03,Disneyland,99
+2017-01-04,Disneyland,99
+2017-01-05,Disneyland,80
+2017-01-06,Disneyland,99
+2017-01-07,Disneyland,57
+2017-01-08,Disneyland,62
+2017-01-09,Disneyland,29
+2017-01-10,Disneyland,40
+2017-01-11,Disneyland,11
+2017-01-12,Disneyland,2
+2017-01-13,Disneyland,58
+2017-01-14,Disneyland,90
+2017-01-15,Disneyland,91
+2017-01-16,Disneyland,66
+2017-01-17,Disneyland,73
+2017-01-18,Disneyland,37
+2017-01-19,Disneyland,2
+2017-01-20,Disneyland,0
+2017-01-21,Disneyland,45
+2017-01-22,Disneyland,0
+2017-01-23,Disneyland,1
+2017-01-24,Disneyland,50
+2017-01-25,Disneyland,47
+2017-01-26,Disneyland,73
+2017-01-27,Disneyland,93
+2017-01-28,Disneyland,98
+2017-01-29,Disneyland,97
+2017-01-30,Disneyland,61
+2017-01-31,Disneyland,36
+2017-02-01,Disneyland,20
+2017-02-02,Disneyland,34
+2017-02-03,Disneyland,51
+2017-02-04,Disneyland,85
+2017-02-05,Disneyland,93
+2017-02-06,Disneyland,8
+2017-02-07,Disneyland,13
+2017-02-08,Disneyland,57
+2017-02-09,Disneyland,70
+2017-02-10,Disneyland,14
+2017-02-11,Disneyland,93
+2017-02-12,Disneyland,92
+2017-02-13,Disneyland,85
+2017-02-14,Disneyland,50
+2017-02-15,Disneyland,69
+2017-02-16,Disneyland,73
+2017-02-17,Disneyland,64
+2017-02-18,Disneyland,78
+2017-02-19,Disneyland,98
+2017-02-20,Disneyland,91
+2017-02-21,Disneyland,99
+2017-02-22,Disneyland,94
+2017-02-23,Disneyland,95
+2017-02-24,Disneyland,96
+2017-02-25,Disneyland,99
+2017-02-26,Disneyland,59
+2017-02-27,Disneyland,20
+2017-02-28,Disneyland,88
+2017-03-01,Disneyland,66
+2017-03-02,Disneyland,93
+2017-03-03,Disneyland,92
+2017-03-04,Disneyland,99
+2017-03-05,Disneyland,84
+2017-03-06,Disneyland,89
+2017-03-07,Disneyland,79
+2017-03-08,Disneyland,44
+2017-03-09,Disneyland,43
+2017-03-10,Disneyland,9
+2017-03-11,Disneyland,93
+2017-03-12,Disneyland,74
+2017-03-13,Disneyland,97
+2017-03-14,Disneyland,98
+2017-03-15,Disneyland,94
+2017-03-16,Disneyland,95
+2017-03-17,Disneyland,85
+2017-03-18,Disneyland,96
+2017-03-19,Disneyland,93
+2017-03-20,Disneyland,99
+2017-03-21,Disneyland,91
+2017-03-22,Disneyland,43
+2017-03-23,Disneyland,98
+2017-03-24,Disneyland,95
+2017-03-25,Disneyland,89
+2017-03-26,Disneyland,84
+2017-03-27,Disneyland,98
+2017-03-28,Disneyland,97
+2017-03-29,Disneyland,89
+2017-03-30,Disneyland,96
+2017-03-31,Disneyland,93
+2017-04-01,Disneyland,93
+2017-04-02,Disneyland,51
+2017-04-03,Disneyland,96
+2017-04-04,Disneyland,98
+2017-04-05,Disneyland,90
+2017-04-06,Disneyland,95
+2017-04-07,Disneyland,57
+2017-04-08,Disneyland,90
+2017-04-09,Disneyland,45
+2017-04-10,Disneyland,95
+2017-04-11,Disneyland,90
+2017-04-12,Disneyland,82
+2017-04-13,Disneyland,82
+2017-04-14,Disneyland,63
+2017-04-15,Disneyland,45
+2017-04-16,Disneyland,16
+2017-04-17,Disneyland,74
+2017-04-18,Disneyland,68
+2017-04-19,Disneyland,75
+2017-04-20,Disneyland,83
+2017-04-21,Disneyland,24
+2017-04-22,Disneyland,28
+2017-04-23,Disneyland,35
+2017-04-24,Disneyland,85
+2017-04-25,Disneyland,75
+2017-04-26,Disneyland,82
+2017-04-27,Disneyland,81
+2017-04-28,Disneyland,86
+2017-04-29,Disneyland,97
+2017-04-30,Disneyland,77
+2017-05-01,Disneyland,91
+2017-05-02,Disneyland,87
+2017-05-03,Disneyland,63
+2017-05-04,Disneyland,80
+2017-05-05,Disneyland,90
+2017-05-06,Disneyland,99
+2017-05-07,Disneyland,91
+2017-05-08,Disneyland,83
+2017-05-09,Disneyland,78
+2017-05-10,Disneyland,54
+2017-05-11,Disneyland,81
+2017-05-12,Disneyland,85
+2017-05-13,Disneyland,99
+2017-05-14,Disneyland,95
+2017-05-15,Disneyland,95
+2017-05-16,Disneyland,90
+2017-05-17,Disneyland,90
+2017-05-18,Disneyland,87
+2017-05-19,Disneyland,97
+2017-05-20,Disneyland,99
+2017-05-21,Disneyland,98
+2017-05-22,Disneyland,98
+2017-05-23,Disneyland,94
+2017-05-24,Disneyland,92
+2017-05-25,Disneyland,99
+2017-05-26,Disneyland,14
+2017-05-27,Disneyland,58
+2017-05-28,Disneyland,25
+2017-05-29,Disneyland,33
+2017-05-30,Disneyland,90
+2017-05-31,Disneyland,75
+2017-06-01,Disneyland,74
+2017-06-02,Disneyland,46
+2017-06-03,Disneyland,65
+2017-06-04,Disneyland,62
+2017-06-05,Disneyland,71
+2017-06-06,Disneyland,79
+2017-06-07,Disneyland,79
+2017-06-08,Disneyland,82
+2017-06-09,Disneyland,31
+2017-06-10,Disneyland,54
+2017-06-11,Disneyland,77
+2017-06-12,Disneyland,93
+2017-06-13,Disneyland,79
+2017-06-14,Disneyland,65
+2017-06-15,Disneyland,59
+2017-06-16,Disneyland,38
+2017-06-17,Disneyland,44
+2017-06-18,Disneyland,22
+2017-06-19,Disneyland,63
+2017-06-20,Disneyland,53
+2017-06-21,Disneyland,27
+2017-06-22,Disneyland,46
+2017-06-23,Disneyland,42
+2017-06-24,Disneyland,56
+2017-06-25,Disneyland,47
+2017-06-26,Disneyland,69
+2017-06-27,Disneyland,81
+2017-06-28,Disneyland,87
+2017-06-29,Disneyland,72
+2017-06-30,Disneyland,33
+2017-07-01,Disneyland,30
+2017-07-02,Disneyland,36
+2017-07-03,Disneyland,89
+2017-07-04,Disneyland,51
+2017-07-05,Disneyland,68
+2017-07-06,Disneyland,78
+2017-07-07,Disneyland,11
+2017-07-08,Disneyland,13
+2017-07-09,Disneyland,19
+2017-07-10,Disneyland,63
+2017-07-11,Disneyland,69
+2017-07-12,Disneyland,51
+2017-07-13,Disneyland,65
+2017-07-14,Disneyland,9
+2017-07-15,Disneyland,24
+2017-07-16,Disneyland,13
+2017-07-17,Disneyland,82
+2017-07-18,Disneyland,90
+2017-07-19,Disneyland,84
+2017-07-20,Disneyland,82
+2017-07-21,Disneyland,47
+2017-07-22,Disneyland,62
+2017-07-23,Disneyland,53
+2017-07-24,Disneyland,89
+2017-07-25,Disneyland,96
+2017-07-26,Disneyland,86
+2017-07-27,Disneyland,81
+2017-07-28,Disneyland,46
+2017-07-29,Disneyland,28
+2017-07-30,Disneyland,45
+2017-07-31,Disneyland,84
+2017-08-01,Disneyland,64
+2017-08-02,Disneyland,70
+2017-08-03,Disneyland,71
+2017-08-04,Disneyland,41
+2017-08-05,Disneyland,52
+2017-08-06,Disneyland,0
+2017-08-07,Disneyland,76
+2017-08-08,Disneyland,57
+2017-08-09,Disneyland,48
+2017-08-10,Disneyland,61
+2017-08-11,Disneyland,40
+2017-08-12,Disneyland,66
+2017-08-13,Disneyland,50
+2017-08-14,Disneyland,72
+2017-08-15,Disneyland,59
+2017-08-16,Disneyland,43
+2017-08-17,Disneyland,39
+2017-08-18,Disneyland,30
+2017-08-19,Disneyland,68
+2017-08-20,Disneyland,9
+2017-08-21,Disneyland,61
+2017-08-22,Disneyland,55
+2017-08-23,Disneyland,34
+2017-08-24,Disneyland,48
+2017-08-25,Disneyland,20
+2017-08-26,Disneyland,37
+2017-08-27,Disneyland,13
+2017-08-28,Disneyland,12
+2017-08-29,Disneyland,8
+2017-08-30,Disneyland,1
+2017-08-31,Disneyland,2
+2017-09-01,Disneyland,2
+2017-09-02,Disneyland,7
+2017-09-03,Disneyland,11
+2017-09-04,Disneyland,56
+2017-09-05,Disneyland,24
+2017-09-06,Disneyland,23
+2017-09-07,Disneyland,16
+2017-09-08,Disneyland,25
+2017-09-09,Disneyland,55
+2017-09-10,Disneyland,31
+2017-09-11,Disneyland,26
+2017-09-12,Disneyland,49
+2017-09-13,Disneyland,26
+2017-09-14,Disneyland,52
+2017-09-15,Disneyland,38
+2017-09-16,Disneyland,44
+2017-09-17,Disneyland,71
+2017-09-18,Disneyland,59
+2017-09-19,Disneyland,64
+2017-09-20,Disneyland,2
+2017-09-21,Disneyland,92
+2017-09-22,Disneyland,21
+2017-09-23,Disneyland,90
+2017-09-24,Disneyland,71
+2017-09-25,Disneyland,3
+2017-09-26,Disneyland,78
+2017-09-27,Disneyland,4
+2017-09-28,Disneyland,52
+2017-09-29,Disneyland,11
+2017-09-30,Disneyland,67
+2017-10-01,Disneyland,38
+2017-10-02,Disneyland,64
+2017-10-03,Disneyland,9
+2017-10-04,Disneyland,44
+2017-10-05,Disneyland,46
+2017-10-06,Disneyland,26
+2017-10-07,Disneyland,94
+2017-10-08,Disneyland,88
+2017-10-09,Disneyland,95
+2017-10-10,Disneyland,16
+2017-10-11,Disneyland,76
+2017-10-12,Disneyland,73
+2017-10-13,Disneyland,47
+2017-10-14,Disneyland,95
+2017-10-15,Disneyland,52
+2017-10-16,Disneyland,86
+2017-10-17,Disneyland,1
+2017-10-18,Disneyland,79
+2017-10-19,Disneyland,87
+2017-10-20,Disneyland,40
+2017-10-21,Disneyland,97
+2017-10-22,Disneyland,42
+2017-10-23,Disneyland,38
+2017-10-24,Disneyland,0
+2017-10-25,Disneyland,15
+2017-10-26,Disneyland,69
+2017-10-27,Disneyland,22
+2017-10-28,Disneyland,93
+2017-10-29,Disneyland,61
+2017-10-30,Disneyland,61
+2017-10-31,Disneyland,0
+2017-11-01,Disneyland,11
+2017-11-02,Disneyland,18
+2017-11-03,Disneyland,15
+2017-11-04,Disneyland,19
+2017-11-05,Disneyland,26
+2017-11-06,Disneyland,64
+2017-11-07,Disneyland,58
+2017-11-08,Disneyland,34
+2017-11-09,Disneyland,27
+2017-11-10,Disneyland,97
+2017-11-11,Disneyland,70
+2017-11-12,Disneyland,22
+2017-11-13,Disneyland,38
+2017-11-14,Disneyland,29
+2017-11-15,Disneyland,31
+2017-11-16,Disneyland,34
+2017-11-17,Disneyland,24
+2017-11-18,Disneyland,60
+2017-11-19,Disneyland,85
+2017-11-20,Disneyland,99
+2017-11-21,Disneyland,94
+2017-11-22,Disneyland,80
+2017-11-23,Disneyland,72
+2017-11-24,Disneyland,72
+2017-11-25,Disneyland,39
+2017-11-26,Disneyland,7
+2017-11-27,Disneyland,44
+2017-11-28,Disneyland,12
+2017-11-29,Disneyland,17
+2017-11-30,Disneyland,27
+2017-12-01,Disneyland,36
+2017-12-02,Disneyland,83
+2017-12-03,Disneyland,62
+2017-12-04,Disneyland,78
+2017-12-05,Disneyland,51
+2017-12-06,Disneyland,45
+2017-12-07,Disneyland,6
+2017-12-08,Disneyland,72
+2017-12-09,Disneyland,94
+2017-12-10,Disneyland,50
+2017-12-11,Disneyland,37
+2017-12-12,Disneyland,26
+2017-12-13,Disneyland,24
+2017-12-14,Disneyland,28
+2017-12-15,Disneyland,20
+2017-12-16,Disneyland,75
+2017-12-17,Disneyland,33
+2017-12-18,Disneyland,91
+2017-12-19,Disneyland,94
+2017-12-20,Disneyland,78
+2017-12-21,Disneyland,93
+2017-12-22,Disneyland,34
+2017-12-23,Disneyland,66
+2017-12-24,Disneyland,79
+2017-12-25,Disneyland,95
+2017-12-26,Disneyland,94
+2017-12-27,Disneyland,99
+2017-12-28,Disneyland,99
+2017-12-29,Disneyland,98
+2017-12-30,Disneyland,81
+2017-12-31,Disneyland,98
+2018-01-01,Disneyland,13
+2018-01-02,Disneyland,93
+2018-01-03,Disneyland,99
+2018-01-04,Disneyland,99
+2018-01-05,Disneyland,94
+2018-01-06,Disneyland,94
+2018-01-07,Disneyland,55
+2018-01-08,Disneyland,75
+2018-01-09,Disneyland,4
+2018-01-10,Disneyland,89
+2018-01-11,Disneyland,93
+2018-01-12,Disneyland,46
+2018-01-13,Disneyland,75
+2018-01-14,Disneyland,68
+2018-01-15,Disneyland,45
+2018-01-16,Disneyland,64
+2018-01-17,Disneyland,42
+2018-01-18,Disneyland,66
+2018-01-19,Disneyland,40
+2018-01-20,Disneyland,73
+2018-01-21,Disneyland,40
+2018-01-22,Disneyland,55
+2018-01-23,Disneyland,21
+2018-01-24,Disneyland,16
+2018-01-25,Disneyland,19
+2018-01-26,Disneyland,16
+2018-01-27,Disneyland,38
+2018-01-28,Disneyland,13
+2018-01-29,Disneyland,39
+2018-01-30,Disneyland,35
+2018-01-31,Disneyland,15
+2018-02-01,Disneyland,31
+2018-02-02,Disneyland,42
+2018-02-03,Disneyland,71
+2018-02-04,Disneyland,57
+2018-02-05,Disneyland,35
+2018-02-06,Disneyland,38
+2018-02-07,Disneyland,21
+2018-02-08,Disneyland,26
+2018-02-09,Disneyland,52
+2018-02-10,Disneyland,84
+2018-02-11,Disneyland,55
+2018-02-12,Disneyland,82
+2018-02-13,Disneyland,16
+2018-02-14,Disneyland,19
+2018-02-15,Disneyland,68
+2018-02-16,Disneyland,83
+2018-02-17,Disneyland,72
+2018-02-18,Disneyland,41
+2018-02-19,Disneyland,38
+2018-02-20,Disneyland,87
+2018-02-21,Disneyland,77
+2018-02-22,Disneyland,84
+2018-02-23,Disneyland,61
+2018-02-24,Disneyland,90
+2018-02-25,Disneyland,54
+2018-02-26,Disneyland,57
+2018-02-27,Disneyland,17
+2018-02-28,Disneyland,44
+2018-03-01,Disneyland,37
+2018-03-02,Disneyland,13
+2018-03-03,Disneyland,47
+2018-03-04,Disneyland,51
+2018-03-05,Disneyland,45
+2018-03-06,Disneyland,31
+2018-03-07,Disneyland,25
+2018-03-08,Disneyland,16
+2018-03-09,Disneyland,18
+2018-03-10,Disneyland,8
+2018-03-11,Disneyland,32
+2018-03-12,Disneyland,90
+2018-03-13,Disneyland,59
+2018-03-14,Disneyland,61
+2018-03-15,Disneyland,79
+2018-03-16,Disneyland,38
+2018-03-17,Disneyland,38
+2018-03-18,Disneyland,26
+2018-03-19,Disneyland,88
+2018-03-20,Disneyland,51
+2018-03-21,Disneyland,26
+2018-03-22,Disneyland,3
+2018-03-23,Disneyland,48
+2018-03-24,Disneyland,72
+2018-03-25,Disneyland,20
+2018-03-26,Disneyland,98
+2018-03-27,Disneyland,98
+2018-03-28,Disneyland,95
+2018-03-29,Disneyland,95
+2018-03-30,Disneyland,84
+2018-03-31,Disneyland,60
+2018-04-01,Disneyland,72
+2018-04-02,Disneyland,96
+2018-04-03,Disneyland,97
+2018-04-04,Disneyland,94
+2018-04-05,Disneyland,97
+2018-04-06,Disneyland,72
+2018-04-07,Disneyland,49
+2018-04-08,Disneyland,28
+2018-04-09,Disneyland,65
+2018-04-10,Disneyland,40
+2018-04-11,Disneyland,50
+2018-04-12,Disneyland,62
+2018-04-13,Disneyland,30
+2018-04-14,Disneyland,66
+2018-04-15,Disneyland,34
+2018-04-16,Disneyland,83
+2018-04-17,Disneyland,62
+2018-04-18,Disneyland,50
+2018-04-19,Disneyland,69
+2018-04-20,Disneyland,77
+2018-04-21,Disneyland,89
+2018-04-22,Disneyland,60
+2018-04-23,Disneyland,82
+2018-04-24,Disneyland,87
+2018-04-25,Disneyland,68
+2018-04-26,Disneyland,91
+2018-04-27,Disneyland,79
+2018-04-28,Disneyland,92
+2018-04-29,Disneyland,69
+2018-04-30,Disneyland,87
+2018-05-01,Disneyland,57
+2018-05-02,Disneyland,56
+2018-05-03,Disneyland,88
+2018-05-04,Disneyland,70
+2018-05-05,Disneyland,76
+2018-05-06,Disneyland,44
+2018-05-07,Disneyland,78
+2018-05-08,Disneyland,75
+2018-05-09,Disneyland,75
+2018-05-10,Disneyland,63
+2018-05-11,Disneyland,47
+2018-05-12,Disneyland,58
+2018-05-13,Disneyland,45
+2018-05-14,Disneyland,73
+2018-05-15,Disneyland,47
+2018-05-16,Disneyland,34
+2018-05-17,Disneyland,80
+2018-05-18,Disneyland,57
+2018-05-19,Disneyland,92
+2018-05-20,Disneyland,81
+2018-05-21,Disneyland,97
+2018-05-22,Disneyland,67
+2018-05-23,Disneyland,68
+2018-05-24,Disneyland,80
+2018-05-25,Disneyland,42
+2018-05-26,Disneyland,84
+2018-05-27,Disneyland,77
+2018-05-28,Disneyland,41
+2018-05-29,Disneyland,83
+2018-05-30,Disneyland,77
+2018-05-31,Disneyland,86
+2018-06-01,Disneyland,40
+2018-06-02,Disneyland,65
+2018-06-03,Disneyland,69
+2018-06-04,Disneyland,95
+2018-06-05,Disneyland,87
+2018-06-06,Disneyland,76
+2018-06-07,Disneyland,87
+2018-06-08,Disneyland,69
+2018-06-09,Disneyland,62
+2018-06-10,Disneyland,68
+2018-06-11,Disneyland,94
+2018-06-12,Disneyland,85
+2018-06-13,Disneyland,72
+2018-06-14,Disneyland,83
+2018-06-15,Disneyland,53
+2018-06-16,Disneyland,69
+2018-06-17,Disneyland,22
+2018-06-18,Disneyland,96
+2018-06-19,Disneyland,93
+2018-06-20,Disneyland,88
+2018-06-21,Disneyland,82
+2018-06-22,Disneyland,45
+2018-06-23,Disneyland,33
+2018-06-24,Disneyland,55
+2018-06-25,Disneyland,78
+2018-06-26,Disneyland,78
+2018-06-27,Disneyland,54
+2018-06-28,Disneyland,67
+2018-06-29,Disneyland,46
+2018-06-30,Disneyland,56
+2018-07-01,Disneyland,8
+2018-07-02,Disneyland,73
+2018-07-03,Disneyland,71
+2018-07-04,Disneyland,54
+2018-07-05,Disneyland,57
+2018-07-06,Disneyland,11
+2018-07-07,Disneyland,19
+2018-07-08,Disneyland,5
+2018-07-09,Disneyland,81
+2018-07-10,Disneyland,67
+2018-07-11,Disneyland,62
+2018-07-12,Disneyland,66
+2018-07-13,Disneyland,23
+2018-07-14,Disneyland,39
+2018-07-15,Disneyland,17
+2018-07-16,Disneyland,73
+2018-07-17,Disneyland,71
+2018-07-18,Disneyland,84
+2018-07-19,Disneyland,93
+2018-07-20,Disneyland,47
+2018-07-21,Disneyland,77
+2018-07-22,Disneyland,32
+2018-07-23,Disneyland,89
+2018-07-24,Disneyland,80
+2018-07-25,Disneyland,55
+2018-07-26,Disneyland,75
+2018-07-27,Disneyland,23
+2018-07-28,Disneyland,40
+2018-07-29,Disneyland,19
+2018-07-30,Disneyland,92
+2018-07-31,Disneyland,64
+2018-08-01,Disneyland,50
+2018-08-02,Disneyland,80
+2018-08-03,Disneyland,32
+2018-08-04,Disneyland,51
+2018-08-05,Disneyland,22
+2018-08-06,Disneyland,84
+2018-08-07,Disneyland,70
+2018-08-08,Disneyland,44
+2018-08-09,Disneyland,51
+2018-08-10,Disneyland,16
+2018-08-11,Disneyland,49
+2018-08-12,Disneyland,16
+2018-08-13,Disneyland,76
+2018-08-14,Disneyland,45
+2018-08-15,Disneyland,26
+2018-08-16,Disneyland,51
+2018-08-17,Disneyland,23
+2018-08-18,Disneyland,62
+2018-08-19,Disneyland,27
+2018-08-20,Disneyland,94
+2018-08-21,Disneyland,55
+2018-08-22,Disneyland,56
+2018-08-23,Disneyland,71
+2018-08-24,Disneyland,11
+2018-08-25,Disneyland,68
+2018-08-26,Disneyland,28
+2018-08-27,Disneyland,59
+2018-08-28,Disneyland,25
+2018-08-29,Disneyland,17
+2018-08-30,Disneyland,22
+2018-08-31,Disneyland,8
+2018-09-01,Disneyland,58
+2018-09-02,Disneyland,77
+2018-09-03,Disneyland,32
+2018-09-04,Disneyland,26
+2018-09-05,Disneyland,10
+2018-09-06,Disneyland,20
+2018-09-07,Disneyland,19
+2018-09-08,Disneyland,19
+2018-09-09,Disneyland,4
+2018-09-10,Disneyland,29
+2018-09-11,Disneyland,16
+2018-09-12,Disneyland,16
+2018-09-13,Disneyland,34
+2018-09-14,Disneyland,13
+2018-09-15,Disneyland,30
+2018-09-16,Disneyland,13
+2018-09-17,Disneyland,36
+2018-09-18,Disneyland,33
+2018-09-19,Disneyland,21
+2018-09-20,Disneyland,53
+2018-09-21,Disneyland,22
+2018-09-22,Disneyland,80
+2018-09-23,Disneyland,45
+2018-09-24,Disneyland,7
+2018-09-25,Disneyland,55
+2018-09-26,Disneyland,1
+2018-09-27,Disneyland,49
+2018-09-28,Disneyland,20
+2018-09-29,Disneyland,87
+2018-09-30,Disneyland,25
+2018-10-01,Disneyland,55
+2018-10-02,Disneyland,9
+2018-10-03,Disneyland,25
+2018-10-04,Disneyland,59
+2018-10-05,Disneyland,63
+2018-10-06,Disneyland,98
+2018-10-07,Disneyland,77
+2018-10-08,Disneyland,99
+2018-10-09,Disneyland,31
+2018-10-10,Disneyland,91
+2018-10-11,Disneyland,86
+2018-10-12,Disneyland,78
+2018-10-13,Disneyland,99
+2018-10-14,Disneyland,61
+2018-10-15,Disneyland,80
+2018-10-16,Disneyland,7
+2018-10-17,Disneyland,51
+2018-10-18,Disneyland,74
+2018-10-19,Disneyland,66
+2018-10-20,Disneyland,99
+2018-10-21,Disneyland,41
+2018-10-22,Disneyland,83
+2018-10-23,Disneyland,5
+2018-10-24,Disneyland,52
+2018-10-25,Disneyland,54
+2018-10-26,Disneyland,53
+2018-10-27,Disneyland,97
+2018-10-28,Disneyland,66
+2018-10-29,Disneyland,24
+2018-10-30,Disneyland,61
+2018-10-31,Disneyland,1
+2018-11-01,Disneyland,25
+2018-11-02,Disneyland,23
+2018-11-03,Disneyland,23
+2018-11-04,Disneyland,30
+2018-11-05,Disneyland,43
+2018-11-06,Disneyland,23
+2018-11-07,Disneyland,10
+2018-11-08,Disneyland,28
+2018-11-09,Disneyland,22
+2018-11-10,Disneyland,94
+2018-11-11,Disneyland,96
+2018-11-12,Disneyland,85
+2018-11-13,Disneyland,59
+2018-11-14,Disneyland,43
+2018-11-15,Disneyland,70
+2018-11-16,Disneyland,41
+2018-11-17,Disneyland,72
+2018-11-18,Disneyland,61
+2018-11-19,Disneyland,88
+2018-11-20,Disneyland,71
+2018-11-21,Disneyland,36
+2018-11-22,Disneyland,75
+2018-11-23,Disneyland,73
+2018-11-24,Disneyland,52
+2018-11-25,Disneyland,9
+2018-11-26,Disneyland,64
+2018-11-27,Disneyland,65
+2018-11-28,Disneyland,42
+2018-11-29,Disneyland,14
+2018-11-30,Disneyland,56
+2018-12-01,Disneyland,45
+2018-12-02,Disneyland,11
+2018-12-03,Disneyland,25
+2018-12-04,Disneyland,22
+2018-12-05,Disneyland,1
+2018-12-06,Disneyland,1
+2018-12-07,Disneyland,55
+2018-12-08,Disneyland,84
+2018-12-09,Disneyland,59
+2018-12-10,Disneyland,74
+2018-12-11,Disneyland,48
+2018-12-12,Disneyland,8
+2018-12-13,Disneyland,11
+2018-12-14,Disneyland,16
+2018-12-15,Disneyland,85
+2018-12-16,Disneyland,21
+2018-12-17,Disneyland,32
+2018-12-18,Disneyland,18
+2018-12-19,Disneyland,23
+2018-12-20,Disneyland,37
+2018-12-21,Disneyland,37
+2018-12-22,Disneyland,89
+2018-12-23,Disneyland,86
+2018-12-24,Disneyland,98
+2018-12-25,Disneyland,97
+2018-12-26,Disneyland,96
+2018-12-27,Disneyland,100
+2018-12-28,Disneyland,99
+2018-12-29,Disneyland,99
+2018-12-30,Disneyland,88
+2018-12-31,Disneyland,98
+2019-01-01,Disneyland,61
+2019-01-02,Disneyland,94
+2019-01-03,Disneyland,99
+2019-01-04,Disneyland,74
+2019-01-05,Disneyland,18
+2019-01-06,Disneyland,24
+2019-01-07,Disneyland,88
+2019-01-08,Disneyland,85
+2019-01-09,Disneyland,71
+2019-01-10,Disneyland,82
+2019-01-11,Disneyland,55
+2019-01-12,Disneyland,68
+2019-01-13,Disneyland,51
+2019-01-14,Disneyland,2
+2019-01-15,Disneyland,4
+2019-01-16,Disneyland,2
+2019-01-17,Disneyland,3
+2019-01-18,Disneyland,51
+2019-01-19,Disneyland,76
+2019-01-20,Disneyland,81
+2019-01-21,Disneyland,23
+2019-01-22,Disneyland,71
+2019-01-23,Disneyland,30
+2019-01-24,Disneyland,25
+2019-01-25,Disneyland,16
+2019-01-26,Disneyland,43
+2019-01-27,Disneyland,50
+2019-01-28,Disneyland,81
+2019-01-29,Disneyland,53
+2019-01-30,Disneyland,49
+2019-01-31,Disneyland,37
+2019-02-01,Disneyland,49
+2019-02-02,Disneyland,1
+2019-02-03,Disneyland,12
+2019-02-04,Disneyland,5
+2019-02-05,Disneyland,10
+2019-02-06,Disneyland,39
+2019-02-07,Disneyland,60
+2019-02-08,Disneyland,32
+2019-02-09,Disneyland,76
+2019-02-10,Disneyland,5
+2019-02-11,Disneyland,79
+2019-02-12,Disneyland,42
+2019-02-13,Disneyland,3
+2019-02-14,Disneyland,12
+2019-02-15,Disneyland,15
+2019-02-16,Disneyland,95
+2019-02-17,Disneyland,61
+2019-02-18,Disneyland,75
+2019-02-19,Disneyland,92
+2019-02-20,Disneyland,43
+2019-02-21,Disneyland,71
+2019-02-22,Disneyland,82
+2019-02-23,Disneyland,78
+2019-02-24,Disneyland,39
+2019-02-25,Disneyland,68
+2019-02-26,Disneyland,70
+2019-02-27,Disneyland,37
+2019-02-28,Disneyland,75
+2019-03-01,Disneyland,66
+2019-03-02,Disneyland,23
+2019-03-03,Disneyland,18
+2019-03-04,Disneyland,67
+2019-03-05,Disneyland,18
+2019-03-06,Disneyland,0
+2019-03-07,Disneyland,12
+2019-03-08,Disneyland,14
+2019-03-09,Disneyland,76
+2019-03-10,Disneyland,34
+2019-03-11,Disneyland,95
+2019-03-12,Disneyland,96
+2019-03-13,Disneyland,89
+2019-03-14,Disneyland,97
+2019-03-15,Disneyland,64
+2019-03-16,Disneyland,96
+2019-03-17,Disneyland,74
+2019-03-18,Disneyland,96
+2019-03-19,Disneyland,99
+2019-03-20,Disneyland,60
+2019-03-21,Disneyland,93
+2019-03-22,Disneyland,54
+2019-03-23,Disneyland,88
+2019-03-24,Disneyland,74
+2019-03-25,Disneyland,85
+2019-03-26,Disneyland,90
+2019-03-27,Disneyland,64
+2019-03-28,Disneyland,83
+2019-03-29,Disneyland,50
+2019-03-30,Disneyland,77
+2019-03-31,Disneyland,44
+2019-04-01,Disneyland,88
+2019-04-02,Disneyland,90
+2019-04-03,Disneyland,76
+2019-04-04,Disneyland,91
+2019-04-05,Disneyland,70
+2019-04-06,Disneyland,79
+2019-04-07,Disneyland,24
+2019-04-08,Disneyland,6
+2019-04-09,Disneyland,15
+2019-04-10,Disneyland,5
+2019-04-11,Disneyland,17
+2019-04-12,Disneyland,12
+2019-04-13,Disneyland,53
+2019-04-14,Disneyland,14
+2019-04-15,Disneyland,17
+2019-04-16,Disneyland,31
+2019-04-17,Disneyland,18
+2019-04-18,Disneyland,37
+2019-04-19,Disneyland,24
+2019-04-20,Disneyland,32
+2019-04-21,Disneyland,10
+2019-04-22,Disneyland,25
+2019-04-23,Disneyland,82
+2019-04-24,Disneyland,84
+2019-04-25,Disneyland,86
+2019-04-26,Disneyland,69
+2019-04-27,Disneyland,90
+2019-04-28,Disneyland,35
+2019-04-29,Disneyland,96
+2019-04-30,Disneyland,97
+2019-05-01,Disneyland,79
+2019-05-02,Disneyland,95
+2019-05-03,Disneyland,47
+2019-05-04,Disneyland,91
+2019-05-05,Disneyland,48
+2019-05-06,Disneyland,80
+2019-05-07,Disneyland,85
+2019-05-08,Disneyland,86
+2019-05-09,Disneyland,82
+2019-05-10,Disneyland,32
+2019-05-11,Disneyland,97
+2019-05-12,Disneyland,44
+2019-05-13,Disneyland,85
+2019-05-14,Disneyland,87
+2019-05-15,Disneyland,81
+2019-05-16,Disneyland,53
+2019-05-17,Disneyland,69
+2019-05-18,Disneyland,99
+2019-05-19,Disneyland,77
+2019-05-20,Disneyland,94
+2019-05-21,Disneyland,84
+2019-05-22,Disneyland,63
+2019-05-23,Disneyland,76
+2019-05-24,Disneyland,14
+2019-05-25,Disneyland,41
+2019-05-26,Disneyland,10
+2019-05-27,Disneyland,24
+2019-05-28,Disneyland,65
+2019-05-29,Disneyland,53
+2019-05-30,Disneyland,56
+2019-05-31,Disneyland,8
+2019-06-01,Disneyland,1
+2019-06-02,Disneyland,2
+2019-06-03,Disneyland,9
+2019-06-04,Disneyland,7
+2019-06-05,Disneyland,4
+2019-06-06,Disneyland,10
+2019-06-07,Disneyland,4
+2019-06-08,Disneyland,26
+2019-06-09,Disneyland,3
+2019-06-10,Disneyland,27
+2019-06-11,Disneyland,27
+2019-06-12,Disneyland,49
+2019-06-13,Disneyland,52
+2019-06-14,Disneyland,40
+2019-06-15,Disneyland,51
+2019-06-16,Disneyland,4
+2019-06-17,Disneyland,37
+2019-06-18,Disneyland,50
+2019-06-19,Disneyland,36
+2019-06-20,Disneyland,54
+2019-06-21,Disneyland,28
+2019-06-22,Disneyland,17
+2019-06-23,Disneyland,5
+2019-06-24,Disneyland,8
+2019-06-25,Disneyland,13
+2019-06-26,Disneyland,8
+2019-06-27,Disneyland,14
+2019-06-28,Disneyland,4
+2019-06-29,Disneyland,18
+2019-06-30,Disneyland,5
+2019-07-01,Disneyland,29
+2019-07-02,Disneyland,33
+2019-07-03,Disneyland,25
+2019-07-04,Disneyland,60
+2019-07-05,Disneyland,72
+2019-07-06,Disneyland,52
+2019-07-07,Disneyland,7
+2019-07-08,Disneyland,36
+2019-07-09,Disneyland,29
+2019-07-10,Disneyland,14
+2019-07-11,Disneyland,11
+2019-07-12,Disneyland,12
+2019-07-13,Disneyland,18
+2019-07-14,Disneyland,5
+2019-07-15,Disneyland,32
+2019-07-16,Disneyland,47
+2019-07-17,Disneyland,39
+2019-07-18,Disneyland,34
+2019-07-19,Disneyland,29
+2019-07-20,Disneyland,54
+2019-07-21,Disneyland,16
+2019-07-22,Disneyland,59
+2019-07-23,Disneyland,42
+2019-07-24,Disneyland,26
+2019-07-25,Disneyland,53
+2019-07-26,Disneyland,32
+2019-07-27,Disneyland,57
+2019-07-28,Disneyland,19
+2019-07-29,Disneyland,54
+2019-07-30,Disneyland,52
+2019-07-31,Disneyland,35
+2019-08-01,Disneyland,32
+2019-08-02,Disneyland,29
+2019-08-03,Disneyland,46
+2019-08-04,Disneyland,8
+2019-08-05,Disneyland,28
+2019-08-06,Disneyland,27
+2019-08-07,Disneyland,15
+2019-08-08,Disneyland,21
+2019-08-09,Disneyland,27
+2019-08-10,Disneyland,60
+2019-08-11,Disneyland,21
+2019-08-12,Disneyland,42
+2019-08-13,Disneyland,21
+2019-08-14,Disneyland,19
+2019-08-15,Disneyland,16
+2019-08-16,Disneyland,29
+2019-08-17,Disneyland,69
+2019-08-18,Disneyland,23
+2019-08-19,Disneyland,17
+2019-08-20,Disneyland,10
+2019-08-21,Disneyland,5
+2019-08-22,Disneyland,14
+2019-08-23,Disneyland,15
+2019-08-24,Disneyland,29
+2019-08-25,Disneyland,19
+2019-08-26,Disneyland,6
+2019-08-27,Disneyland,2
+2019-08-28,Disneyland,1
+2019-08-29,Disneyland,1
+2019-08-30,Disneyland,12
+2019-08-31,Disneyland,37
+2019-09-01,Disneyland,38
+2019-09-02,Disneyland,4
+2019-09-03,Disneyland,0
+2019-09-04,Disneyland,0
+2019-09-05,Disneyland,0
+2019-09-06,Disneyland,0
+2019-09-07,Disneyland,23
+2019-09-08,Disneyland,4
+2019-09-09,Disneyland,8
+2019-09-10,Disneyland,4
+2019-09-11,Disneyland,2
+2019-09-12,Disneyland,2
+2019-09-13,Disneyland,6
+2019-09-14,Disneyland,31
+2019-09-15,Disneyland,20
+2019-09-16,Disneyland,12
+2019-09-17,Disneyland,8
+2019-09-18,Disneyland,9
+2019-09-19,Disneyland,13
+2019-09-20,Disneyland,23
+2019-09-21,Disneyland,66
+2019-09-22,Disneyland,13
+2019-09-23,Disneyland,25
+2019-09-24,Disneyland,4
+2019-09-25,Disneyland,11
+2019-09-26,Disneyland,13
+2019-09-27,Disneyland,49
+2019-09-28,Disneyland,86
+2019-09-29,Disneyland,43
+2019-09-30,Disneyland,67
+2019-10-01,Disneyland,17
+2019-10-02,Disneyland,8
+2019-10-03,Disneyland,12
+2019-10-04,Disneyland,26
+2019-10-05,Disneyland,35
+2019-10-06,Disneyland,39
+2019-10-07,Disneyland,78
+2019-10-08,Disneyland,82
+2019-10-09,Disneyland,91
+2019-10-10,Disneyland,93
+2019-10-11,Disneyland,83
+2019-10-12,Disneyland,94
+2019-10-13,Disneyland,67
+2019-10-14,Disneyland,95
+2019-10-15,Disneyland,50
+2019-10-16,Disneyland,31
+2019-10-17,Disneyland,38
+2019-10-18,Disneyland,29
+2019-10-19,Disneyland,48
+2019-10-20,Disneyland,33
+2019-10-21,Disneyland,61
+2019-10-22,Disneyland,18
+2019-10-23,Disneyland,33
+2019-10-24,Disneyland,30
+2019-10-25,Disneyland,73
+2019-10-26,Disneyland,83
+2019-10-27,Disneyland,29
+2019-10-28,Disneyland,54
+2019-10-29,Disneyland,15
+2019-10-30,Disneyland,14
+2019-10-31,Disneyland,18
+2019-11-01,Disneyland,44
+2019-11-02,Disneyland,30
+2019-11-03,Disneyland,22
+2019-11-04,Disneyland,30
+2019-11-05,Disneyland,14
+2019-11-06,Disneyland,10
+2019-11-07,Disneyland,13
+2019-11-08,Disneyland,20
+2019-11-09,Disneyland,94
+2019-11-10,Disneyland,91
+2019-11-11,Disneyland,39
+2019-11-12,Disneyland,20
+2019-11-13,Disneyland,7
+2019-11-14,Disneyland,15
+2019-11-15,Disneyland,27
+2019-11-16,Disneyland,68
+2019-11-17,Disneyland,14
+2019-11-18,Disneyland,39
+2019-11-19,Disneyland,18
+2019-11-20,Disneyland,1
+2019-11-21,Disneyland,10
+2019-11-22,Disneyland,12
+2019-11-23,Disneyland,57
+2019-11-24,Disneyland,52
+2019-11-25,Disneyland,88
+2019-11-26,Disneyland,91
+2019-11-27,Disneyland,7
+2019-11-28,Disneyland,1
+2019-11-29,Disneyland,88
+2019-11-30,Disneyland,66
+2019-12-01,Disneyland,9
+2019-12-02,Disneyland,33
+2019-12-03,Disneyland,28
+2019-12-04,Disneyland,0
+2019-12-05,Disneyland,49
+2019-12-06,Disneyland,14
+2019-12-07,Disneyland,27
+2019-12-08,Disneyland,9
+2019-12-09,Disneyland,61
+2019-12-10,Disneyland,25
+2019-12-11,Disneyland,29
+2019-12-12,Disneyland,43
+2019-12-13,Disneyland,27
+2019-12-14,Disneyland,77
+2019-12-15,Disneyland,36
+2019-12-16,Disneyland,54
+2019-12-17,Disneyland,17
+2019-12-18,Disneyland,19
+2019-12-19,Disneyland,42
+2019-12-20,Disneyland,46
+2019-12-21,Disneyland,94
+2019-12-22,Disneyland,37
+2019-12-23,Disneyland,9
+2019-12-24,Disneyland,84
+2019-12-25,Disneyland,52
+2019-12-26,Disneyland,29
+2019-12-27,Disneyland,99
+2019-12-28,Disneyland,99
+2019-12-29,Disneyland,95
+2019-12-30,Disneyland,82
+2019-12-31,Disneyland,98
+2015-01-01,California Adventure,67
+2015-01-02,California Adventure,71
+2015-01-03,California Adventure,23
+2015-01-04,California Adventure,19
+2015-01-05,California Adventure,51
+2015-01-06,California Adventure,47
+2015-01-07,California Adventure,24
+2015-01-08,California Adventure,12
+2015-01-09,California Adventure,26
+2015-01-10,California Adventure,9
+2015-01-11,California Adventure,1
+2015-01-12,California Adventure,7
+2015-01-13,California Adventure,4
+2015-01-14,California Adventure,3
+2015-01-15,California Adventure,3
+2015-01-16,California Adventure,11
+2015-01-17,California Adventure,43
+2015-01-18,California Adventure,68
+2015-01-19,California Adventure,33
+2015-01-20,California Adventure,1
+2015-01-21,California Adventure,5
+2015-01-22,California Adventure,1
+2015-01-23,California Adventure,4
+2015-01-24,California Adventure,31
+2015-01-25,California Adventure,14
+2015-01-26,California Adventure,3
+2015-01-27,California Adventure,0
+2015-01-28,California Adventure,6
+2015-01-29,California Adventure,3
+2015-01-30,California Adventure,4
+2015-01-31,California Adventure,33
+2015-02-01,California Adventure,24
+2015-02-02,California Adventure,14
+2015-02-03,California Adventure,7
+2015-02-04,California Adventure,15
+2015-02-05,California Adventure,7
+2015-02-06,California Adventure,24
+2015-02-07,California Adventure,64
+2015-02-08,California Adventure,69
+2015-02-09,California Adventure,52
+2015-02-10,California Adventure,4
+2015-02-11,California Adventure,11
+2015-02-12,California Adventure,4
+2015-02-13,California Adventure,41
+2015-02-14,California Adventure,60
+2015-02-15,California Adventure,88
+2015-02-16,California Adventure,77
+2015-02-17,California Adventure,43
+2015-02-18,California Adventure,51
+2015-02-19,California Adventure,27
+2015-02-20,California Adventure,39
+2015-02-21,California Adventure,29
+2015-02-22,California Adventure,13
+2015-02-23,California Adventure,37
+2015-02-24,California Adventure,32
+2015-02-25,California Adventure,49
+2015-02-26,California Adventure,18
+2015-02-27,California Adventure,65
+2015-02-28,California Adventure,28
+2015-03-01,California Adventure,12
+2015-03-02,California Adventure,9
+2015-03-03,California Adventure,8
+2015-03-04,California Adventure,9
+2015-03-05,California Adventure,7
+2015-03-06,California Adventure,7
+2015-03-07,California Adventure,31
+2015-03-08,California Adventure,42
+2015-03-09,California Adventure,28
+2015-03-10,California Adventure,38
+2015-03-11,California Adventure,42
+2015-03-12,California Adventure,22
+2015-03-13,California Adventure,20
+2015-03-14,California Adventure,24
+2015-03-15,California Adventure,66
+2015-03-16,California Adventure,31
+2015-03-17,California Adventure,48
+2015-03-18,California Adventure,56
+2015-03-19,California Adventure,47
+2015-03-20,California Adventure,50
+2015-03-21,California Adventure,23
+2015-03-22,California Adventure,37
+2015-03-23,California Adventure,66
+2015-03-24,California Adventure,63
+2015-03-25,California Adventure,67
+2015-03-26,California Adventure,30
+2015-03-27,California Adventure,21
+2015-03-28,California Adventure,18
+2015-03-29,California Adventure,11
+2015-03-30,California Adventure,67
+2015-03-31,California Adventure,71
+2015-04-01,California Adventure,81
+2015-04-02,California Adventure,71
+2015-04-03,California Adventure,39
+2015-04-04,California Adventure,13
+2015-04-05,California Adventure,21
+2015-04-06,California Adventure,85
+2015-04-07,California Adventure,70
+2015-04-08,California Adventure,95
+2015-04-09,California Adventure,81
+2015-04-10,California Adventure,75
+2015-04-11,California Adventure,33
+2015-04-12,California Adventure,38
+2015-04-13,California Adventure,13
+2015-04-14,California Adventure,8
+2015-04-15,California Adventure,13
+2015-04-16,California Adventure,4
+2015-04-17,California Adventure,8
+2015-04-18,California Adventure,22
+2015-04-19,California Adventure,24
+2015-04-20,California Adventure,18
+2015-04-21,California Adventure,10
+2015-04-22,California Adventure,11
+2015-04-23,California Adventure,7
+2015-04-24,California Adventure,32
+2015-04-25,California Adventure,43
+2015-04-26,California Adventure,51
+2015-04-27,California Adventure,6
+2015-04-28,California Adventure,8
+2015-04-29,California Adventure,9
+2015-04-30,California Adventure,12
+2015-05-01,California Adventure,27
+2015-05-02,California Adventure,23
+2015-05-03,California Adventure,47
+2015-05-04,California Adventure,26
+2015-05-05,California Adventure,18
+2015-05-06,California Adventure,39
+2015-05-07,California Adventure,19
+2015-05-08,California Adventure,16
+2015-05-09,California Adventure,45
+2015-05-10,California Adventure,39
+2015-05-11,California Adventure,22
+2015-05-12,California Adventure,32
+2015-05-13,California Adventure,29
+2015-05-14,California Adventure,6
+2015-05-15,California Adventure,21
+2015-05-16,California Adventure,42
+2015-05-17,California Adventure,70
+2015-05-18,California Adventure,41
+2015-05-19,California Adventure,38
+2015-05-20,California Adventure,6
+2015-05-21,California Adventure,44
+2015-05-22,California Adventure,56
+2015-05-23,California Adventure,22
+2015-05-24,California Adventure,40
+2015-05-25,California Adventure,52
+2015-05-26,California Adventure,13
+2015-05-27,California Adventure,28
+2015-05-28,California Adventure,19
+2015-05-29,California Adventure,17
+2015-05-30,California Adventure,18
+2015-05-31,California Adventure,18
+2015-06-01,California Adventure,11
+2015-06-02,California Adventure,33
+2015-06-03,California Adventure,30
+2015-06-04,California Adventure,38
+2015-06-05,California Adventure,13
+2015-06-06,California Adventure,15
+2015-06-07,California Adventure,25
+2015-06-08,California Adventure,21
+2015-06-09,California Adventure,10
+2015-06-10,California Adventure,52
+2015-06-11,California Adventure,17
+2015-06-12,California Adventure,18
+2015-06-13,California Adventure,12
+2015-06-14,California Adventure,40
+2015-06-15,California Adventure,62
+2015-06-16,California Adventure,25
+2015-06-17,California Adventure,60
+2015-06-18,California Adventure,22
+2015-06-19,California Adventure,45
+2015-06-20,California Adventure,9
+2015-06-21,California Adventure,10
+2015-06-22,California Adventure,17
+2015-06-23,California Adventure,36
+2015-06-24,California Adventure,44
+2015-06-25,California Adventure,25
+2015-06-26,California Adventure,47
+2015-06-27,California Adventure,15
+2015-06-28,California Adventure,28
+2015-06-29,California Adventure,54
+2015-06-30,California Adventure,25
+2015-07-01,California Adventure,21
+2015-07-02,California Adventure,9
+2015-07-03,California Adventure,27
+2015-07-04,California Adventure,4
+2015-07-05,California Adventure,3
+2015-07-06,California Adventure,13
+2015-07-07,California Adventure,25
+2015-07-08,California Adventure,46
+2015-07-09,California Adventure,27
+2015-07-10,California Adventure,36
+2015-07-11,California Adventure,16
+2015-07-12,California Adventure,29
+2015-07-13,California Adventure,58
+2015-07-14,California Adventure,32
+2015-07-15,California Adventure,48
+2015-07-16,California Adventure,52
+2015-07-17,California Adventure,7
+2015-07-18,California Adventure,11
+2015-07-19,California Adventure,34
+2015-07-20,California Adventure,31
+2015-07-21,California Adventure,82
+2015-07-22,California Adventure,63
+2015-07-23,California Adventure,38
+2015-07-24,California Adventure,28
+2015-07-25,California Adventure,30
+2015-07-26,California Adventure,65
+2015-07-27,California Adventure,57
+2015-07-28,California Adventure,54
+2015-07-29,California Adventure,53
+2015-07-30,California Adventure,30
+2015-07-31,California Adventure,38
+2015-08-01,California Adventure,35
+2015-08-02,California Adventure,29
+2015-08-03,California Adventure,42
+2015-08-04,California Adventure,60
+2015-08-05,California Adventure,44
+2015-08-06,California Adventure,46
+2015-08-07,California Adventure,58
+2015-08-08,California Adventure,34
+2015-08-09,California Adventure,40
+2015-08-10,California Adventure,48
+2015-08-11,California Adventure,40
+2015-08-12,California Adventure,24
+2015-08-13,California Adventure,19
+2015-08-14,California Adventure,5
+2015-08-15,California Adventure,17
+2015-08-16,California Adventure,6
+2015-08-17,California Adventure,34
+2015-08-18,California Adventure,37
+2015-08-19,California Adventure,47
+2015-08-20,California Adventure,25
+2015-08-21,California Adventure,12
+2015-08-22,California Adventure,15
+2015-08-23,California Adventure,9
+2015-08-24,California Adventure,9
+2015-08-25,California Adventure,5
+2015-08-26,California Adventure,4
+2015-08-27,California Adventure,2
+2015-08-28,California Adventure,12
+2015-08-29,California Adventure,3
+2015-08-30,California Adventure,3
+2015-08-31,California Adventure,4
+2015-09-01,California Adventure,1
+2015-09-02,California Adventure,2
+2015-09-03,California Adventure,1
+2015-09-04,California Adventure,15
+2015-09-05,California Adventure,14
+2015-09-06,California Adventure,18
+2015-09-07,California Adventure,62
+2015-09-08,California Adventure,2
+2015-09-09,California Adventure,5
+2015-09-10,California Adventure,2
+2015-09-11,California Adventure,2
+2015-09-12,California Adventure,7
+2015-09-13,California Adventure,3
+2015-09-14,California Adventure,10
+2015-09-15,California Adventure,9
+2015-09-16,California Adventure,7
+2015-09-17,California Adventure,3
+2015-09-18,California Adventure,3
+2015-09-19,California Adventure,10
+2015-09-20,California Adventure,4
+2015-09-21,California Adventure,13
+2015-09-22,California Adventure,6
+2015-09-23,California Adventure,27
+2015-09-24,California Adventure,3
+2015-09-25,California Adventure,31
+2015-09-26,California Adventure,8
+2015-09-27,California Adventure,10
+2015-09-28,California Adventure,9
+2015-09-29,California Adventure,3
+2015-09-30,California Adventure,1
+2015-10-01,California Adventure,21
+2015-10-02,California Adventure,23
+2015-10-03,California Adventure,35
+2015-10-04,California Adventure,30
+2015-10-05,California Adventure,36
+2015-10-06,California Adventure,38
+2015-10-07,California Adventure,45
+2015-10-08,California Adventure,34
+2015-10-09,California Adventure,35
+2015-10-10,California Adventure,48
+2015-10-11,California Adventure,39
+2015-10-12,California Adventure,73
+2015-10-13,California Adventure,42
+2015-10-14,California Adventure,46
+2015-10-15,California Adventure,33
+2015-10-16,California Adventure,30
+2015-10-17,California Adventure,40
+2015-10-18,California Adventure,29
+2015-10-19,California Adventure,31
+2015-10-20,California Adventure,28
+2015-10-21,California Adventure,30
+2015-10-22,California Adventure,17
+2015-10-23,California Adventure,15
+2015-10-24,California Adventure,21
+2015-10-25,California Adventure,13
+2015-10-26,California Adventure,14
+2015-10-27,California Adventure,13
+2015-10-28,California Adventure,14
+2015-10-29,California Adventure,6
+2015-10-30,California Adventure,5
+2015-10-31,California Adventure,10
+2015-11-01,California Adventure,5
+2015-11-02,California Adventure,5
+2015-11-03,California Adventure,7
+2015-11-04,California Adventure,10
+2015-11-05,California Adventure,5
+2015-11-06,California Adventure,5
+2015-11-07,California Adventure,11
+2015-11-08,California Adventure,7
+2015-11-09,California Adventure,11
+2015-11-10,California Adventure,13
+2015-11-11,California Adventure,51
+2015-11-12,California Adventure,11
+2015-11-13,California Adventure,12
+2015-11-14,California Adventure,22
+2015-11-15,California Adventure,17
+2015-11-16,California Adventure,22
+2015-11-17,California Adventure,24
+2015-11-18,California Adventure,29
+2015-11-19,California Adventure,20
+2015-11-20,California Adventure,20
+2015-11-21,California Adventure,30
+2015-11-22,California Adventure,24
+2015-11-23,California Adventure,26
+2015-11-24,California Adventure,26
+2015-11-25,California Adventure,30
+2015-11-26,California Adventure,19
+2015-11-27,California Adventure,17
+2015-11-28,California Adventure,25
+2015-11-29,California Adventure,17
+2015-11-30,California Adventure,22
+2015-12-01,California Adventure,17
+2015-12-02,California Adventure,19
+2015-12-03,California Adventure,10
+2015-12-04,California Adventure,8
+2015-12-05,California Adventure,14
+2015-12-06,California Adventure,8
+2015-12-07,California Adventure,10
+2015-12-08,California Adventure,10
+2015-12-09,California Adventure,13
+2015-12-10,California Adventure,6
+2015-12-11,California Adventure,6
+2015-12-12,California Adventure,13
+2015-12-13,California Adventure,9
+2015-12-14,California Adventure,13
+2015-12-15,California Adventure,15
+2015-12-16,California Adventure,33
+2015-12-17,California Adventure,9
+2015-12-18,California Adventure,8
+2015-12-19,California Adventure,16
+2015-12-20,California Adventure,46
+2015-12-21,California Adventure,32
+2015-12-22,California Adventure,15
+2015-12-23,California Adventure,40
+2015-12-24,California Adventure,19
+2015-12-25,California Adventure,30
+2015-12-26,California Adventure,56
+2015-12-27,California Adventure,46
+2015-12-28,California Adventure,91
+2015-12-29,California Adventure,94
+2015-12-30,California Adventure,82
+2015-12-31,California Adventure,58
+2016-01-01,California Adventure,43
+2016-01-02,California Adventure,15
+2016-01-03,California Adventure,31
+2016-01-04,California Adventure,35
+2016-01-05,California Adventure,3
+2016-01-06,California Adventure,1
+2016-01-07,California Adventure,6
+2016-01-08,California Adventure,50
+2016-01-09,California Adventure,18
+2016-01-10,California Adventure,26
+2016-01-11,California Adventure,20
+2016-01-12,California Adventure,16
+2016-01-13,California Adventure,9
+2016-01-14,California Adventure,3
+2016-01-15,California Adventure,30
+2016-01-16,California Adventure,36
+2016-01-17,California Adventure,54
+2016-01-18,California Adventure,50
+2016-01-19,California Adventure,5
+2016-01-20,California Adventure,3
+2016-01-21,California Adventure,2
+2016-01-22,California Adventure,6
+2016-01-23,California Adventure,19
+2016-01-24,California Adventure,15
+2016-01-25,California Adventure,11
+2016-01-26,California Adventure,5
+2016-01-27,California Adventure,5
+2016-01-28,California Adventure,0
+2016-01-29,California Adventure,6
+2016-01-30,California Adventure,15
+2016-01-31,California Adventure,12
+2016-02-01,California Adventure,16
+2016-02-02,California Adventure,19
+2016-02-03,California Adventure,26
+2016-02-04,California Adventure,20
+2016-02-05,California Adventure,22
+2016-02-06,California Adventure,57
+2016-02-07,California Adventure,45
+2016-02-08,California Adventure,44
+2016-02-09,California Adventure,4
+2016-02-10,California Adventure,7
+2016-02-11,California Adventure,5
+2016-02-12,California Adventure,33
+2016-02-13,California Adventure,39
+2016-02-14,California Adventure,82
+2016-02-15,California Adventure,76
+2016-02-16,California Adventure,53
+2016-02-17,California Adventure,57
+2016-02-18,California Adventure,45
+2016-02-19,California Adventure,44
+2016-02-20,California Adventure,55
+2016-02-21,California Adventure,37
+2016-02-22,California Adventure,16
+2016-02-23,California Adventure,11
+2016-02-24,California Adventure,45
+2016-02-25,California Adventure,8
+2016-02-26,California Adventure,43
+2016-02-27,California Adventure,59
+2016-02-28,California Adventure,22
+2016-02-29,California Adventure,15
+2016-03-01,California Adventure,25
+2016-03-02,California Adventure,38
+2016-03-03,California Adventure,36
+2016-03-04,California Adventure,47
+2016-03-05,California Adventure,67
+2016-03-06,California Adventure,10
+2016-03-07,California Adventure,15
+2016-03-08,California Adventure,48
+2016-03-09,California Adventure,28
+2016-03-10,California Adventure,5
+2016-03-11,California Adventure,3
+2016-03-12,California Adventure,11
+2016-03-13,California Adventure,22
+2016-03-14,California Adventure,43
+2016-03-15,California Adventure,54
+2016-03-16,California Adventure,59
+2016-03-17,California Adventure,41
+2016-03-18,California Adventure,55
+2016-03-19,California Adventure,67
+2016-03-20,California Adventure,67
+2016-03-21,California Adventure,74
+2016-03-22,California Adventure,71
+2016-03-23,California Adventure,67
+2016-03-24,California Adventure,68
+2016-03-25,California Adventure,68
+2016-03-26,California Adventure,76
+2016-03-27,California Adventure,71
+2016-03-28,California Adventure,73
+2016-03-29,California Adventure,63
+2016-03-30,California Adventure,73
+2016-03-31,California Adventure,68
+2016-04-01,California Adventure,48
+2016-04-02,California Adventure,23
+2016-04-03,California Adventure,58
+2016-04-04,California Adventure,58
+2016-04-05,California Adventure,54
+2016-04-06,California Adventure,32
+2016-04-07,California Adventure,45
+2016-04-08,California Adventure,23
+2016-04-09,California Adventure,8
+2016-04-10,California Adventure,28
+2016-04-11,California Adventure,20
+2016-04-12,California Adventure,28
+2016-04-13,California Adventure,32
+2016-04-14,California Adventure,23
+2016-04-15,California Adventure,37
+2016-04-16,California Adventure,34
+2016-04-17,California Adventure,60
+2016-04-18,California Adventure,19
+2016-04-19,California Adventure,20
+2016-04-20,California Adventure,15
+2016-04-21,California Adventure,0
+2016-04-22,California Adventure,42
+2016-04-23,California Adventure,46
+2016-04-24,California Adventure,77
+2016-04-25,California Adventure,66
+2016-04-26,California Adventure,65
+2016-04-27,California Adventure,69
+2016-04-28,California Adventure,44
+2016-04-29,California Adventure,71
+2016-04-30,California Adventure,57
+2016-05-01,California Adventure,81
+2016-05-02,California Adventure,16
+2016-05-03,California Adventure,17
+2016-05-04,California Adventure,27
+2016-05-05,California Adventure,13
+2016-05-06,California Adventure,53
+2016-05-07,California Adventure,39
+2016-05-08,California Adventure,47
+2016-05-09,California Adventure,31
+2016-05-10,California Adventure,34
+2016-05-11,California Adventure,40
+2016-05-12,California Adventure,16
+2016-05-13,California Adventure,50
+2016-05-14,California Adventure,52
+2016-05-15,California Adventure,71
+2016-05-16,California Adventure,34
+2016-05-17,California Adventure,21
+2016-05-18,California Adventure,24
+2016-05-19,California Adventure,19
+2016-05-20,California Adventure,39
+2016-05-21,California Adventure,53
+2016-05-22,California Adventure,87
+2016-05-23,California Adventure,48
+2016-05-24,California Adventure,41
+2016-05-25,California Adventure,42
+2016-05-26,California Adventure,47
+2016-05-27,California Adventure,19
+2016-05-28,California Adventure,16
+2016-05-29,California Adventure,32
+2016-05-30,California Adventure,66
+2016-05-31,California Adventure,36
+2016-06-01,California Adventure,38
+2016-06-02,California Adventure,27
+2016-06-03,California Adventure,13
+2016-06-04,California Adventure,9
+2016-06-05,California Adventure,44
+2016-06-06,California Adventure,72
+2016-06-07,California Adventure,87
+2016-06-08,California Adventure,80
+2016-06-09,California Adventure,86
+2016-06-10,California Adventure,35
+2016-06-11,California Adventure,20
+2016-06-12,California Adventure,59
+2016-06-13,California Adventure,33
+2016-06-14,California Adventure,50
+2016-06-15,California Adventure,65
+2016-06-16,California Adventure,28
+2016-06-17,California Adventure,25
+2016-06-18,California Adventure,8
+2016-06-19,California Adventure,4
+2016-06-20,California Adventure,4
+2016-06-21,California Adventure,21
+2016-06-22,California Adventure,25
+2016-06-23,California Adventure,18
+2016-06-24,California Adventure,20
+2016-06-25,California Adventure,8
+2016-06-26,California Adventure,47
+2016-06-27,California Adventure,19
+2016-06-28,California Adventure,20
+2016-06-29,California Adventure,26
+2016-06-30,California Adventure,21
+2016-07-01,California Adventure,11
+2016-07-02,California Adventure,12
+2016-07-03,California Adventure,31
+2016-07-04,California Adventure,0
+2016-07-05,California Adventure,14
+2016-07-06,California Adventure,41
+2016-07-07,California Adventure,37
+2016-07-08,California Adventure,29
+2016-07-09,California Adventure,9
+2016-07-10,California Adventure,28
+2016-07-11,California Adventure,30
+2016-07-12,California Adventure,35
+2016-07-13,California Adventure,42
+2016-07-14,California Adventure,16
+2016-07-15,California Adventure,20
+2016-07-16,California Adventure,14
+2016-07-17,California Adventure,29
+2016-07-18,California Adventure,33
+2016-07-19,California Adventure,70
+2016-07-20,California Adventure,50
+2016-07-21,California Adventure,32
+2016-07-22,California Adventure,16
+2016-07-23,California Adventure,11
+2016-07-24,California Adventure,23
+2016-07-25,California Adventure,41
+2016-07-26,California Adventure,47
+2016-07-27,California Adventure,37
+2016-07-28,California Adventure,29
+2016-07-29,California Adventure,26
+2016-07-30,California Adventure,12
+2016-07-31,California Adventure,24
+2016-08-01,California Adventure,35
+2016-08-02,California Adventure,46
+2016-08-03,California Adventure,59
+2016-08-04,California Adventure,49
+2016-08-05,California Adventure,33
+2016-08-06,California Adventure,25
+2016-08-07,California Adventure,27
+2016-08-08,California Adventure,31
+2016-08-09,California Adventure,29
+2016-08-10,California Adventure,30
+2016-08-11,California Adventure,27
+2016-08-12,California Adventure,18
+2016-08-13,California Adventure,23
+2016-08-14,California Adventure,14
+2016-08-15,California Adventure,9
+2016-08-16,California Adventure,5
+2016-08-17,California Adventure,10
+2016-08-18,California Adventure,8
+2016-08-19,California Adventure,7
+2016-08-20,California Adventure,24
+2016-08-21,California Adventure,7
+2016-08-22,California Adventure,40
+2016-08-23,California Adventure,22
+2016-08-24,California Adventure,19
+2016-08-25,California Adventure,13
+2016-08-26,California Adventure,8
+2016-08-27,California Adventure,23
+2016-08-28,California Adventure,12
+2016-08-29,California Adventure,7
+2016-08-30,California Adventure,4
+2016-08-31,California Adventure,1
+2016-09-01,California Adventure,1
+2016-09-02,California Adventure,23
+2016-09-03,California Adventure,12
+2016-09-04,California Adventure,24
+2016-09-05,California Adventure,78
+2016-09-06,California Adventure,3
+2016-09-07,California Adventure,18
+2016-09-08,California Adventure,7
+2016-09-09,California Adventure,7
+2016-09-10,California Adventure,14
+2016-09-11,California Adventure,9
+2016-09-12,California Adventure,6
+2016-09-13,California Adventure,9
+2016-09-14,California Adventure,17
+2016-09-15,California Adventure,1
+2016-09-16,California Adventure,17
+2016-09-17,California Adventure,13
+2016-09-18,California Adventure,6
+2016-09-19,California Adventure,8
+2016-09-20,California Adventure,5
+2016-09-21,California Adventure,7
+2016-09-22,California Adventure,3
+2016-09-23,California Adventure,34
+2016-09-24,California Adventure,12
+2016-09-25,California Adventure,6
+2016-09-26,California Adventure,4
+2016-09-27,California Adventure,3
+2016-09-28,California Adventure,4
+2016-09-29,California Adventure,1
+2016-09-30,California Adventure,34
+2016-10-01,California Adventure,18
+2016-10-02,California Adventure,44
+2016-10-03,California Adventure,69
+2016-10-04,California Adventure,28
+2016-10-05,California Adventure,34
+2016-10-06,California Adventure,14
+2016-10-07,California Adventure,78
+2016-10-08,California Adventure,55
+2016-10-09,California Adventure,80
+2016-10-10,California Adventure,87
+2016-10-11,California Adventure,66
+2016-10-12,California Adventure,94
+2016-10-13,California Adventure,64
+2016-10-14,California Adventure,91
+2016-10-15,California Adventure,55
+2016-10-16,California Adventure,58
+2016-10-17,California Adventure,55
+2016-10-18,California Adventure,11
+2016-10-19,California Adventure,17
+2016-10-20,California Adventure,14
+2016-10-21,California Adventure,78
+2016-10-22,California Adventure,62
+2016-10-23,California Adventure,52
+2016-10-24,California Adventure,36
+2016-10-25,California Adventure,12
+2016-10-26,California Adventure,11
+2016-10-27,California Adventure,12
+2016-10-28,California Adventure,24
+2016-10-29,California Adventure,43
+2016-10-30,California Adventure,38
+2016-10-31,California Adventure,3
+2016-11-01,California Adventure,8
+2016-11-02,California Adventure,6
+2016-11-03,California Adventure,7
+2016-11-04,California Adventure,16
+2016-11-05,California Adventure,19
+2016-11-06,California Adventure,38
+2016-11-07,California Adventure,26
+2016-11-08,California Adventure,11
+2016-11-09,California Adventure,21
+2016-11-10,California Adventure,18
+2016-11-11,California Adventure,52
+2016-11-12,California Adventure,67
+2016-11-13,California Adventure,31
+2016-11-14,California Adventure,20
+2016-11-15,California Adventure,11
+2016-11-16,California Adventure,24
+2016-11-17,California Adventure,12
+2016-11-18,California Adventure,12
+2016-11-19,California Adventure,20
+2016-11-20,California Adventure,39
+2016-11-21,California Adventure,97
+2016-11-22,California Adventure,95
+2016-11-23,California Adventure,85
+2016-11-24,California Adventure,8
+2016-11-25,California Adventure,66
+2016-11-26,California Adventure,8
+2016-11-27,California Adventure,8
+2016-11-28,California Adventure,10
+2016-11-29,California Adventure,9
+2016-11-30,California Adventure,8
+2016-12-01,California Adventure,8
+2016-12-02,California Adventure,21
+2016-12-03,California Adventure,39
+2016-12-04,California Adventure,48
+2016-12-05,California Adventure,35
+2016-12-06,California Adventure,27
+2016-12-07,California Adventure,34
+2016-12-08,California Adventure,18
+2016-12-09,California Adventure,56
+2016-12-10,California Adventure,46
+2016-12-11,California Adventure,60
+2016-12-12,California Adventure,36
+2016-12-13,California Adventure,21
+2016-12-14,California Adventure,33
+2016-12-15,California Adventure,7
+2016-12-16,California Adventure,4
+2016-12-17,California Adventure,23
+2016-12-18,California Adventure,84
+2016-12-19,California Adventure,47
+2016-12-20,California Adventure,19
+2016-12-21,California Adventure,6
+2016-12-22,California Adventure,9
+2016-12-23,California Adventure,3
+2016-12-24,California Adventure,9
+2016-12-25,California Adventure,28
+2016-12-26,California Adventure,63
+2016-12-27,California Adventure,96
+2016-12-28,California Adventure,98
+2016-12-29,California Adventure,93
+2016-12-30,California Adventure,53
+2016-12-31,California Adventure,7
+2017-01-01,California Adventure,37
+2017-01-02,California Adventure,48
+2017-01-03,California Adventure,87
+2017-01-04,California Adventure,99
+2017-01-05,California Adventure,64
+2017-01-06,California Adventure,96
+2017-01-07,California Adventure,25
+2017-01-08,California Adventure,44
+2017-01-09,California Adventure,5
+2017-01-10,California Adventure,12
+2017-01-11,California Adventure,7
+2017-01-12,California Adventure,3
+2017-01-13,California Adventure,27
+2017-01-14,California Adventure,68
+2017-01-15,California Adventure,77
+2017-01-16,California Adventure,44
+2017-01-17,California Adventure,10
+2017-01-18,California Adventure,15
+2017-01-19,California Adventure,1
+2017-01-20,California Adventure,1
+2017-01-21,California Adventure,10
+2017-01-22,California Adventure,0
+2017-01-23,California Adventure,6
+2017-01-24,California Adventure,9
+2017-01-25,California Adventure,49
+2017-01-26,California Adventure,29
+2017-01-27,California Adventure,63
+2017-01-28,California Adventure,86
+2017-01-29,California Adventure,90
+2017-01-30,California Adventure,37
+2017-01-31,California Adventure,7
+2017-02-01,California Adventure,11
+2017-02-02,California Adventure,15
+2017-02-03,California Adventure,16
+2017-02-04,California Adventure,66
+2017-02-05,California Adventure,73
+2017-02-06,California Adventure,4
+2017-02-07,California Adventure,6
+2017-02-08,California Adventure,34
+2017-02-09,California Adventure,21
+2017-02-10,California Adventure,11
+2017-02-11,California Adventure,51
+2017-02-12,California Adventure,90
+2017-02-13,California Adventure,80
+2017-02-14,California Adventure,17
+2017-02-15,California Adventure,0
+2017-02-16,California Adventure,57
+2017-02-17,California Adventure,56
+2017-02-18,California Adventure,65
+2017-02-19,California Adventure,89
+2017-02-20,California Adventure,88
+2017-02-21,California Adventure,78
+2017-02-22,California Adventure,95
+2017-02-23,California Adventure,84
+2017-02-24,California Adventure,89
+2017-02-25,California Adventure,89
+2017-02-26,California Adventure,63
+2017-02-27,California Adventure,10
+2017-02-28,California Adventure,41
+2017-03-01,California Adventure,62
+2017-03-02,California Adventure,38
+2017-03-03,California Adventure,75
+2017-03-04,California Adventure,84
+2017-03-05,California Adventure,57
+2017-03-06,California Adventure,65
+2017-03-07,California Adventure,19
+2017-03-08,California Adventure,11
+2017-03-09,California Adventure,4
+2017-03-10,California Adventure,2
+2017-03-11,California Adventure,38
+2017-03-12,California Adventure,48
+2017-03-13,California Adventure,62
+2017-03-14,California Adventure,75
+2017-03-15,California Adventure,93
+2017-03-16,California Adventure,68
+2017-03-17,California Adventure,55
+2017-03-18,California Adventure,42
+2017-03-19,California Adventure,93
+2017-03-20,California Adventure,95
+2017-03-21,California Adventure,69
+2017-03-22,California Adventure,72
+2017-03-23,California Adventure,87
+2017-03-24,California Adventure,87
+2017-03-25,California Adventure,52
+2017-03-26,California Adventure,91
+2017-03-27,California Adventure,97
+2017-03-28,California Adventure,93
+2017-03-29,California Adventure,92
+2017-03-30,California Adventure,73
+2017-03-31,California Adventure,91
+2017-04-01,California Adventure,60
+2017-04-02,California Adventure,75
+2017-04-03,California Adventure,90
+2017-04-04,California Adventure,94
+2017-04-05,California Adventure,95
+2017-04-06,California Adventure,86
+2017-04-07,California Adventure,66
+2017-04-08,California Adventure,79
+2017-04-09,California Adventure,41
+2017-04-10,California Adventure,74
+2017-04-11,California Adventure,72
+2017-04-12,California Adventure,82
+2017-04-13,California Adventure,50
+2017-04-14,California Adventure,43
+2017-04-15,California Adventure,9
+2017-04-16,California Adventure,12
+2017-04-17,California Adventure,59
+2017-04-18,California Adventure,48
+2017-04-19,California Adventure,72
+2017-04-20,California Adventure,53
+2017-04-21,California Adventure,11
+2017-04-22,California Adventure,8
+2017-04-23,California Adventure,31
+2017-04-24,California Adventure,49
+2017-04-25,California Adventure,60
+2017-04-26,California Adventure,83
+2017-04-27,California Adventure,40
+2017-04-28,California Adventure,52
+2017-04-29,California Adventure,90
+2017-04-30,California Adventure,95
+2017-05-01,California Adventure,68
+2017-05-02,California Adventure,64
+2017-05-03,California Adventure,75
+2017-05-04,California Adventure,32
+2017-05-05,California Adventure,76
+2017-05-06,California Adventure,92
+2017-05-07,California Adventure,96
+2017-05-08,California Adventure,44
+2017-05-09,California Adventure,51
+2017-05-10,California Adventure,48
+2017-05-11,California Adventure,28
+2017-05-12,California Adventure,64
+2017-05-13,California Adventure,97
+2017-05-14,California Adventure,96
+2017-05-15,California Adventure,76
+2017-05-16,California Adventure,59
+2017-05-17,California Adventure,69
+2017-05-18,California Adventure,40
+2017-05-19,California Adventure,90
+2017-05-20,California Adventure,95
+2017-05-21,California Adventure,98
+2017-05-22,California Adventure,84
+2017-05-23,California Adventure,66
+2017-05-24,California Adventure,80
+2017-05-25,California Adventure,95
+2017-05-26,California Adventure,2
+2017-05-27,California Adventure,13
+2017-05-28,California Adventure,16
+2017-05-29,California Adventure,67
+2017-05-30,California Adventure,69
+2017-05-31,California Adventure,79
+2017-06-01,California Adventure,53
+2017-06-02,California Adventure,30
+2017-06-03,California Adventure,19
+2017-06-04,California Adventure,59
+2017-06-05,California Adventure,73
+2017-06-06,California Adventure,80
+2017-06-07,California Adventure,85
+2017-06-08,California Adventure,80
+2017-06-09,California Adventure,25
+2017-06-10,California Adventure,12
+2017-06-11,California Adventure,90
+2017-06-12,California Adventure,72
+2017-06-13,California Adventure,73
+2017-06-14,California Adventure,68
+2017-06-15,California Adventure,40
+2017-06-16,California Adventure,42
+2017-06-17,California Adventure,15
+2017-06-18,California Adventure,32
+2017-06-19,California Adventure,49
+2017-06-20,California Adventure,54
+2017-06-21,California Adventure,49
+2017-06-22,California Adventure,33
+2017-06-23,California Adventure,29
+2017-06-24,California Adventure,19
+2017-06-25,California Adventure,70
+2017-06-26,California Adventure,42
+2017-06-27,California Adventure,63
+2017-06-28,California Adventure,80
+2017-06-29,California Adventure,59
+2017-06-30,California Adventure,31
+2017-08-01,California Adventure,32
+2017-08-02,California Adventure,57
+2017-08-03,California Adventure,44
+2017-08-04,California Adventure,29
+2017-08-05,California Adventure,16
+2017-08-06,California Adventure,2
+2017-08-07,California Adventure,49
+2017-08-08,California Adventure,38
+2017-08-09,California Adventure,40
+2017-08-10,California Adventure,32
+2017-08-11,California Adventure,26
+2017-08-12,California Adventure,15
+2017-08-13,California Adventure,40
+2017-08-14,California Adventure,41
+2017-08-15,California Adventure,41
+2017-08-16,California Adventure,28
+2017-08-17,California Adventure,26
+2017-08-18,California Adventure,31
+2017-08-19,California Adventure,27
+2017-08-20,California Adventure,10
+2017-08-21,California Adventure,49
+2017-08-22,California Adventure,57
+2017-08-23,California Adventure,54
+2017-08-24,California Adventure,37
+2017-08-25,California Adventure,26
+2017-08-26,California Adventure,34
+2017-08-27,California Adventure,28
+2017-08-28,California Adventure,24
+2017-08-29,California Adventure,13
+2017-08-30,California Adventure,9
+2017-08-31,California Adventure,7
+2017-09-01,California Adventure,10
+2017-09-02,California Adventure,10
+2017-09-03,California Adventure,14
+2017-09-04,California Adventure,74
+2017-09-05,California Adventure,9
+2017-09-06,California Adventure,21
+2017-09-07,California Adventure,7
+2017-09-08,California Adventure,17
+2017-09-09,California Adventure,29
+2017-09-10,California Adventure,35
+2017-09-11,California Adventure,54
+2017-09-12,California Adventure,31
+2017-09-13,California Adventure,60
+2017-09-14,California Adventure,29
+2017-09-15,California Adventure,43
+2017-09-16,California Adventure,47
+2017-09-17,California Adventure,81
+2017-09-18,California Adventure,44
+2017-09-19,California Adventure,40
+2017-09-20,California Adventure,44
+2017-09-21,California Adventure,69
+2017-09-22,California Adventure,76
+2017-09-23,California Adventure,83
+2017-09-24,California Adventure,63
+2017-09-25,California Adventure,40
+2017-09-26,California Adventure,40
+2017-09-27,California Adventure,30
+2017-09-28,California Adventure,29
+2017-09-29,California Adventure,62
+2017-09-30,California Adventure,49
+2017-10-01,California Adventure,50
+2017-10-02,California Adventure,47
+2017-10-03,California Adventure,57
+2017-10-04,California Adventure,34
+2017-10-05,California Adventure,26
+2017-10-06,California Adventure,67
+2017-10-07,California Adventure,54
+2017-10-08,California Adventure,91
+2017-10-09,California Adventure,74
+2017-10-10,California Adventure,67
+2017-10-11,California Adventure,63
+2017-10-12,California Adventure,61
+2017-10-13,California Adventure,90
+2017-10-14,California Adventure,71
+2017-10-15,California Adventure,44
+2017-10-16,California Adventure,52
+2017-10-17,California Adventure,35
+2017-10-18,California Adventure,38
+2017-10-19,California Adventure,56
+2017-10-20,California Adventure,91
+2017-10-21,California Adventure,73
+2017-10-22,California Adventure,36
+2017-10-23,California Adventure,22
+2017-10-24,California Adventure,10
+2017-10-25,California Adventure,21
+2017-10-26,California Adventure,38
+2017-10-27,California Adventure,66
+2017-10-28,California Adventure,45
+2017-10-29,California Adventure,41
+2017-10-30,California Adventure,64
+2017-10-31,California Adventure,3
+2017-11-01,California Adventure,18
+2017-11-02,California Adventure,13
+2017-11-03,California Adventure,13
+2017-11-04,California Adventure,7
+2017-11-05,California Adventure,22
+2017-11-06,California Adventure,31
+2017-11-07,California Adventure,51
+2017-11-08,California Adventure,42
+2017-11-09,California Adventure,46
+2017-11-10,California Adventure,81
+2017-11-11,California Adventure,45
+2017-11-12,California Adventure,21
+2017-11-13,California Adventure,17
+2017-11-14,California Adventure,13
+2017-11-15,California Adventure,21
+2017-11-16,California Adventure,24
+2017-11-17,California Adventure,18
+2017-11-18,California Adventure,29
+2017-11-19,California Adventure,79
+2017-11-20,California Adventure,96
+2017-11-21,California Adventure,91
+2017-11-22,California Adventure,76
+2017-11-23,California Adventure,33
+2017-11-24,California Adventure,52
+2017-11-25,California Adventure,33
+2017-11-26,California Adventure,12
+2017-11-27,California Adventure,21
+2017-11-28,California Adventure,18
+2017-11-29,California Adventure,14
+2017-11-30,California Adventure,20
+2017-12-01,California Adventure,28
+2017-12-02,California Adventure,44
+2017-12-03,California Adventure,54
+2017-12-04,California Adventure,59
+2017-12-05,California Adventure,53
+2017-12-06,California Adventure,37
+2017-12-07,California Adventure,9
+2017-12-08,California Adventure,56
+2017-12-09,California Adventure,58
+2017-12-10,California Adventure,49
+2017-12-11,California Adventure,19
+2017-12-12,California Adventure,12
+2017-12-13,California Adventure,22
+2017-12-14,California Adventure,24
+2017-12-15,California Adventure,12
+2017-12-16,California Adventure,27
+2017-12-17,California Adventure,16
+2017-12-18,California Adventure,73
+2017-12-19,California Adventure,77
+2017-12-20,California Adventure,53
+2017-12-21,California Adventure,73
+2017-12-22,California Adventure,6
+2017-12-23,California Adventure,14
+2017-12-24,California Adventure,49
+2017-12-25,California Adventure,31
+2017-12-26,California Adventure,23
+2017-12-27,California Adventure,95
+2017-12-28,California Adventure,95
+2017-12-29,California Adventure,68
+2017-12-30,California Adventure,68
+2017-12-31,California Adventure,29
+2018-01-01,California Adventure,17
+2018-01-02,California Adventure,42
+2018-01-03,California Adventure,98
+2018-01-04,California Adventure,98
+2018-01-05,California Adventure,87
+2018-01-06,California Adventure,75
+2018-01-07,California Adventure,67
+2018-01-08,California Adventure,21
+2018-01-09,California Adventure,6
+2018-01-10,California Adventure,65
+2018-01-11,California Adventure,54
+2018-01-12,California Adventure,34
+2018-01-13,California Adventure,64
+2018-01-14,California Adventure,77
+2018-01-15,California Adventure,61
+2018-01-16,California Adventure,22
+2018-01-17,California Adventure,43
+2018-01-18,California Adventure,32
+2018-01-19,California Adventure,34
+2018-01-20,California Adventure,66
+2018-01-21,California Adventure,61
+2018-01-22,California Adventure,34
+2018-01-23,California Adventure,12
+2018-01-24,California Adventure,15
+2018-01-25,California Adventure,2
+2018-01-26,California Adventure,21
+2018-01-27,California Adventure,36
+2018-01-28,California Adventure,26
+2018-01-29,California Adventure,28
+2018-01-30,California Adventure,15
+2018-01-31,California Adventure,31
+2018-02-01,California Adventure,9
+2018-02-02,California Adventure,43
+2018-02-03,California Adventure,63
+2018-02-04,California Adventure,46
+2018-02-05,California Adventure,26
+2018-02-06,California Adventure,11
+2018-02-07,California Adventure,37
+2018-02-08,California Adventure,20
+2018-02-09,California Adventure,65
+2018-02-10,California Adventure,73
+2018-02-11,California Adventure,53
+2018-02-12,California Adventure,93
+2018-02-13,California Adventure,32
+2018-02-14,California Adventure,43
+2018-02-15,California Adventure,64
+2018-02-16,California Adventure,78
+2018-02-17,California Adventure,62
+2018-02-18,California Adventure,65
+2018-02-19,California Adventure,64
+2018-02-20,California Adventure,71
+2018-02-21,California Adventure,80
+2018-02-22,California Adventure,79
+2018-02-23,California Adventure,79
+2018-02-24,California Adventure,72
+2018-02-25,California Adventure,51
+2018-02-26,California Adventure,41
+2018-02-27,California Adventure,18
+2018-02-28,California Adventure,38
+2018-03-01,California Adventure,34
+2018-03-02,California Adventure,18
+2018-03-03,California Adventure,20
+2018-03-04,California Adventure,58
+2018-03-05,California Adventure,27
+2018-03-06,California Adventure,28
+2018-03-07,California Adventure,15
+2018-03-08,California Adventure,6
+2018-03-09,California Adventure,10
+2018-03-10,California Adventure,2
+2018-03-11,California Adventure,36
+2018-03-12,California Adventure,68
+2018-03-13,California Adventure,82
+2018-03-14,California Adventure,74
+2018-03-15,California Adventure,50
+2018-03-16,California Adventure,39
+2018-03-17,California Adventure,43
+2018-03-18,California Adventure,30
+2018-03-19,California Adventure,80
+2018-03-20,California Adventure,61
+2018-03-21,California Adventure,39
+2018-03-22,California Adventure,7
+2018-03-23,California Adventure,30
+2018-03-24,California Adventure,42
+2018-03-25,California Adventure,18
+2018-03-26,California Adventure,93
+2018-03-27,California Adventure,98
+2018-03-28,California Adventure,98
+2018-03-29,California Adventure,95
+2018-03-30,California Adventure,87
+2018-03-31,California Adventure,60
+2018-04-01,California Adventure,55
+2018-04-02,California Adventure,91
+2018-04-03,California Adventure,95
+2018-04-04,California Adventure,97
+2018-04-05,California Adventure,95
+2018-04-06,California Adventure,76
+2018-04-07,California Adventure,16
+2018-04-08,California Adventure,39
+2018-04-09,California Adventure,39
+2018-04-10,California Adventure,37
+2018-04-11,California Adventure,56
+2018-04-12,California Adventure,57
+2018-04-13,California Adventure,15
+2018-04-14,California Adventure,18
+2018-04-15,California Adventure,76
+2018-04-16,California Adventure,68
+2018-04-17,California Adventure,61
+2018-04-18,California Adventure,53
+2018-04-19,California Adventure,65
+2018-04-20,California Adventure,74
+2018-04-21,California Adventure,63
+2018-04-22,California Adventure,62
+2018-04-23,California Adventure,63
+2018-04-24,California Adventure,85
+2018-04-25,California Adventure,68
+2018-04-26,California Adventure,65
+2018-04-27,California Adventure,65
+2018-04-28,California Adventure,61
+2018-04-29,California Adventure,62
+2018-04-30,California Adventure,71
+2018-05-01,California Adventure,60
+2018-05-02,California Adventure,56
+2018-05-03,California Adventure,71
+2018-05-04,California Adventure,45
+2018-05-05,California Adventure,29
+2018-05-06,California Adventure,57
+2018-05-07,California Adventure,60
+2018-05-08,California Adventure,45
+2018-05-09,California Adventure,73
+2018-05-10,California Adventure,50
+2018-05-11,California Adventure,29
+2018-05-12,California Adventure,47
+2018-05-13,California Adventure,53
+2018-05-14,California Adventure,55
+2018-05-15,California Adventure,27
+2018-05-16,California Adventure,43
+2018-05-17,California Adventure,51
+2018-05-18,California Adventure,41
+2018-05-19,California Adventure,60
+2018-05-20,California Adventure,80
+2018-05-21,California Adventure,72
+2018-05-22,California Adventure,39
+2018-05-23,California Adventure,60
+2018-05-24,California Adventure,55
+2018-05-25,California Adventure,20
+2018-05-26,California Adventure,49
+2018-05-27,California Adventure,69
+2018-05-28,California Adventure,47
+2018-05-29,California Adventure,53
+2018-05-30,California Adventure,65
+2018-05-31,California Adventure,72
+2018-06-01,California Adventure,21
+2018-06-02,California Adventure,28
+2018-06-03,California Adventure,53
+2018-06-04,California Adventure,80
+2018-06-05,California Adventure,78
+2018-06-06,California Adventure,83
+2018-06-07,California Adventure,74
+2018-06-08,California Adventure,40
+2018-06-09,California Adventure,50
+2018-06-10,California Adventure,68
+2018-06-11,California Adventure,75
+2018-06-12,California Adventure,85
+2018-06-13,California Adventure,82
+2018-06-14,California Adventure,73
+2018-06-15,California Adventure,57
+2018-06-16,California Adventure,52
+2018-06-17,California Adventure,32
+2018-06-18,California Adventure,93
+2018-06-19,California Adventure,91
+2018-06-20,California Adventure,93
+2018-06-21,California Adventure,84
+2018-06-22,California Adventure,30
+2018-06-23,California Adventure,36
+2018-06-24,California Adventure,83
+2018-06-25,California Adventure,87
+2018-06-26,California Adventure,88
+2018-06-27,California Adventure,85
+2018-06-28,California Adventure,86
+2018-06-29,California Adventure,79
+2018-06-30,California Adventure,66
+2018-07-01,California Adventure,32
+2018-07-02,California Adventure,77
+2018-07-03,California Adventure,88
+2018-07-04,California Adventure,78
+2018-07-05,California Adventure,82
+2018-07-06,California Adventure,31
+2018-07-07,California Adventure,36
+2018-07-08,California Adventure,36
+2018-07-09,California Adventure,76
+2018-07-10,California Adventure,73
+2018-07-11,California Adventure,83
+2018-07-12,California Adventure,79
+2018-07-13,California Adventure,40
+2018-07-14,California Adventure,56
+2018-07-15,California Adventure,65
+2018-07-16,California Adventure,79
+2018-07-17,California Adventure,72
+2018-07-18,California Adventure,96
+2018-07-19,California Adventure,96
+2018-07-20,California Adventure,86
+2018-07-21,California Adventure,64
+2018-07-22,California Adventure,76
+2018-07-23,California Adventure,84
+2018-07-24,California Adventure,83
+2018-07-25,California Adventure,77
+2018-07-26,California Adventure,86
+2018-07-27,California Adventure,55
+2018-07-28,California Adventure,59
+2018-07-29,California Adventure,68
+2018-07-30,California Adventure,87
+2018-07-31,California Adventure,65
+2018-08-01,California Adventure,71
+2018-08-02,California Adventure,81
+2018-08-03,California Adventure,76
+2018-08-04,California Adventure,47
+2018-08-05,California Adventure,57
+2018-08-06,California Adventure,70
+2018-08-07,California Adventure,77
+2018-08-08,California Adventure,70
+2018-08-09,California Adventure,72
+2018-08-10,California Adventure,37
+2018-08-11,California Adventure,41
+2018-08-12,California Adventure,43
+2018-08-13,California Adventure,80
+2018-08-14,California Adventure,55
+2018-08-15,California Adventure,72
+2018-08-16,California Adventure,64
+2018-08-17,California Adventure,47
+2018-08-18,California Adventure,77
+2018-08-19,California Adventure,48
+2018-08-20,California Adventure,93
+2018-08-21,California Adventure,75
+2018-08-22,California Adventure,79
+2018-08-23,California Adventure,81
+2018-08-24,California Adventure,30
+2018-08-25,California Adventure,81
+2018-08-26,California Adventure,84
+2018-08-27,California Adventure,78
+2018-08-28,California Adventure,51
+2018-08-29,California Adventure,58
+2018-08-30,California Adventure,33
+2018-08-31,California Adventure,19
+2018-09-01,California Adventure,70
+2018-09-02,California Adventure,87
+2018-09-03,California Adventure,79
+2018-09-04,California Adventure,18
+2018-09-05,California Adventure,8
+2018-09-06,California Adventure,6
+2018-09-07,California Adventure,10
+2018-09-08,California Adventure,12
+2018-09-09,California Adventure,8
+2018-09-10,California Adventure,32
+2018-09-11,California Adventure,14
+2018-09-12,California Adventure,30
+2018-09-13,California Adventure,15
+2018-09-14,California Adventure,30
+2018-09-15,California Adventure,24
+2018-09-16,California Adventure,20
+2018-09-17,California Adventure,18
+2018-09-18,California Adventure,15
+2018-09-19,California Adventure,49
+2018-09-20,California Adventure,23
+2018-09-21,California Adventure,64
+2018-09-22,California Adventure,40
+2018-09-23,California Adventure,42
+2018-09-24,California Adventure,24
+2018-09-25,California Adventure,15
+2018-09-26,California Adventure,11
+2018-09-27,California Adventure,25
+2018-09-28,California Adventure,72
+2018-09-29,California Adventure,58
+2018-09-30,California Adventure,34
+2018-10-01,California Adventure,37
+2018-10-02,California Adventure,44
+2018-10-03,California Adventure,33
+2018-10-04,California Adventure,40
+2018-10-05,California Adventure,90
+2018-10-06,California Adventure,93
+2018-10-07,California Adventure,83
+2018-10-08,California Adventure,98
+2018-10-09,California Adventure,67
+2018-10-10,California Adventure,87
+2018-10-11,California Adventure,79
+2018-10-12,California Adventure,92
+2018-10-13,California Adventure,82
+2018-10-14,California Adventure,69
+2018-10-15,California Adventure,60
+2018-10-16,California Adventure,22
+2018-10-17,California Adventure,53
+2018-10-18,California Adventure,60
+2018-10-19,California Adventure,96
+2018-10-20,California Adventure,93
+2018-10-21,California Adventure,50
+2018-10-22,California Adventure,47
+2018-10-23,California Adventure,17
+2018-10-24,California Adventure,37
+2018-10-25,California Adventure,32
+2018-10-26,California Adventure,77
+2018-10-27,California Adventure,77
+2018-10-28,California Adventure,50
+2018-10-29,California Adventure,41
+2018-10-30,California Adventure,27
+2018-10-31,California Adventure,3
+2018-11-01,California Adventure,25
+2018-11-02,California Adventure,26
+2018-11-03,California Adventure,25
+2018-11-04,California Adventure,38
+2018-11-05,California Adventure,21
+2018-11-06,California Adventure,17
+2018-11-07,California Adventure,21
+2018-11-08,California Adventure,21
+2018-11-09,California Adventure,15
+2018-11-10,California Adventure,85
+2018-11-11,California Adventure,94
+2018-11-12,California Adventure,79
+2018-11-13,California Adventure,47
+2018-11-14,California Adventure,52
+2018-11-15,California Adventure,47
+2018-11-16,California Adventure,47
+2018-11-17,California Adventure,76
+2018-11-18,California Adventure,71
+2018-11-19,California Adventure,85
+2018-11-20,California Adventure,86
+2018-11-21,California Adventure,70
+2018-11-22,California Adventure,61
+2018-11-23,California Adventure,93
+2018-11-24,California Adventure,72
+2018-11-25,California Adventure,24
+2018-11-26,California Adventure,62
+2018-11-27,California Adventure,59
+2018-11-28,California Adventure,68
+2018-11-29,California Adventure,16
+2018-11-30,California Adventure,51
+2018-12-01,California Adventure,10
+2018-12-02,California Adventure,10
+2018-12-03,California Adventure,17
+2018-12-04,California Adventure,13
+2018-12-05,California Adventure,4
+2018-12-06,California Adventure,1
+2018-12-07,California Adventure,40
+2018-12-08,California Adventure,49
+2018-12-09,California Adventure,55
+2018-12-10,California Adventure,70
+2018-12-11,California Adventure,50
+2018-12-12,California Adventure,6
+2018-12-13,California Adventure,7
+2018-12-14,California Adventure,12
+2018-12-15,California Adventure,43
+2018-12-16,California Adventure,13
+2018-12-17,California Adventure,42
+2018-12-18,California Adventure,39
+2018-12-19,California Adventure,56
+2018-12-20,California Adventure,63
+2018-12-21,California Adventure,8
+2018-12-22,California Adventure,40
+2018-12-23,California Adventure,68
+2018-12-24,California Adventure,82
+2018-12-25,California Adventure,78
+2018-12-26,California Adventure,67
+2018-12-27,California Adventure,98
+2018-12-28,California Adventure,99
+2018-12-29,California Adventure,96
+2018-12-30,California Adventure,96
+2018-12-31,California Adventure,61
+2019-01-01,California Adventure,70
+2019-01-02,California Adventure,95
+2019-01-03,California Adventure,96
+2019-01-04,California Adventure,89
+2019-01-05,California Adventure,18
+2019-01-06,California Adventure,37
+2019-01-07,California Adventure,86
+2019-01-08,California Adventure,70
+2019-01-09,California Adventure,81
+2019-01-10,California Adventure,71
+2019-01-11,California Adventure,58
+2019-01-12,California Adventure,62
+2019-01-13,California Adventure,74
+2019-01-14,California Adventure,3
+2019-01-15,California Adventure,6
+2019-01-16,California Adventure,12
+2019-01-17,California Adventure,3
+2019-01-18,California Adventure,64
+2019-01-19,California Adventure,90
+2019-01-20,California Adventure,98
+2019-01-21,California Adventure,86
+2019-01-22,California Adventure,16
+2019-01-23,California Adventure,16
+2019-01-24,California Adventure,5
+2019-01-25,California Adventure,26
+2019-01-26,California Adventure,58
+2019-01-27,California Adventure,51
+2019-01-28,California Adventure,73
+2019-01-29,California Adventure,45
+2019-01-30,California Adventure,72
+2019-01-31,California Adventure,24
+2019-02-01,California Adventure,74
+2019-02-02,California Adventure,2
+2019-02-03,California Adventure,11
+2019-02-04,California Adventure,13
+2019-02-05,California Adventure,10
+2019-02-06,California Adventure,55
+2019-02-07,California Adventure,44
+2019-02-08,California Adventure,73
+2019-02-09,California Adventure,82
+2019-02-10,California Adventure,28
+2019-02-11,California Adventure,90
+2019-02-12,California Adventure,56
+2019-02-13,California Adventure,12
+2019-02-14,California Adventure,5
+2019-02-15,California Adventure,74
+2019-02-16,California Adventure,93
+2019-02-17,California Adventure,90
+2019-02-18,California Adventure,97
+2019-02-19,California Adventure,89
+2019-02-20,California Adventure,92
+2019-02-21,California Adventure,81
+2019-02-22,California Adventure,93
+2019-02-23,California Adventure,84
+2019-02-24,California Adventure,72
+2019-02-25,California Adventure,76
+2019-02-26,California Adventure,54
+2019-02-27,California Adventure,76
+2019-02-28,California Adventure,80
+2019-03-01,California Adventure,89
+2019-03-02,California Adventure,23
+2019-03-03,California Adventure,52
+2019-03-04,California Adventure,92
+2019-03-05,California Adventure,41
+2019-03-06,California Adventure,2
+2019-03-07,California Adventure,30
+2019-03-08,California Adventure,54
+2019-03-09,California Adventure,66
+2019-03-10,California Adventure,74
+2019-03-11,California Adventure,99
+2019-03-12,California Adventure,99
+2019-03-13,California Adventure,98
+2019-03-14,California Adventure,95
+2019-03-15,California Adventure,88
+2019-03-16,California Adventure,97
+2019-03-17,California Adventure,93
+2019-03-18,California Adventure,98
+2019-03-19,California Adventure,100
+2019-03-20,California Adventure,93
+2019-03-21,California Adventure,97
+2019-03-22,California Adventure,90
+2019-03-23,California Adventure,91
+2019-03-24,California Adventure,91
+2019-03-25,California Adventure,97
+2019-03-26,California Adventure,98
+2019-03-27,California Adventure,99
+2019-03-28,California Adventure,98
+2019-03-29,California Adventure,91
+2019-03-30,California Adventure,81
+2019-03-31,California Adventure,83
+2019-04-01,California Adventure,99
+2019-04-02,California Adventure,98
+2019-04-03,California Adventure,99
+2019-04-04,California Adventure,97
+2019-04-05,California Adventure,97
+2019-04-06,California Adventure,76
+2019-04-07,California Adventure,59
+2019-04-08,California Adventure,31
+2019-04-09,California Adventure,17
+2019-04-10,California Adventure,45
+2019-04-11,California Adventure,35
+2019-04-12,California Adventure,29
+2019-04-13,California Adventure,83
+2019-04-14,California Adventure,51
+2019-04-15,California Adventure,46
+2019-04-16,California Adventure,65
+2019-04-17,California Adventure,64
+2019-04-18,California Adventure,39
+2019-04-19,California Adventure,50
+2019-04-20,California Adventure,42
+2019-04-21,California Adventure,19
+2019-04-22,California Adventure,44
+2019-04-23,California Adventure,70
+2019-04-24,California Adventure,98
+2019-04-25,California Adventure,95
+2019-04-26,California Adventure,85
+2019-04-27,California Adventure,95
+2019-04-28,California Adventure,75
+2019-04-29,California Adventure,97
+2019-04-30,California Adventure,94
+2019-05-01,California Adventure,92
+2019-05-02,California Adventure,92
+2019-05-03,California Adventure,89
+2019-05-04,California Adventure,91
+2019-05-05,California Adventure,94
+2019-05-06,California Adventure,85
+2019-05-07,California Adventure,79
+2019-05-08,California Adventure,94
+2019-05-09,California Adventure,74
+2019-05-10,California Adventure,58
+2019-05-11,California Adventure,86
+2019-05-12,California Adventure,72
+2019-05-13,California Adventure,79
+2019-05-14,California Adventure,80
+2019-05-15,California Adventure,92
+2019-05-16,California Adventure,46
+2019-05-17,California Adventure,71
+2019-05-18,California Adventure,98
+2019-05-19,California Adventure,87
+2019-05-20,California Adventure,90
+2019-05-21,California Adventure,69
+2019-05-22,California Adventure,76
+2019-05-23,California Adventure,75
+2019-05-24,California Adventure,23
+2019-05-25,California Adventure,57
+2019-05-26,California Adventure,39
+2019-05-27,California Adventure,69
+2019-05-28,California Adventure,56
+2019-05-29,California Adventure,69
+2019-05-30,California Adventure,58
+2019-05-31,California Adventure,2
+2019-06-01,California Adventure,4
+2019-06-02,California Adventure,7
+2019-06-03,California Adventure,14
+2019-06-04,California Adventure,70
+2019-06-05,California Adventure,78
+2019-06-06,California Adventure,6
+2019-06-07,California Adventure,20
+2019-06-08,California Adventure,61
+2019-06-09,California Adventure,40
+2019-06-10,California Adventure,16
+2019-06-11,California Adventure,29
+2019-06-12,California Adventure,69
+2019-06-13,California Adventure,59
+2019-06-14,California Adventure,58
+2019-06-15,California Adventure,61
+2019-06-16,California Adventure,27
+2019-06-17,California Adventure,26
+2019-06-18,California Adventure,66
+2019-06-19,California Adventure,56
+2019-06-20,California Adventure,54
+2019-06-21,California Adventure,49
+2019-06-22,California Adventure,48
+2019-06-23,California Adventure,69
+2019-06-24,California Adventure,3
+2019-06-25,California Adventure,9
+2019-06-26,California Adventure,30
+2019-06-27,California Adventure,26
+2019-06-28,California Adventure,12
+2019-06-29,California Adventure,34
+2019-06-30,California Adventure,36
+2019-07-01,California Adventure,35
+2019-07-02,California Adventure,45
+2019-07-03,California Adventure,72
+2019-07-04,California Adventure,45
+2019-07-05,California Adventure,91
+2019-07-06,California Adventure,76
+2019-07-07,California Adventure,44
+2019-07-08,California Adventure,28
+2019-07-09,California Adventure,35
+2019-07-10,California Adventure,54
+2019-07-11,California Adventure,33
+2019-07-12,California Adventure,58
+2019-07-13,California Adventure,41
+2019-07-14,California Adventure,38
+2019-07-15,California Adventure,33
+2019-07-16,California Adventure,54
+2019-07-17,California Adventure,66
+2019-07-18,California Adventure,61
+2019-07-19,California Adventure,71
+2019-07-20,California Adventure,86
+2019-07-21,California Adventure,69
+2019-07-22,California Adventure,62
+2019-07-23,California Adventure,61
+2019-07-24,California Adventure,51
+2019-07-25,California Adventure,66
+2019-07-26,California Adventure,52
+2019-07-27,California Adventure,74
+2019-07-28,California Adventure,62
+2019-07-29,California Adventure,50
+2019-07-30,California Adventure,69
+2019-07-31,California Adventure,68
+2019-08-01,California Adventure,45
+2019-08-02,California Adventure,46
+2019-08-03,California Adventure,79
+2019-08-04,California Adventure,36
+2019-08-05,California Adventure,33
+2019-08-06,California Adventure,49
+2019-08-07,California Adventure,55
+2019-08-08,California Adventure,46
+2019-08-09,California Adventure,46
+2019-08-10,California Adventure,90
+2019-08-11,California Adventure,75
+2019-08-12,California Adventure,55
+2019-08-13,California Adventure,37
+2019-08-14,California Adventure,24
+2019-08-15,California Adventure,18
+2019-08-16,California Adventure,55
+2019-08-17,California Adventure,85
+2019-08-18,California Adventure,69
+2019-08-19,California Adventure,83
+2019-08-20,California Adventure,35
+2019-08-21,California Adventure,38
+2019-08-22,California Adventure,20
+2019-08-23,California Adventure,5
+2019-08-24,California Adventure,50
+2019-08-25,California Adventure,28
+2019-08-26,California Adventure,37
+2019-08-27,California Adventure,4
+2019-08-28,California Adventure,13
+2019-08-29,California Adventure,2
+2019-08-30,California Adventure,10
+2019-08-31,California Adventure,21
+2019-09-01,California Adventure,59
+2019-09-02,California Adventure,5
+2019-09-03,California Adventure,0
+2019-09-04,California Adventure,0
+2019-09-05,California Adventure,0
+2019-09-06,California Adventure,4
+2019-09-07,California Adventure,22
+2019-09-08,California Adventure,7
+2019-09-09,California Adventure,3
+2019-09-10,California Adventure,6
+2019-09-11,California Adventure,5
+2019-09-12,California Adventure,1
+2019-09-13,California Adventure,5
+2019-09-14,California Adventure,22
+2019-09-15,California Adventure,25
+2019-09-16,California Adventure,12
+2019-09-17,California Adventure,1
+2019-09-18,California Adventure,17
+2019-09-19,California Adventure,4
+2019-09-20,California Adventure,15
+2019-09-21,California Adventure,66
+2019-09-22,California Adventure,11
+2019-09-23,California Adventure,32
+2019-09-24,California Adventure,2
+2019-09-25,California Adventure,25
+2019-09-26,California Adventure,5
+2019-09-27,California Adventure,41
+2019-09-28,California Adventure,79
+2019-09-29,California Adventure,57
+2019-09-30,California Adventure,74
+2019-10-01,California Adventure,8
+2019-10-02,California Adventure,42
+2019-10-03,California Adventure,5
+2019-10-04,California Adventure,25
+2019-10-05,California Adventure,78
+2019-10-06,California Adventure,33
+2019-10-07,California Adventure,97
+2019-10-08,California Adventure,53
+2019-10-09,California Adventure,99
+2019-10-10,California Adventure,56
+2019-10-11,California Adventure,92
+2019-10-12,California Adventure,97
+2019-10-13,California Adventure,88
+2019-10-14,California Adventure,92
+2019-10-15,California Adventure,14
+2019-10-16,California Adventure,62
+2019-10-17,California Adventure,14
+2019-10-18,California Adventure,29
+2019-10-19,California Adventure,63
+2019-10-20,California Adventure,15
+2019-10-21,California Adventure,59
+2019-10-22,California Adventure,5
+2019-10-23,California Adventure,56
+2019-10-24,California Adventure,12
+2019-10-25,California Adventure,68
+2019-10-26,California Adventure,90
+2019-10-27,California Adventure,42
+2019-10-28,California Adventure,53
+2019-10-29,California Adventure,10
+2019-10-30,California Adventure,13
+2019-10-31,California Adventure,2
+2019-11-01,California Adventure,36
+2019-11-02,California Adventure,17
+2019-11-03,California Adventure,20
+2019-11-04,California Adventure,8
+2019-11-05,California Adventure,13
+2019-11-06,California Adventure,20
+2019-11-07,California Adventure,26
+2019-11-08,California Adventure,8
+2019-11-09,California Adventure,78
+2019-11-10,California Adventure,87
+2019-11-11,California Adventure,25
+2019-11-12,California Adventure,5
+2019-11-13,California Adventure,14
+2019-11-14,California Adventure,9
+2019-11-15,California Adventure,38
+2019-11-16,California Adventure,71
+2019-11-17,California Adventure,22
+2019-11-18,California Adventure,20
+2019-11-19,California Adventure,16
+2019-11-20,California Adventure,7
+2019-11-21,California Adventure,2
+2019-11-22,California Adventure,16
+2019-11-23,California Adventure,40
+2019-11-24,California Adventure,66
+2019-11-25,California Adventure,89
+2019-11-26,California Adventure,91
+2019-11-27,California Adventure,9
+2019-11-28,California Adventure,0
+2019-11-29,California Adventure,88
+2019-11-30,California Adventure,68
+2019-12-01,California Adventure,49
+2019-12-02,California Adventure,17
+2019-12-03,California Adventure,18
+2019-12-04,California Adventure,0
+2019-12-05,California Adventure,44
+2019-12-06,California Adventure,20
+2019-12-07,California Adventure,24
+2019-12-08,California Adventure,21
+2019-12-09,California Adventure,44
+2019-12-10,California Adventure,42
+2019-12-11,California Adventure,32
+2019-12-12,California Adventure,32
+2019-12-13,California Adventure,14
+2019-12-14,California Adventure,73
+2019-12-15,California Adventure,32
+2019-12-16,California Adventure,40
+2019-12-17,California Adventure,15
+2019-12-18,California Adventure,12
+2019-12-19,California Adventure,27
+2019-12-20,California Adventure,32
+2019-12-21,California Adventure,60
+2019-12-22,California Adventure,62
+2019-12-23,California Adventure,40
+2019-12-24,California Adventure,81
+2019-12-25,California Adventure,36
+2019-12-26,California Adventure,36
+2019-12-27,California Adventure,97
+2019-12-28,California Adventure,98
+2019-12-29,California Adventure,93
+2019-12-30,California Adventure,93
+2019-12-31,California Adventure,60
+2023-03-01,Disneyland,6
+2023-03-02,Disneyland,63
+2023-03-03,Disneyland,87
+2023-03-04,Disneyland,67
+2023-03-05,Disneyland,34
+2023-03-06,Disneyland,77
+2023-03-07,Disneyland,44
+2023-03-08,Disneyland,61
+2023-03-09,Disneyland,24
+2023-03-10,Disneyland,3
+2023-03-11,Disneyland,34
+2023-03-12,Disneyland,65
+2023-03-13,Disneyland,98
+2023-03-14,Disneyland,83
+2023-03-15,Disneyland,88
+2023-03-16,Disneyland,91
+2023-03-17,Disneyland,76
+2023-03-18,Disneyland,68
+2023-03-19,Disneyland,32
+2023-03-20,Disneyland,89
+2023-03-21,Disneyland,8
+2023-03-22,Disneyland,42
+2023-03-23,Disneyland,73
+2023-03-24,Disneyland,68
+2023-03-25,Disneyland,51
+2023-03-26,Disneyland,42
+2023-03-27,Disneyland,91
+2023-03-28,Disneyland,91
+2023-03-29,Disneyland,77
+2023-03-30,Disneyland,85
+2023-03-31,Disneyland,71
+2023-01-01,Disneyland,95
+2023-01-02,Disneyland,87
+2023-01-03,Disneyland,89
+2023-01-04,Disneyland,93
+2023-01-05,Disneyland,68
+2023-01-06,Disneyland,90
+2023-01-07,Disneyland,67
+2023-01-08,Disneyland,43
+2023-01-09,Disneyland,79
+2023-01-10,Disneyland,45
+2023-01-11,Disneyland,79
+2023-01-12,Disneyland,59
+2023-01-13,Disneyland,83
+2023-01-14,Disneyland,22
+2023-01-15,Disneyland,68
+2023-01-16,Disneyland,26
+2023-01-17,Disneyland,51
+2023-01-18,Disneyland,59
+2023-01-19,Disneyland,48
+2023-01-20,Disneyland,55
+2023-01-21,Disneyland,64
+2023-01-22,Disneyland,43
+2023-01-23,Disneyland,92
+2023-01-24,Disneyland,62
+2023-01-25,Disneyland,68
+2023-01-26,Disneyland,72
+2023-01-27,Disneyland,42
+2023-01-28,Disneyland,39
+2023-01-29,Disneyland,12
+2023-01-30,Disneyland,39
+2023-01-31,Disneyland,39
+2023-02-01,Disneyland,59
+2023-02-02,Disneyland,27
+2023-02-03,Disneyland,67
+2023-02-04,Disneyland,68
+2023-02-05,Disneyland,54
+2023-02-06,Disneyland,74
+2023-02-07,Disneyland,78
+2023-02-08,Disneyland,78
+2023-02-09,Disneyland,42
+2023-02-10,Disneyland,53
+2023-02-11,Disneyland,58
+2023-02-12,Disneyland,62
+2023-02-13,Disneyland,48
+2023-02-14,Disneyland,21
+2023-02-15,Disneyland,36
+2023-02-16,Disneyland,43
+2023-02-17,Disneyland,89
+2023-02-18,Disneyland,91
+2023-02-19,Disneyland,81
+2023-02-20,Disneyland,98
+2023-02-21,Disneyland,94
+2023-02-22,Disneyland,86
+2023-02-23,Disneyland,61
+2023-02-24,Disneyland,5
+2023-02-25,Disneyland,11
+2023-02-26,Disneyland,60
+2023-02-27,Disneyland,23
+2023-02-28,Disneyland,16
+2023-04-01,Disneyland,70
+2023-04-02,Disneyland,19
+2023-04-03,Disneyland,94
+2023-04-04,Disneyland,93
+2023-04-05,Disneyland,83
+2023-04-06,Disneyland,85
+2023-04-07,Disneyland,94
+2023-04-08,Disneyland,65
+2023-04-09,Disneyland,20
+2023-04-10,Disneyland,76
+2023-04-11,Disneyland,84
+2023-04-12,Disneyland,76
+2023-04-13,Disneyland,73
+2023-04-14,Disneyland,49
+2023-04-15,Disneyland,34
+2023-04-16,Disneyland,20
+2023-04-17,Disneyland,73
+2023-04-18,Disneyland,44
+2023-04-19,Disneyland,81
+2023-04-20,Disneyland,33
+2023-04-21,Disneyland,50
+2023-04-22,Disneyland,59
+2023-04-23,Disneyland,36
+2023-04-24,Disneyland,68
+2023-04-25,Disneyland,70
+2023-04-26,Disneyland,66
+2023-04-27,Disneyland,62
+2023-04-28,Disneyland,63
+2023-04-29,Disneyland,61
+2023-04-30,Disneyland,31
+2023-05-01,Disneyland,77
+2023-05-02,Disneyland,47
+2023-05-03,Disneyland,84
+2023-05-04,Disneyland,44
+2023-05-05,Disneyland,72
+2023-05-06,Disneyland,57
+2023-05-07,Disneyland,34
+2023-05-08,Disneyland,46
+2023-05-09,Disneyland,91
+2023-05-10,Disneyland,87
+2023-05-11,Disneyland,29
+2023-05-12,Disneyland,59
+2023-05-13,Disneyland,46
+2023-05-14,Disneyland,22
+2023-05-15,Disneyland,85
+2023-05-16,Disneyland,89
+2023-05-17,Disneyland,83
+2023-05-18,Disneyland,72
+2023-05-19,Disneyland,76
+2023-05-20,Disneyland,39
+2023-05-21,Disneyland,40
+2023-05-22,Disneyland,81
+2023-05-23,Disneyland,73
+2023-05-24,Disneyland,72
+2023-05-25,Disneyland,62
+2023-05-26,Disneyland,45
+2023-05-27,Disneyland,71
+2023-05-28,Disneyland,64
+2023-05-29,Disneyland,65
+2023-05-30,Disneyland,80
+2023-05-31,Disneyland,62
+2023-06-01,Disneyland,91
+2023-06-02,Disneyland,64
+2023-06-03,Disneyland,74
+2023-06-04,Disneyland,23
+2023-06-05,Disneyland,95
+2023-06-06,Disneyland,96
+2023-06-07,Disneyland,93
+2023-06-08,Disneyland,91
+2023-06-09,Disneyland,84
+2023-06-10,Disneyland,65
+2023-06-11,Disneyland,33
+2023-06-12,Disneyland,89
+2023-06-13,Disneyland,40
+2023-06-14,Disneyland,93
+2023-06-15,Disneyland,31
+2023-06-16,Disneyland,75
+2023-06-17,Disneyland,42
+2023-06-18,Disneyland,15
+2023-06-19,Disneyland,61
+2023-06-20,Disneyland,67
+2023-06-21,Disneyland,44
+2023-06-22,Disneyland,42
+2023-06-23,Disneyland,21
+2023-06-24,Disneyland,28
+2023-06-25,Disneyland,22
+2023-06-26,Disneyland,82
+2023-06-27,Disneyland,62
+2023-06-28,Disneyland,35
+2023-06-29,Disneyland,39
+2023-06-30,Disneyland,25
+2023-07-01,Disneyland,20
+2023-07-02,Disneyland,29
+2023-07-03,Disneyland,64
+2023-07-04,Disneyland,27
+2023-07-05,Disneyland,48
+2023-07-06,Disneyland,72
+2023-07-07,Disneyland,27
+2023-07-08,Disneyland,29
+2023-07-09,Disneyland,18
+2023-07-10,Disneyland,68
+2023-07-11,Disneyland,61
+2023-07-12,Disneyland,45
+2023-07-13,Disneyland,30
+2023-07-14,Disneyland,27
+2023-07-15,Disneyland,26
+2023-07-16,Disneyland,10
+2023-07-17,Disneyland,85
+2023-07-18,Disneyland,52
+2023-07-19,Disneyland,54
+2023-07-20,Disneyland,54
+2023-07-21,Disneyland,30
+2023-07-22,Disneyland,17
+2023-07-23,Disneyland,17
+2023-07-24,Disneyland,66
+2023-07-25,Disneyland,45
+2023-07-26,Disneyland,30
+2023-07-27,Disneyland,48
+2023-07-28,Disneyland,36
+2023-07-29,Disneyland,23
+2023-07-30,Disneyland,12
+2023-07-31,Disneyland,71
+2023-08-01,Disneyland,49
+2023-08-02,Disneyland,63
+2023-08-03,Disneyland,63
+2023-08-04,Disneyland,34
+2023-08-05,Disneyland,28
+2023-08-06,Disneyland,9
+2023-08-07,Disneyland,66
+2023-08-08,Disneyland,89
+2023-08-09,Disneyland,76
+2023-08-10,Disneyland,39
+2023-08-11,Disneyland,18
+2023-08-12,Disneyland,32
+2023-08-13,Disneyland,7
+2023-08-14,Disneyland,51
+2023-08-15,Disneyland,46
+2023-08-16,Disneyland,31
+2023-08-17,Disneyland,7
+2023-08-18,Disneyland,18
+2023-08-19,Disneyland,36
+2023-08-20,Disneyland,0
+2023-08-21,Disneyland,96
+2023-08-22,Disneyland,92
+2023-08-23,Disneyland,82
+2023-08-24,Disneyland,94
+2023-08-25,Disneyland,7
+2023-08-26,Disneyland,24
+2023-08-27,Disneyland,10
+2023-08-28,Disneyland,35
+2023-08-29,Disneyland,1
+2023-08-30,Disneyland,1
+2023-08-31,Disneyland,12
+2023-09-01,Disneyland,17
+2023-09-02,Disneyland,44
+2023-09-03,Disneyland,59
+2023-09-04,Disneyland,43
+2023-09-05,Disneyland,42
+2023-09-06,Disneyland,17
+2023-09-07,Disneyland,43
+2023-09-08,Disneyland,9
+2023-09-09,Disneyland,32
+2023-09-10,Disneyland,31
+2023-09-11,Disneyland,54
+2023-09-12,Disneyland,45
+2023-09-13,Disneyland,18
+2023-09-14,Disneyland,52
+2023-09-15,Disneyland,22
+2023-09-16,Disneyland,65
+2023-09-17,Disneyland,38
+2023-09-18,Disneyland,89
+2023-09-19,Disneyland,70
+2023-09-20,Disneyland,61
+2023-09-21,Disneyland,78
+2023-09-22,Disneyland,42
+2023-09-23,Disneyland,76
+2023-09-24,Disneyland,64
+2023-09-25,Disneyland,92
+2023-09-26,Disneyland,82
+2023-09-27,Disneyland,78
+2023-09-28,Disneyland,67
+2023-09-29,Disneyland,36
+2023-09-30,Disneyland,57
+2023-10-01,Disneyland,59
+2023-10-02,Disneyland,80
+2023-10-03,Disneyland,78
+2023-10-04,Disneyland,40
+2023-10-05,Disneyland,50
+2023-10-06,Disneyland,61
+2023-10-07,Disneyland,79
+2023-10-08,Disneyland,94
+2023-10-09,Disneyland,92
+2023-10-10,Disneyland,82
+2023-10-11,Disneyland,71
+2023-10-12,Disneyland,82
+2023-10-13,Disneyland,61
+2023-10-14,Disneyland,80
+2023-10-15,Disneyland,61
+2023-10-16,Disneyland,67
+2023-10-17,Disneyland,63
+2023-10-18,Disneyland,30
+2023-10-19,Disneyland,49
+2023-10-20,Disneyland,27
+2023-10-21,Disneyland,82
+2023-10-22,Disneyland,55
+2023-10-23,Disneyland,68
+2023-10-24,Disneyland,71
+2023-10-25,Disneyland,32
+2023-10-26,Disneyland,47
+2023-10-27,Disneyland,73
+2023-10-28,Disneyland,89
+2023-10-29,Disneyland,54
+2023-10-30,Disneyland,17
+2023-10-31,Disneyland,14
+2023-11-01,Disneyland,75
+2023-11-02,Disneyland,94
+2023-11-03,Disneyland,14
+2023-11-04,Disneyland,28
+2023-11-05,Disneyland,36
+2023-11-06,Disneyland,96
+2023-11-07,Disneyland,87
+2023-11-08,Disneyland,63
+2023-11-09,Disneyland,88
+2023-11-10,Disneyland,86
+2023-11-11,Disneyland,42
+2023-11-12,Disneyland,18
+2023-11-13,Disneyland,52
+2023-11-14,Disneyland,78
+2023-11-15,Disneyland,67
+2023-11-16,Disneyland,72
+2023-11-17,Disneyland,22
+2023-11-18,Disneyland,41
+2023-11-19,Disneyland,55
+2023-11-20,Disneyland,85
+2023-11-21,Disneyland,64
+2023-11-22,Disneyland,31
+2023-11-23,Disneyland,62
+2023-11-24,Disneyland,51
+2023-11-25,Disneyland,31
+2023-11-26,Disneyland,8
+2023-11-27,Disneyland,82
+2023-11-28,Disneyland,55
+2023-11-29,Disneyland,44
+2023-11-30,Disneyland,76
+2023-12-01,Disneyland,43
+2023-12-02,Disneyland,22
+2023-12-03,Disneyland,5
+2023-12-04,Disneyland,16
+2023-12-05,Disneyland,14
+2023-12-06,Disneyland,24
+2023-12-07,Disneyland,24
+2023-12-08,Disneyland,64
+2023-12-09,Disneyland,81
+2023-12-10,Disneyland,58
+2023-12-11,Disneyland,36
+2023-12-12,Disneyland,32
+2023-12-13,Disneyland,23
+2023-12-14,Disneyland,42
+2023-12-15,Disneyland,29
+2023-12-16,Disneyland,76
+2023-12-17,Disneyland,27
+2023-12-18,Disneyland,43
+2023-12-19,Disneyland,30
+2023-12-20,Disneyland,72
+2023-12-21,Disneyland,43
+2023-12-22,Disneyland,88
+2023-12-23,Disneyland,74
+2023-12-24,Disneyland,77
+2023-12-25,Disneyland,78
+2023-12-26,Disneyland,88
+2023-12-27,Disneyland,92
+2023-12-28,Disneyland,89
+2023-12-29,Disneyland,89
+2023-12-30,Disneyland,75
+2023-12-31,Disneyland,85
+2024-01-01,Disneyland,41
+2024-01-02,Disneyland,73
+2024-01-03,Disneyland,78
+2024-01-04,Disneyland,72
+2024-01-05,Disneyland,74
+2024-01-06,Disneyland,44
+2024-01-07,Disneyland,19
+2024-01-08,Disneyland,47
+2024-01-09,Disneyland,83
+2024-01-10,Disneyland,81
+2024-01-11,Disneyland,58
+2024-01-12,Disneyland,36
+2024-01-13,Disneyland,74
+2024-01-14,Disneyland,30
+2024-01-15,Disneyland,69
+2024-01-16,Disneyland,88
+2024-01-17,Disneyland,79
+2024-01-18,Disneyland,81
+2024-01-19,Disneyland,36
+2024-01-20,Disneyland,13
+2024-01-21,Disneyland,16
+2024-01-22,Disneyland,40
+2024-01-23,Disneyland,60
+2024-01-24,Disneyland,79
+2024-01-25,Disneyland,58
+2024-01-26,Disneyland,46
+2024-01-27,Disneyland,42
+2024-01-28,Disneyland,29
+2024-01-29,Disneyland,87
+2024-01-30,Disneyland,56
+2024-01-31,Disneyland,77
+2024-02-01,Disneyland,13
+2024-02-02,Disneyland,50
+2024-02-03,Disneyland,31
+2024-02-04,Disneyland,3
+2024-02-05,Disneyland,2
+2024-02-06,Disneyland,3
+2024-02-07,Disneyland,95
+2024-02-08,Disneyland,53
+2024-02-09,Disneyland,44
+2024-02-10,Disneyland,53
+2024-02-11,Disneyland,60
+2024-02-12,Disneyland,49
+2024-02-13,Disneyland,86
+2024-02-14,Disneyland,10
+2024-02-15,Disneyland,65
+2024-02-16,Disneyland,70
+2024-02-17,Disneyland,71
+2024-02-18,Disneyland,86
+2024-02-19,Disneyland,51
+2024-02-20,Disneyland,24
+2024-02-21,Disneyland,82
+2024-02-22,Disneyland,79
+2024-02-23,Disneyland,83
+2024-02-24,Disneyland,79
+2024-02-25,Disneyland,23
+2024-02-26,Disneyland,62
+2024-02-27,Disneyland,94
+2024-02-28,Disneyland,92
+2024-02-29,Disneyland,96
+2024-03-01,Disneyland,86
+2024-03-02,Disneyland,40
+2024-03-03,Disneyland,68
+2024-03-04,Disneyland,97
+2024-03-05,Disneyland,67
+2024-03-06,Disneyland,83
+2024-03-07,Disneyland,81
+2024-03-08,Disneyland,83
+2024-03-09,Disneyland,90
+2024-03-10,Disneyland,67
+2024-03-11,Disneyland,81
+2024-03-12,Disneyland,79
+2024-03-13,Disneyland,23
+2024-03-14,Disneyland,36
+2024-03-15,Disneyland,45
+2024-03-16,Disneyland,55
+2024-03-17,Disneyland,28
+2024-03-18,Disneyland,73
+2024-03-19,Disneyland,51
+2024-03-20,Disneyland,38
+2024-03-21,Disneyland,39
+2024-03-22,Disneyland,39
+2024-03-23,Disneyland,52
+2024-03-24,Disneyland,41
+2024-03-25,Disneyland,93
+2024-03-26,Disneyland,93
+2024-03-27,Disneyland,90
+2024-03-28,Disneyland,97
+2024-03-29,Disneyland,98
+2024-03-30,Disneyland,13
+2024-03-31,Disneyland,22
+2024-04-01,Disneyland,96
+2024-04-02,Disneyland,98
+2024-04-03,Disneyland,97
+2024-04-04,Disneyland,95
+2024-04-05,Disneyland,90
+2024-04-06,Disneyland,51
+2024-04-07,Disneyland,18
+2024-04-08,Disneyland,49
+2024-04-09,Disneyland,21
+2024-04-10,Disneyland,21
+2024-04-11,Disneyland,34
+2024-04-12,Disneyland,31
+2024-04-13,Disneyland,31
+2024-04-14,Disneyland,19
+2024-04-15,Disneyland,81
+2024-04-16,Disneyland,80
+2024-04-17,Disneyland,98
+2024-04-18,Disneyland,43
+2024-04-19,Disneyland,49
+2024-04-20,Disneyland,71
+2024-04-21,Disneyland,24
+2024-04-22,Disneyland,61
+2024-04-23,Disneyland,40
+2024-04-24,Disneyland,87
+2024-04-25,Disneyland,47
+2024-04-26,Disneyland,42
+2024-04-27,Disneyland,63
+2024-04-28,Disneyland,32
+2024-04-29,Disneyland,57
+2024-04-30,Disneyland,25
+2024-05-01,Disneyland,73
+2024-05-02,Disneyland,30
+2024-05-03,Disneyland,41
+2024-05-04,Disneyland,41
+2024-05-05,Disneyland,25
+2024-05-06,Disneyland,54
+2024-05-07,Disneyland,12
+2024-05-08,Disneyland,93
+2024-05-09,Disneyland,15
+2024-05-10,Disneyland,35
+2024-05-11,Disneyland,58
+2024-05-12,Disneyland,19
+2024-05-13,Disneyland,21
+2024-05-14,Disneyland,64
+2024-05-15,Disneyland,68
+2024-05-16,Disneyland,46
+2024-05-17,Disneyland,46
+2024-05-18,Disneyland,71
+2024-05-19,Disneyland,44
+2024-05-20,Disneyland,66
+2024-05-21,Disneyland,86
+2024-05-22,Disneyland,87
+2024-05-23,Disneyland,85
+2024-05-24,Disneyland,43
+2024-05-25,Disneyland,77
+2024-05-26,Disneyland,75
+2024-05-27,Disneyland,75
+2024-05-28,Disneyland,97
+2024-05-29,Disneyland,86
+2024-05-30,Disneyland,83
+2024-05-31,Disneyland,77
+2024-06-01,Disneyland,65
+2024-06-02,Disneyland,73
+2024-06-03,Disneyland,81
+2024-06-04,Disneyland,71
+2024-06-05,Disneyland,60
+2024-06-06,Disneyland,56
+2024-06-07,Disneyland,58
+2024-06-08,Disneyland,42
+2024-06-09,Disneyland,38
+2024-06-10,Disneyland,68
+2024-06-11,Disneyland,76
+2024-06-12,Disneyland,86
+2024-06-13,Disneyland,40
+2024-06-14,Disneyland,74
+2024-06-15,Disneyland,30
+2024-06-16,Disneyland,5
+2024-06-17,Disneyland,89
+2024-06-18,Disneyland,42
+2024-06-19,Disneyland,97
+2024-06-20,Disneyland,70
+2024-06-21,Disneyland,64
+2024-06-22,Disneyland,26
+2024-06-23,Disneyland,6
+2024-06-24,Disneyland,75
+2024-06-25,Disneyland,71
+2024-06-26,Disneyland,60
+2024-06-27,Disneyland,65
+2024-06-28,Disneyland,34
+2024-06-29,Disneyland,33
+2024-06-30,Disneyland,4
+2024-07-01,Disneyland,64
+2024-07-02,Disneyland,63
+2024-07-03,Disneyland,35
+2024-07-04,Disneyland,53
+2024-07-05,Disneyland,50
+2024-07-06,Disneyland,18
+2024-07-07,Disneyland,9
+2024-07-08,Disneyland,63
+2024-07-09,Disneyland,94
+2024-07-10,Disneyland,36
+2024-07-11,Disneyland,60
+2024-07-12,Disneyland,19
+2024-07-13,Disneyland,21
+2024-07-14,Disneyland,12
+2024-07-15,Disneyland,83
+2024-07-16,Disneyland,77
+2024-07-17,Disneyland,68
+2024-07-18,Disneyland,97
+2024-07-19,Disneyland,34
+2024-07-20,Disneyland,24
+2024-07-21,Disneyland,16
+2024-07-22,Disneyland,98
+2024-07-23,Disneyland,93
+2024-07-24,Disneyland,89
+2024-07-25,Disneyland,84
+2024-07-26,Disneyland,36
+2024-07-27,Disneyland,62
+2024-07-28,Disneyland,27
+2024-07-29,Disneyland,96
+2024-07-30,Disneyland,90
+2024-07-31,Disneyland,78
+2024-08-01,Disneyland,85
+2024-08-02,Disneyland,32
+2024-08-03,Disneyland,28
+2024-08-04,Disneyland,24
+2024-08-05,Disneyland,93
+2024-08-06,Disneyland,98
+2024-08-07,Disneyland,92
+2024-08-08,Disneyland,86
+2024-08-09,Disneyland,23
+2024-08-10,Disneyland,23
+2024-08-11,Disneyland,27
+2024-08-12,Disneyland,84
+2024-08-13,Disneyland,92
+2024-08-14,Disneyland,71
+2024-08-15,Disneyland,79
+2024-08-16,Disneyland,18
+2024-08-17,Disneyland,61
+2024-08-18,Disneyland,13
+2024-08-19,Disneyland,99
+2024-08-20,Disneyland,70
+2024-08-21,Disneyland,70
+2024-08-22,Disneyland,92
+2024-08-23,Disneyland,17
+2024-08-24,Disneyland,31
+2024-08-25,Disneyland,18
+2024-08-26,Disneyland,79
+2024-08-27,Disneyland,66
+2024-08-28,Disneyland,48
+2024-08-29,Disneyland,81
+2024-08-30,Disneyland,31
+2024-08-31,Disneyland,58
+2024-09-01,Disneyland,47
+2024-09-02,Disneyland,57
+2024-09-03,Disneyland,72
+2024-09-04,Disneyland,37
+2024-09-05,Disneyland,25
+2024-09-06,Disneyland,3
+2024-09-07,Disneyland,4
+2024-09-08,Disneyland,0
+2024-09-09,Disneyland,2
+2024-09-10,Disneyland,26
+2024-09-11,Disneyland,46
+2024-09-12,Disneyland,87
+2024-09-13,Disneyland,57
+2024-09-14,Disneyland,79
+2024-09-15,Disneyland,68
+2024-09-16,Disneyland,87
+2024-09-17,Disneyland,96
+2024-09-18,Disneyland,87
+2024-09-19,Disneyland,88
+2024-09-20,Disneyland,66
+2024-09-21,Disneyland,95
+2024-09-22,Disneyland,73
+2024-09-23,Disneyland,83
+2024-09-24,Disneyland,91
+2024-09-25,Disneyland,83
+2024-09-26,Disneyland,82
+2024-09-27,Disneyland,57
+2024-09-28,Disneyland,79
+2024-09-29,Disneyland,62
+2024-09-30,Disneyland,47
+2024-10-01,Disneyland,24
+2024-10-02,Disneyland,13
+2024-10-03,Disneyland,62
+2024-10-04,Disneyland,73
+2024-10-05,Disneyland,73
+2024-10-06,Disneyland,42
+2024-10-07,Disneyland,76
+2024-10-08,Disneyland,68
+2024-10-09,Disneyland,53
+2024-10-10,Disneyland,85
+2024-10-11,Disneyland,93
+2024-10-12,Disneyland,97
+2024-10-13,Disneyland,88
+2024-10-14,Disneyland,75
+2024-10-15,Disneyland,90
+2024-10-16,Disneyland,73
+2024-10-17,Disneyland,97
+2024-10-18,Disneyland,82
+2024-10-19,Disneyland,83
+2024-10-20,Disneyland,32
+2024-10-21,Disneyland,50
+2024-10-22,Disneyland,59
+2024-10-23,Disneyland,44
+2024-10-24,Disneyland,74
+2024-10-25,Disneyland,56
+2024-10-26,Disneyland,55
+2024-10-27,Disneyland,20
+2024-10-28,Disneyland,9
+2024-10-29,Disneyland,10
+2024-10-30,Disneyland,5
+2024-10-31,Disneyland,20
+2024-11-01,Disneyland,25
+2024-11-02,Disneyland,24
+2024-11-03,Disneyland,20
+2024-11-04,Disneyland,98
+2024-11-05,Disneyland,75
+2024-11-06,Disneyland,72
+2024-11-07,Disneyland,30
+2024-11-08,Disneyland,7
+2024-11-09,Disneyland,28
+2024-11-10,Disneyland,30
+2024-11-11,Disneyland,46
+2024-11-12,Disneyland,95
+2024-11-13,Disneyland,72
+2024-11-14,Disneyland,22
+2024-11-15,Disneyland,33
+2024-11-16,Disneyland,49
+2024-11-17,Disneyland,18
+2024-11-18,Disneyland,61
+2024-11-19,Disneyland,83
+2024-11-20,Disneyland,83
+2024-11-21,Disneyland,37
+2024-11-22,Disneyland,22
+2024-11-23,Disneyland,39
+2024-11-24,Disneyland,45
+2024-11-25,Disneyland,78
+2024-11-26,Disneyland,52
+2024-11-27,Disneyland,26
+2024-11-28,Disneyland,77
+2024-11-29,Disneyland,44
+2024-11-30,Disneyland,56
+2024-12-01,Disneyland,26
+2024-12-02,Disneyland,40
+2024-12-03,Disneyland,77
+2024-12-04,Disneyland,70
+2024-12-05,Disneyland,25
+2024-12-06,Disneyland,30
+2024-12-07,Disneyland,11
+2024-12-08,Disneyland,22
+2024-12-09,Disneyland,51
+2024-12-10,Disneyland,25
+2024-12-11,Disneyland,27
+2024-12-12,Disneyland,20
+2024-12-13,Disneyland,57
+2024-12-14,Disneyland,64
+2024-12-15,Disneyland,15
+2024-12-16,Disneyland,15
+2024-12-17,Disneyland,5
+2024-12-18,Disneyland,27
+2024-12-19,Disneyland,43
+2024-12-20,Disneyland,33
+2024-12-21,Disneyland,76
+2024-12-22,Disneyland,31
+2024-12-23,Disneyland,75
+2024-12-24,Disneyland,56
+2024-12-25,Disneyland,73
+2024-12-26,Disneyland,77
+2024-12-27,Disneyland,84
+2024-12-28,Disneyland,81
+2024-12-29,Disneyland,68
+2024-12-30,Disneyland,83
+2024-12-31,Disneyland,45
+2025-01-01,Disneyland,78
+2025-01-02,Disneyland,75
+2025-01-03,Disneyland,85
+2025-01-04,Disneyland,58
+2025-01-05,Disneyland,14
+2025-01-06,Disneyland,38
+2025-01-07,Disneyland,60
+2025-01-08,Disneyland,32
+2025-01-09,Disneyland,48
+2025-01-10,Disneyland,30
+2025-01-11,Disneyland,38
+2025-01-12,Disneyland,11
+2025-01-13,Disneyland,68
+2025-01-14,Disneyland,33
+2025-01-15,Disneyland,37
+2025-01-16,Disneyland,67
+2025-01-17,Disneyland,20
+2025-01-18,Disneyland,43
+2025-01-19,Disneyland,59
+2025-01-20,Disneyland,33
+2025-01-21,Disneyland,30
+2025-01-22,Disneyland,69
+2025-01-23,Disneyland,28
+2025-01-24,Disneyland,6
+2025-01-25,Disneyland,50
+2025-01-26,Disneyland,2
+2025-01-27,Disneyland,89
+2025-01-28,Disneyland,12
+2025-01-29,Disneyland,64
+2025-01-30,Disneyland,15
+2025-01-31,Disneyland,19
+2025-02-01,Disneyland,36
+2025-02-02,Disneyland,14
+2025-02-03,Disneyland,45
+2025-02-04,Disneyland,35
+2025-02-05,Disneyland,60
+2025-02-06,Disneyland,7
+2025-02-07,Disneyland,32
+2025-02-08,Disneyland,56
+2025-02-09,Disneyland,41
+2025-02-10,Disneyland,73
+2025-02-11,Disneyland,16
+2025-02-12,Disneyland,6
+2025-02-13,Disneyland,0
+2025-02-14,Disneyland,67
+2025-02-15,Disneyland,86
+2025-02-16,Disneyland,94
+2025-02-17,Disneyland,83
+2025-02-18,Disneyland,91
+2025-02-19,Disneyland,71
+2025-02-20,Disneyland,75
+2025-02-21,Disneyland,68
+2025-02-22,Disneyland,89
+2025-02-23,Disneyland,29
+2025-02-24,Disneyland,38
+2025-02-25,Disneyland,94
+2025-02-26,Disneyland,92
+2025-02-27,Disneyland,99
+2025-02-28,Disneyland,51
+2025-03-01,Disneyland,78
+2025-03-02,Disneyland,19
+2025-03-03,Disneyland,26
+2025-03-04,Disneyland,22
+2025-03-05,Disneyland,0
+2025-03-06,Disneyland,0
+2025-03-07,Disneyland,61
+2025-03-08,Disneyland,93
+2025-03-09,Disneyland,65
+2025-03-10,Disneyland,88
+2025-03-11,Disneyland,98
+2025-03-12,Disneyland,61
+2025-03-13,Disneyland,38
+2025-03-14,Disneyland,59
+2025-03-15,Disneyland,90
+2025-03-16,Disneyland,81
+2025-03-17,Disneyland,90
+2025-03-18,Disneyland,98
+2025-03-19,Disneyland,97
+2025-03-20,Disneyland,93
+2025-03-21,Disneyland,51
+2025-03-22,Disneyland,69
+2025-03-23,Disneyland,55
+2025-03-24,Disneyland,65
+2025-03-25,Disneyland,85
+2025-03-26,Disneyland,80
+2025-03-27,Disneyland,62
+2025-03-28,Disneyland,38
+2025-03-29,Disneyland,72
+2025-03-30,Disneyland,54
+2025-03-31,Disneyland,74
+2025-04-01,Disneyland,80
+2025-04-02,Disneyland,86
+2025-04-03,Disneyland,83
+2025-04-04,Disneyland,57
+2025-04-05,Disneyland,60
+2025-04-06,Disneyland,40
+2025-04-07,Disneyland,64
+2025-04-08,Disneyland,18
+2025-04-09,Disneyland,59
+2025-04-10,Disneyland,22
+2025-04-11,Disneyland,44
+2025-04-12,Disneyland,62
+2025-04-13,Disneyland,53
+2025-04-14,Disneyland,58
+2025-04-15,Disneyland,65
+2025-04-16,Disneyland,48
+2025-04-17,Disneyland,47
+2025-04-18,Disneyland,77
+2025-04-19,Disneyland,73
+2025-04-20,Disneyland,52
+2025-04-21,Disneyland,44
+2025-04-22,Disneyland,31
+2025-04-23,Disneyland,80
+2025-04-24,Disneyland,54
+2025-04-25,Disneyland,75
+2025-04-26,Disneyland,82
+2025-04-27,Disneyland,52
+2025-04-28,Disneyland,59
+2025-04-29,Disneyland,35
+2025-04-30,Disneyland,91
+2025-05-01,Disneyland,10
+2025-05-02,Disneyland,53
+2025-05-03,Disneyland,91
+2025-05-04,Disneyland,12
+2025-05-05,Disneyland,66
+2025-05-06,Disneyland,29
+2025-05-07,Disneyland,68
+2025-05-08,Disneyland,50
+2025-05-09,Disneyland,41
+2025-05-10,Disneyland,40
+2025-05-11,Disneyland,32
+2025-05-12,Disneyland,78
+2025-05-13,Disneyland,56
+2025-05-14,Disneyland,42
+2025-05-15,Disneyland,47
+2025-05-16,Disneyland,1
+2025-05-17,Disneyland,3
+2025-05-18,Disneyland,5
+2025-05-19,Disneyland,22
+2025-05-20,Disneyland,27
+2025-05-21,Disneyland,29
+2025-05-22,Disneyland,20
+2025-05-23,Disneyland,3
+2025-05-24,Disneyland,9
+2025-05-25,Disneyland,14
+2025-05-26,Disneyland,12
+2025-05-27,Disneyland,87
+2025-05-28,Disneyland,64
+2025-05-29,Disneyland,25
+2025-05-30,Disneyland,16
+2025-05-31,Disneyland,14
+2025-06-01,Disneyland,11
+2025-06-02,Disneyland,42
+2025-06-03,Disneyland,49
+2025-06-04,Disneyland,57
+2025-06-05,Disneyland,42
+2025-06-06,Disneyland,40
+2025-06-07,Disneyland,12
+2025-06-08,Disneyland,22
+2025-06-09,Disneyland,15
+2025-06-10,Disneyland,54
+2025-06-11,Disneyland,59
+2025-06-12,Disneyland,10
+2025-06-13,Disneyland,16
+2025-06-14,Disneyland,9
+2025-06-15,Disneyland,5
+2025-06-16,Disneyland,1
+2025-06-17,Disneyland,58
+2025-06-18,Disneyland,5
+2025-06-19,Disneyland,73
+2025-06-20,Disneyland,40
+2025-06-21,Disneyland,35
+2025-06-22,Disneyland,11
+2025-06-23,Disneyland,6
+2025-06-24,Disneyland,95
+2025-06-25,Disneyland,10
+2025-06-26,Disneyland,21
+2025-06-27,Disneyland,3
+2025-06-28,Disneyland,26
+2025-06-29,Disneyland,1
+2025-06-30,Disneyland,10
+2025-07-01,Disneyland,20
+2025-07-02,Disneyland,20
+2025-07-03,Disneyland,4
+2025-07-04,Disneyland,17
+2025-07-05,Disneyland,1
+2025-07-06,Disneyland,2
+2025-07-07,Disneyland,4
+2025-07-08,Disneyland,31
+2025-07-09,Disneyland,13
+2025-07-10,Disneyland,8
+2025-07-11,Disneyland,4
+2025-07-12,Disneyland,8
+2025-07-13,Disneyland,4
+2025-07-14,Disneyland,19
+2025-07-15,Disneyland,72
+2025-07-16,Disneyland,41
+2025-07-17,Disneyland,22
+2025-07-18,Disneyland,11
+2025-07-19,Disneyland,12
+2025-07-20,Disneyland,7
+2025-07-21,Disneyland,35
+2025-07-22,Disneyland,92
+2025-07-23,Disneyland,28
+2025-07-24,Disneyland,42
+2025-07-25,Disneyland,22
+2025-07-26,Disneyland,23
+2025-07-27,Disneyland,19
+2025-07-28,Disneyland,46
+2025-07-29,Disneyland,73
+2025-07-30,Disneyland,65
+2025-07-31,Disneyland,37
+2025-08-01,Disneyland,9
+2025-08-02,Disneyland,21
+2025-08-03,Disneyland,14
+2025-08-04,Disneyland,62
+2025-08-05,Disneyland,79
+2025-08-06,Disneyland,66
+2025-08-07,Disneyland,33
+2025-08-08,Disneyland,24
+2025-08-09,Disneyland,38
+2025-08-10,Disneyland,38
+2025-08-11,Disneyland,61
+2025-08-12,Disneyland,79
+2025-08-13,Disneyland,41
+2025-08-14,Disneyland,24
+2025-08-15,Disneyland,5
+2025-08-16,Disneyland,11
+2025-08-17,Disneyland,7
+2025-08-18,Disneyland,13
+2025-08-19,Disneyland,67
+2025-08-20,Disneyland,31
+2025-08-21,Disneyland,27
+2025-08-22,Disneyland,8
+2025-08-23,Disneyland,6
+2025-08-24,Disneyland,1
+2025-08-25,Disneyland,19
+2025-08-26,Disneyland,6
+2025-08-27,Disneyland,4
+2025-08-28,Disneyland,25
+2025-08-29,Disneyland,17
+2025-08-30,Disneyland,12
+2025-08-31,Disneyland,32
+2025-09-01,Disneyland,3
+2025-09-02,Disneyland,5
+2025-09-03,Disneyland,6
+2025-09-04,Disneyland,21
+2025-09-05,Disneyland,14
+2025-09-06,Disneyland,24
+2025-09-07,Disneyland,14
+2025-09-08,Disneyland,2
+2025-09-09,Disneyland,16
+2025-09-10,Disneyland,0
+2025-09-11,Disneyland,35
+2025-09-12,Disneyland,31
+2025-09-13,Disneyland,46
+2025-09-14,Disneyland,29
+2025-09-15,Disneyland,13
+2025-09-16,Disneyland,47
+2025-09-17,Disneyland,48
+2025-09-18,Disneyland,75
+2025-09-19,Disneyland,33
+2025-09-20,Disneyland,30
+2025-09-21,Disneyland,24
+2025-09-22,Disneyland,12
+2025-09-23,Disneyland,26
+2025-09-24,Disneyland,12
+2025-09-25,Disneyland,10
+2025-09-26,Disneyland,49
+2025-09-27,Disneyland,58
+2025-09-28,Disneyland,23
+2025-09-29,Disneyland,22
+2025-09-30,Disneyland,29
+2025-10-01,Disneyland,61
+2025-10-02,Disneyland,85
+2025-10-03,Disneyland,65
+2025-10-04,Disneyland,53
+2025-10-05,Disneyland,20
+2025-10-06,Disneyland,44
+2025-10-07,Disneyland,34
+2025-10-08,Disneyland,12
+2025-10-09,Disneyland,49
+2025-10-10,Disneyland,78
+2025-10-11,Disneyland,70
+2025-10-12,Disneyland,86
+2025-10-13,Disneyland,80
+2025-10-14,Disneyland,45
+2025-10-15,Disneyland,67
+2025-10-16,Disneyland,80
+2025-10-17,Disneyland,53
+2025-10-18,Disneyland,56
+2025-10-19,Disneyland,49
+2025-10-20,Disneyland,33
+2025-10-21,Disneyland,44
+2025-10-22,Disneyland,10
+2025-10-23,Disneyland,60
+2025-10-24,Disneyland,50
+2025-10-25,Disneyland,74
+2025-10-26,Disneyland,23
+2025-10-27,Disneyland,32
+2025-10-28,Disneyland,3
+2025-10-29,Disneyland,2
+2025-10-30,Disneyland,33
+2025-10-31,Disneyland,46
+2025-11-01,Disneyland,6
+2025-11-02,Disneyland,17
+2025-11-03,Disneyland,87
+2025-11-04,Disneyland,28
+2025-11-05,Disneyland,11
+2025-11-06,Disneyland,48
+2025-11-07,Disneyland,1
+2025-11-08,Disneyland,22
+2025-11-09,Disneyland,15
+2025-11-10,Disneyland,94
+2025-11-11,Disneyland,84
+2025-11-12,Disneyland,74
+2025-11-13,Disneyland,65
+2025-11-14,Disneyland,25
+2025-11-15,Disneyland,10
+2025-11-16,Disneyland,42
+2025-11-17,Disneyland,16
+2025-11-18,Disneyland,74
+2025-11-19,Disneyland,69
+2025-11-20,Disneyland,3
+2025-11-21,Disneyland,14
+2025-11-22,Disneyland,55
+2025-11-23,Disneyland,56
+2025-11-24,Disneyland,84
+2025-11-25,Disneyland,59
+2025-11-26,Disneyland,37
+2025-11-27,Disneyland,67
+2025-11-28,Disneyland,35
+2025-11-29,Disneyland,30
+2025-11-30,Disneyland,46
+2025-12-01,Disneyland,41
+2025-12-02,Disneyland,68
+2025-12-03,Disneyland,60
+2025-12-04,Disneyland,60
+2025-12-05,Disneyland,71
+2025-12-06,Disneyland,18
+2025-12-07,Disneyland,14
+2025-12-08,Disneyland,70
+2025-12-09,Disneyland,36
+2025-12-10,Disneyland,28
+2025-12-11,Disneyland,45
+2025-12-12,Disneyland,45
+2025-12-13,Disneyland,54
+2025-12-14,Disneyland,33
+2025-12-15,Disneyland,40
+2025-12-16,Disneyland,12
+2025-12-17,Disneyland,6
+2025-12-18,Disneyland,10
+2025-12-19,Disneyland,25
+2025-12-20,Disneyland,39
+2025-12-21,Disneyland,19
+2025-12-22,Disneyland,60
+2025-12-23,Disneyland,29
+2025-12-24,Disneyland,0
+2025-12-25,Disneyland,59
+2025-12-26,Disneyland,3
+2025-12-27,Disneyland,76
+2025-12-28,Disneyland,65
+2025-12-29,Disneyland,78
+2025-12-30,Disneyland,46
+2025-12-31,Disneyland,56
+2026-01-01,Disneyland,43
+2026-01-02,Disneyland,80
+2026-01-03,Disneyland,70
+2026-01-04,Disneyland,11
+2026-01-05,Disneyland,85
+2026-01-06,Disneyland,79
+2026-01-07,Disneyland,87
+2026-01-08,Disneyland,65
+2026-01-09,Disneyland,45
+2026-01-10,Disneyland,56
+2026-01-11,Disneyland,32
+2026-01-12,Disneyland,68
+2026-01-13,Disneyland,14
+2026-01-14,Disneyland,20
+2026-01-15,Disneyland,27
+2026-01-16,Disneyland,19
+2026-01-17,Disneyland,56
+2026-01-18,Disneyland,73
+2026-01-19,Disneyland,28
+2026-01-20,Disneyland,11
+2026-01-21,Disneyland,10
+2026-01-22,Disneyland,4
+2026-01-23,Disneyland,15
+2026-01-24,Disneyland,29
+2026-01-25,Disneyland,4
+2026-01-26,Disneyland,61
+2026-01-27,Disneyland,5
+2026-01-28,Disneyland,1
+2026-01-29,Disneyland,6
+2026-01-30,Disneyland,24
+2026-01-31,Disneyland,42
+2026-02-01,Disneyland,32
+2026-02-02,Disneyland,2
+2026-02-03,Disneyland,1
+2026-02-04,Disneyland,21
+2026-02-05,Disneyland,15
+2026-02-06,Disneyland,15
+2026-02-07,Disneyland,29
+2026-02-08,Disneyland,14
+2026-02-09,Disneyland,29
+2026-02-10,Disneyland,10
+2026-02-11,Disneyland,60
+2026-02-12,Disneyland,47
+2026-02-13,Disneyland,35
+2026-02-14,Disneyland,68
+2026-02-15,Disneyland,63
+2026-02-16,Disneyland,2
+2026-02-17,Disneyland,22
+2026-02-18,Disneyland,62
+2026-02-19,Disneyland,5
+2026-02-20,Disneyland,60
+2026-02-21,Disneyland,54
+2026-02-22,Disneyland,44
+2026-02-23,Disneyland,37
+2026-02-24,Disneyland,39
+2026-02-25,Disneyland,35
+2026-02-26,Disneyland,52
+2026-02-27,Disneyland,21
+2026-02-28,Disneyland,54
+2026-03-01,Disneyland,16
+2026-03-02,Disneyland,2
+2026-03-03,Disneyland,0
+2026-03-04,Disneyland,18
+2026-03-05,Disneyland,6
+2026-03-06,Disneyland,13
+2026-03-07,Disneyland,46
+2026-03-08,Disneyland,25
+2026-03-09,Disneyland,55
+2026-03-10,Disneyland,77
+2026-03-11,Disneyland,41
+2026-03-12,Disneyland,41
+2026-03-13,Disneyland,63
+2026-03-14,Disneyland,60
+2026-03-15,Disneyland,56
+2026-03-16,Disneyland,87
+2026-03-17,Disneyland,75
+2026-03-18,Disneyland,71
+2026-03-19,Disneyland,74
+2026-03-20,Disneyland,71
+2026-03-21,Disneyland,56
+2026-03-22,Disneyland,31
+2026-03-23,Disneyland,66
+2026-03-24,Disneyland,78
+2026-03-25,Disneyland,69
+2026-03-26,Disneyland,40
+2026-03-27,Disneyland,37
+2026-03-28,Disneyland,44
+2026-03-29,Disneyland,29
+2026-03-30,Disneyland,70
+2026-03-31,Disneyland,85
+2026-04-01,Disneyland,77
+2026-04-02,Disneyland,71
+2026-04-03,Disneyland,61
+2026-04-04,Disneyland,45
+2026-04-05,Disneyland,40
+2026-04-06,Disneyland,83
+2026-04-07,Disneyland,91
+2026-04-08,Disneyland,77
+2026-04-09,Disneyland,86
+2026-04-10,Disneyland,88
+2026-04-11,Disneyland,76
+2026-04-12,Disneyland,5
+2026-04-13,Disneyland,35
+2026-04-14,Disneyland,5
+2026-04-15,Disneyland,41
+2026-04-16,Disneyland,5
+2026-04-17,Disneyland,56
+2026-04-18,Disneyland,59
+2026-04-19,Disneyland,33
+2026-04-20,Disneyland,30
+2026-04-21,Disneyland,80
+2026-04-22,Disneyland,69
+2026-04-23,Disneyland,78
+2026-04-24,Disneyland,48
+2026-04-25,Disneyland,67
+2026-04-26,Disneyland,33
+2026-04-27,Disneyland,38
+2026-04-28,Disneyland,19
+2026-04-29,Disneyland,70
+2026-04-30,Disneyland,37
+2026-05-01,Disneyland,56
+2026-05-02,Disneyland,66
+2026-05-03,Disneyland,35
+2026-05-04,Disneyland,15
+2026-05-05,Disneyland,84
+2026-05-06,Disneyland,33
+2026-05-07,Disneyland,48
+2026-05-08,Disneyland,25
+2026-05-09,Disneyland,46
+2026-05-10,Disneyland,32
+2026-05-11,Disneyland,66
+2026-05-12,Disneyland,83
+2026-05-13,Disneyland,75
+2026-05-14,Disneyland,74
+2026-05-15,Disneyland,49
+2026-05-16,Disneyland,69
+2026-05-17,Disneyland,58
+2026-05-18,Disneyland,80
+2026-05-19,Disneyland,71
+2026-05-20,Disneyland,57
+2026-05-21,Disneyland,42
+2026-05-22,Disneyland,20
+2026-05-23,Disneyland,49
+2026-05-24,Disneyland,14
+2026-05-25,Disneyland,23
+2026-05-26,Disneyland,55
+2026-05-27,Disneyland,58
+2026-05-28,Disneyland,60
+2026-05-29,Disneyland,33
+2026-05-30,Disneyland,22
+2026-05-31,Disneyland,30
+2026-06-01,Disneyland,87
+2026-06-02,Disneyland,92
+2026-06-03,Disneyland,86
+2026-06-04,Disneyland,76
+2026-06-05,Disneyland,55
+2026-06-06,Disneyland,21
+2026-06-07,Disneyland,21
+2026-06-08,Disneyland,32
+2026-06-09,Disneyland,76
+2026-06-10,Disneyland,62
+2026-06-11,Disneyland,13
+2026-06-12,Disneyland,6
+2026-06-13,Disneyland,4
+2026-06-14,Disneyland,7
+2026-06-15,Disneyland,28
+2026-06-16,Disneyland,7
+2026-06-17,Disneyland,57
+2026-06-18,Disneyland,5
+2026-06-19,Disneyland,50
+2026-06-20,Disneyland,21
+2026-06-21,Disneyland,9
+2026-06-22,Disneyland,8
+2026-06-23,Disneyland,63
+2026-06-24,Disneyland,28
+2026-06-25,Disneyland,9
+2026-06-26,Disneyland,6
+2026-06-27,Disneyland,5
+2026-06-28,Disneyland,9
+2026-06-29,Disneyland,3
+2026-06-30,Disneyland,22
+2026-07-01,Disneyland,9
+2026-07-02,Disneyland,15
+2026-07-03,Disneyland,6
+2026-07-04,Disneyland,7
+2026-07-05,Disneyland,0
+2026-07-06,Disneyland,16
+2026-07-07,Disneyland,20
+2026-07-08,Disneyland,6
+2026-07-09,Disneyland,20
+2026-07-10,Disneyland,3
+2026-07-11,Disneyland,7
+2026-07-12,Disneyland,8
+2026-07-13,Disneyland,39
+2026-07-14,Disneyland,11
+2026-07-15,Disneyland,5
+2026-07-16,Disneyland,23
+2026-07-17,Disneyland,7
+2026-07-18,Disneyland,14
+2026-07-19,Disneyland,6
+2026-07-20,Disneyland,78
+2026-07-21,Disneyland,55
+2026-07-22,Disneyland,10
+2026-07-23,Disneyland,52
+2026-07-24,Disneyland,5
+2026-07-25,Disneyland,12
+2026-07-26,Disneyland,17
+2026-07-27,Disneyland,49
+2026-07-28,Disneyland,27
+2026-07-29,Disneyland,22
+2026-07-30,Disneyland,24
+2026-07-31,Disneyland,2
+2026-08-01,Disneyland,11
+2026-08-02,Disneyland,3
+2026-08-03,Disneyland,55
+2026-08-04,Disneyland,39
+2026-08-05,Disneyland,36
+2026-08-06,Disneyland,8
+2026-08-07,Disneyland,6
+2026-08-08,Disneyland,7
+2026-08-09,Disneyland,5
+2026-08-10,Disneyland,51
+2026-08-11,Disneyland,16
+2026-08-12,Disneyland,11
+2026-08-13,Disneyland,11
+2026-08-14,Disneyland,1
+2026-08-15,Disneyland,1
+2026-08-16,Disneyland,1
+2026-08-17,Disneyland,6
+2026-08-18,Disneyland,22
+2026-08-19,Disneyland,5
+2026-08-20,Disneyland,18
+2026-08-21,Disneyland,11
+2026-08-22,Disneyland,3
+2026-08-23,Disneyland,3
+2026-08-24,Disneyland,1
+2026-08-25,Disneyland,4
+2026-08-26,Disneyland,0
+2026-08-27,Disneyland,5
+2026-08-28,Disneyland,5
+2026-08-29,Disneyland,4
+2026-08-30,Disneyland,0
+2026-08-31,Disneyland,0
+2026-09-01,Disneyland,13
+2026-09-02,Disneyland,8
+2026-09-03,Disneyland,10
+2026-09-04,Disneyland,5
+2026-09-05,Disneyland,10
+2026-09-06,Disneyland,2
+2026-09-07,Disneyland,9
+2026-09-08,Disneyland,9
+2026-09-09,Disneyland,5
+2026-09-10,Disneyland,7
+2026-09-11,Disneyland,4
+2026-09-12,Disneyland,12
+2026-09-13,Disneyland,3
+2026-09-14,Disneyland,14
+2026-09-15,Disneyland,12
+2026-09-16,Disneyland,8
+2026-09-17,Disneyland,10
+2026-09-18,Disneyland,6
+2026-09-19,Disneyland,16
+2026-09-20,Disneyland,6
+2026-09-21,Disneyland,21
+2026-09-22,Disneyland,19
+2026-09-23,Disneyland,14
+2026-09-24,Disneyland,18
+2026-09-25,Disneyland,13
+2026-09-26,Disneyland,29
+2026-09-27,Disneyland,14
+2026-09-28,Disneyland,35
+2026-09-29,Disneyland,33
+2026-09-30,Disneyland,27
+2026-10-01,Disneyland,42
+2026-10-02,Disneyland,32
+2026-10-03,Disneyland,48
+2026-10-04,Disneyland,27
+2026-10-05,Disneyland,53
+2026-10-06,Disneyland,50
+2026-10-07,Disneyland,42
+2026-10-08,Disneyland,47
+2026-10-09,Disneyland,37
+2026-10-10,Disneyland,55
+2026-10-11,Disneyland,33
+2026-10-12,Disneyland,72
+2026-10-13,Disneyland,52
+2026-10-14,Disneyland,42
+2026-10-15,Disneyland,46
+2026-10-16,Disneyland,33
+2026-10-17,Disneyland,50
+2026-10-18,Disneyland,26
+2026-10-19,Disneyland,49
+2026-10-20,Disneyland,41
+2026-10-21,Disneyland,30
+2026-10-22,Disneyland,31
+2026-10-23,Disneyland,20
+2023-01-01,California Adventure,95
+2023-01-02,California Adventure,96
+2023-01-03,California Adventure,94
+2023-01-04,California Adventure,95
+2023-01-05,California Adventure,59
+2023-01-06,California Adventure,79
+2023-01-07,California Adventure,73
+2023-01-08,California Adventure,50
+2023-01-09,California Adventure,76
+2023-01-10,California Adventure,2
+2023-01-11,California Adventure,82
+2023-01-12,California Adventure,85
+2023-01-13,California Adventure,69
+2023-01-14,California Adventure,31
+2023-01-15,California Adventure,71
+2023-01-16,California Adventure,9
+2023-01-17,California Adventure,82
+2023-01-18,California Adventure,55
+2023-01-19,California Adventure,65
+2023-01-20,California Adventure,71
+2023-01-21,California Adventure,83
+2023-01-22,California Adventure,69
+2023-01-23,California Adventure,77
+2023-01-24,California Adventure,59
+2023-01-25,California Adventure,21
+2023-01-26,California Adventure,81
+2023-01-27,California Adventure,58
+2023-01-28,California Adventure,33
+2023-01-29,California Adventure,26
+2023-01-30,California Adventure,28
+2023-01-31,California Adventure,45
+2023-02-01,California Adventure,21
+2023-02-02,California Adventure,36
+2023-02-03,California Adventure,42
+2023-02-04,California Adventure,64
+2023-02-05,California Adventure,65
+2023-02-06,California Adventure,25
+2023-02-07,California Adventure,66
+2023-02-08,California Adventure,53
+2023-02-09,California Adventure,37
+2023-02-10,California Adventure,46
+2023-02-11,California Adventure,64
+2023-02-12,California Adventure,49
+2023-02-13,California Adventure,69
+2023-02-14,California Adventure,27
+2023-02-15,California Adventure,22
+2023-02-16,California Adventure,60
+2023-02-17,California Adventure,81
+2023-02-18,California Adventure,89
+2023-02-19,California Adventure,98
+2023-02-20,California Adventure,98
+2023-02-21,California Adventure,96
+2023-02-22,California Adventure,96
+2023-02-23,California Adventure,89
+2023-02-24,California Adventure,10
+2023-02-25,California Adventure,27
+2023-02-26,California Adventure,83
+2023-02-27,California Adventure,5
+2023-02-28,California Adventure,13
+2023-03-01,California Adventure,8
+2023-03-02,California Adventure,58
+2023-03-03,California Adventure,76
+2023-03-04,California Adventure,68
+2023-03-05,California Adventure,51
+2023-03-06,California Adventure,58
+2023-03-07,California Adventure,85
+2023-03-08,California Adventure,36
+2023-03-09,California Adventure,41
+2023-03-10,California Adventure,1
+2023-03-11,California Adventure,52
+2023-03-12,California Adventure,81
+2023-03-13,California Adventure,99
+2023-03-14,California Adventure,96
+2023-03-15,California Adventure,97
+2023-03-16,California Adventure,99
+2023-03-17,California Adventure,95
+2023-03-18,California Adventure,72
+2023-03-19,California Adventure,41
+2023-03-20,California Adventure,86
+2023-03-21,California Adventure,45
+2023-03-22,California Adventure,72
+2023-03-23,California Adventure,93
+2023-03-24,California Adventure,89
+2023-03-25,California Adventure,29
+2023-03-26,California Adventure,54
+2023-03-27,California Adventure,87
+2023-03-28,California Adventure,96
+2023-03-29,California Adventure,88
+2023-03-30,California Adventure,90
+2023-03-31,California Adventure,81
+2023-04-01,California Adventure,48
+2023-04-02,California Adventure,35
+2023-04-03,California Adventure,97
+2023-04-04,California Adventure,99
+2023-04-05,California Adventure,98
+2023-04-06,California Adventure,99
+2023-04-07,California Adventure,96
+2023-04-08,California Adventure,83
+2023-04-09,California Adventure,48
+2023-04-10,California Adventure,87
+2023-04-11,California Adventure,86
+2023-04-12,California Adventure,90
+2023-04-13,California Adventure,86
+2023-04-14,California Adventure,75
+2023-04-15,California Adventure,49
+2023-04-16,California Adventure,29
+2023-04-17,California Adventure,50
+2023-04-18,California Adventure,84
+2023-04-19,California Adventure,67
+2023-04-20,California Adventure,70
+2023-04-21,California Adventure,60
+2023-04-22,California Adventure,66
+2023-04-23,California Adventure,57
+2023-04-24,California Adventure,59
+2023-04-25,California Adventure,74
+2023-04-26,California Adventure,62
+2023-04-27,California Adventure,78
+2023-04-28,California Adventure,72
+2023-04-29,California Adventure,54
+2023-04-30,California Adventure,47
+2023-05-01,California Adventure,56
+2023-05-02,California Adventure,80
+2023-05-03,California Adventure,72
+2023-05-04,California Adventure,56
+2023-05-05,California Adventure,67
+2023-05-06,California Adventure,64
+2023-05-07,California Adventure,26
+2023-05-08,California Adventure,51
+2023-05-09,California Adventure,73
+2023-05-10,California Adventure,59
+2023-05-11,California Adventure,54
+2023-05-12,California Adventure,41
+2023-05-13,California Adventure,49
+2023-05-14,California Adventure,27
+2023-05-15,California Adventure,55
+2023-05-16,California Adventure,87
+2023-05-17,California Adventure,91
+2023-05-18,California Adventure,63
+2023-05-19,California Adventure,73
+2023-05-20,California Adventure,46
+2023-05-21,California Adventure,62
+2023-05-22,California Adventure,81
+2023-05-23,California Adventure,83
+2023-05-24,California Adventure,82
+2023-05-25,California Adventure,68
+2023-05-26,California Adventure,28
+2023-05-27,California Adventure,69
+2023-05-28,California Adventure,77
+2023-05-29,California Adventure,55
+2023-05-30,California Adventure,72
+2023-05-31,California Adventure,75
+2023-06-01,California Adventure,90
+2023-06-02,California Adventure,45
+2023-06-03,California Adventure,48
+2023-06-04,California Adventure,32
+2023-06-05,California Adventure,96
+2023-06-06,California Adventure,88
+2023-06-07,California Adventure,93
+2023-06-08,California Adventure,92
+2023-06-09,California Adventure,75
+2023-06-10,California Adventure,73
+2023-06-11,California Adventure,57
+2023-06-12,California Adventure,52
+2023-06-13,California Adventure,91
+2023-06-14,California Adventure,73
+2023-06-15,California Adventure,81
+2023-06-16,California Adventure,48
+2023-06-17,California Adventure,77
+2023-06-18,California Adventure,48
+2023-06-19,California Adventure,80
+2023-06-20,California Adventure,73
+2023-06-21,California Adventure,66
+2023-06-22,California Adventure,68
+2023-06-23,California Adventure,43
+2023-06-24,California Adventure,62
+2023-06-25,California Adventure,42
+2023-06-26,California Adventure,54
+2023-06-27,California Adventure,86
+2023-06-28,California Adventure,84
+2023-06-29,California Adventure,72
+2023-06-30,California Adventure,38
+2023-07-01,California Adventure,26
+2023-07-02,California Adventure,79
+2023-07-03,California Adventure,87
+2023-07-04,California Adventure,57
+2023-07-05,California Adventure,77
+2023-07-06,California Adventure,84
+2023-07-07,California Adventure,71
+2023-07-08,California Adventure,40
+2023-07-09,California Adventure,71
+2023-07-10,California Adventure,49
+2023-07-11,California Adventure,91
+2023-07-12,California Adventure,83
+2023-07-13,California Adventure,69
+2023-07-14,California Adventure,64
+2023-07-15,California Adventure,37
+2023-07-16,California Adventure,46
+2023-07-17,California Adventure,58
+2023-07-18,California Adventure,82
+2023-07-19,California Adventure,79
+2023-07-20,California Adventure,69
+2023-07-21,California Adventure,59
+2023-07-22,California Adventure,59
+2023-07-23,California Adventure,57
+2023-07-24,California Adventure,61
+2023-07-25,California Adventure,69
+2023-07-26,California Adventure,66
+2023-07-27,California Adventure,77
+2023-07-28,California Adventure,50
+2023-07-29,California Adventure,49
+2023-07-30,California Adventure,29
+2023-07-31,California Adventure,46
+2023-08-01,California Adventure,72
+2023-08-02,California Adventure,83
+2023-08-03,California Adventure,79
+2023-08-04,California Adventure,75
+2023-08-05,California Adventure,61
+2023-08-06,California Adventure,37
+2023-08-07,California Adventure,47
+2023-08-08,California Adventure,87
+2023-08-09,California Adventure,77
+2023-08-10,California Adventure,47
+2023-08-11,California Adventure,48
+2023-08-12,California Adventure,72
+2023-08-13,California Adventure,24
+2023-08-14,California Adventure,36
+2023-08-15,California Adventure,49
+2023-08-16,California Adventure,31
+2023-08-17,California Adventure,17
+2023-08-18,California Adventure,26
+2023-08-19,California Adventure,60
+2023-08-20,California Adventure,1
+2023-08-21,California Adventure,85
+2023-08-22,California Adventure,91
+2023-08-23,California Adventure,78
+2023-08-24,California Adventure,79
+2023-08-25,California Adventure,20
+2023-08-26,California Adventure,43
+2023-08-27,California Adventure,51
+2023-08-28,California Adventure,30
+2023-08-29,California Adventure,7
+2023-08-30,California Adventure,10
+2023-08-31,California Adventure,8
+2023-09-01,California Adventure,14
+2023-09-02,California Adventure,49
+2023-09-03,California Adventure,79
+2023-09-04,California Adventure,63
+2023-09-05,California Adventure,15
+2023-09-06,California Adventure,68
+2023-09-07,California Adventure,15
+2023-09-08,California Adventure,25
+2023-09-09,California Adventure,47
+2023-09-10,California Adventure,27
+2023-09-11,California Adventure,59
+2023-09-12,California Adventure,19
+2023-09-13,California Adventure,74
+2023-09-14,California Adventure,24
+2023-09-15,California Adventure,31
+2023-09-16,California Adventure,71
+2023-09-17,California Adventure,41
+2023-09-18,California Adventure,89
+2023-09-19,California Adventure,26
+2023-09-20,California Adventure,86
+2023-09-21,California Adventure,49
+2023-09-22,California Adventure,60
+2023-09-23,California Adventure,78
+2023-09-24,California Adventure,57
+2023-09-25,California Adventure,92
+2023-09-26,California Adventure,67
+2023-09-27,California Adventure,85
+2023-09-28,California Adventure,48
+2023-09-29,California Adventure,44
+2023-09-30,California Adventure,42
+2023-10-01,California Adventure,78
+2023-10-02,California Adventure,74
+2023-10-03,California Adventure,51
+2023-10-04,California Adventure,52
+2023-10-05,California Adventure,25
+2023-10-06,California Adventure,65
+2023-10-07,California Adventure,97
+2023-10-08,California Adventure,82
+2023-10-09,California Adventure,90
+2023-10-10,California Adventure,72
+2023-10-11,California Adventure,91
+2023-10-12,California Adventure,62
+2023-10-13,California Adventure,75
+2023-10-14,California Adventure,86
+2023-10-15,California Adventure,59
+2023-10-16,California Adventure,50
+2023-10-17,California Adventure,27
+2023-10-18,California Adventure,54
+2023-10-19,California Adventure,25
+2023-10-20,California Adventure,71
+2023-10-21,California Adventure,85
+2023-10-22,California Adventure,34
+2023-10-23,California Adventure,54
+2023-10-24,California Adventure,18
+2023-10-25,California Adventure,47
+2023-10-26,California Adventure,30
+2023-10-27,California Adventure,31
+2023-10-28,California Adventure,90
+2023-10-29,California Adventure,36
+2023-10-30,California Adventure,58
+2023-10-31,California Adventure,1
+2023-11-01,California Adventure,42
+2023-11-02,California Adventure,45
+2023-11-03,California Adventure,27
+2023-11-04,California Adventure,42
+2023-11-05,California Adventure,24
+2023-11-06,California Adventure,77
+2023-11-07,California Adventure,55
+2023-11-08,California Adventure,43
+2023-11-09,California Adventure,49
+2023-11-10,California Adventure,84
+2023-11-11,California Adventure,80
+2023-11-12,California Adventure,39
+2023-11-13,California Adventure,10
+2023-11-14,California Adventure,67
+2023-11-15,California Adventure,23
+2023-11-16,California Adventure,87
+2023-11-17,California Adventure,28
+2023-11-18,California Adventure,49
+2023-11-19,California Adventure,63
+2023-11-20,California Adventure,86
+2023-11-21,California Adventure,88
+2023-11-22,California Adventure,55
+2023-11-23,California Adventure,42
+2023-11-24,California Adventure,82
+2023-11-25,California Adventure,52
+2023-11-26,California Adventure,18
+2023-11-27,California Adventure,49
+2023-11-28,California Adventure,42
+2023-11-29,California Adventure,43
+2023-11-30,California Adventure,42
+2023-12-01,California Adventure,23
+2023-12-02,California Adventure,61
+2023-12-03,California Adventure,23
+2023-12-04,California Adventure,5
+2023-12-05,California Adventure,15
+2023-12-06,California Adventure,16
+2023-12-07,California Adventure,21
+2023-12-08,California Adventure,51
+2023-12-09,California Adventure,82
+2023-12-10,California Adventure,48
+2023-12-11,California Adventure,31
+2023-12-12,California Adventure,32
+2023-12-13,California Adventure,23
+2023-12-14,California Adventure,30
+2023-12-15,California Adventure,35
+2023-12-16,California Adventure,33
+2023-12-17,California Adventure,27
+2023-12-18,California Adventure,34
+2023-12-19,California Adventure,30
+2023-12-20,California Adventure,34
+2023-12-21,California Adventure,33
+2023-12-22,California Adventure,66
+2023-12-23,California Adventure,77
+2023-12-24,California Adventure,75
+2023-12-25,California Adventure,77
+2023-12-26,California Adventure,85
+2023-12-27,California Adventure,90
+2023-12-28,California Adventure,94
+2023-12-29,California Adventure,97
+2023-12-30,California Adventure,98
+2023-12-31,California Adventure,72
+2024-01-01,California Adventure,65
+2024-01-02,California Adventure,88
+2024-01-03,California Adventure,82
+2024-01-04,California Adventure,86
+2024-01-05,California Adventure,78
+2024-01-06,California Adventure,59
+2024-01-07,California Adventure,15
+2024-01-08,California Adventure,58
+2024-01-09,California Adventure,61
+2024-01-10,California Adventure,46
+2024-01-11,California Adventure,51
+2024-01-12,California Adventure,58
+2024-01-13,California Adventure,84
+2024-01-14,California Adventure,71
+2024-01-15,California Adventure,80
+2024-01-16,California Adventure,68
+2024-01-17,California Adventure,76
+2024-01-18,California Adventure,64
+2024-01-19,California Adventure,42
+2024-01-20,California Adventure,22
+2024-01-21,California Adventure,33
+2024-01-22,California Adventure,11
+2024-01-23,California Adventure,76
+2024-01-24,California Adventure,35
+2024-01-25,California Adventure,58
+2024-01-26,California Adventure,38
+2024-01-27,California Adventure,52
+2024-01-28,California Adventure,38
+2024-01-29,California Adventure,50
+2024-01-30,California Adventure,72
+2024-01-31,California Adventure,54
+2024-02-01,California Adventure,8
+2024-02-02,California Adventure,55
+2024-02-03,California Adventure,61
+2024-02-04,California Adventure,15
+2024-02-05,California Adventure,0
+2024-02-06,California Adventure,26
+2024-02-07,California Adventure,85
+2024-02-08,California Adventure,78
+2024-02-09,California Adventure,63
+2024-02-10,California Adventure,80
+2024-02-11,California Adventure,68
+2024-02-12,California Adventure,80
+2024-02-13,California Adventure,44
+2024-02-14,California Adventure,32
+2024-02-15,California Adventure,61
+2024-02-16,California Adventure,82
+2024-02-17,California Adventure,94
+2024-02-18,California Adventure,95
+2024-02-19,California Adventure,66
+2024-02-20,California Adventure,20
+2024-02-21,California Adventure,96
+2024-02-22,California Adventure,97
+2024-02-23,California Adventure,89
+2024-02-24,California Adventure,88
+2024-02-25,California Adventure,71
+2024-02-26,California Adventure,35
+2024-02-27,California Adventure,75
+2024-02-28,California Adventure,86
+2024-02-29,California Adventure,88
+2024-03-01,California Adventure,73
+2024-03-02,California Adventure,64
+2024-03-03,California Adventure,68
+2024-03-04,California Adventure,83
+2024-03-05,California Adventure,92
+2024-03-06,California Adventure,34
+2024-03-07,California Adventure,98
+2024-03-08,California Adventure,95
+2024-03-09,California Adventure,97
+2024-03-10,California Adventure,93
+2024-03-11,California Adventure,91
+2024-03-12,California Adventure,83
+2024-03-13,California Adventure,59
+2024-03-14,California Adventure,65
+2024-03-15,California Adventure,54
+2024-03-16,California Adventure,61
+2024-03-17,California Adventure,69
+2024-03-18,California Adventure,75
+2024-03-19,California Adventure,84
+2024-03-20,California Adventure,76
+2024-03-21,California Adventure,70
+2024-03-22,California Adventure,38
+2024-03-23,California Adventure,61
+2024-03-24,California Adventure,53
+2024-03-25,California Adventure,82
+2024-03-26,California Adventure,97
+2024-03-27,California Adventure,96
+2024-03-28,California Adventure,97
+2024-03-29,California Adventure,93
+2024-03-30,California Adventure,22
+2024-03-31,California Adventure,39
+2024-04-01,California Adventure,91
+2024-04-02,California Adventure,99
+2024-04-03,California Adventure,99
+2024-04-04,California Adventure,99
+2024-04-05,California Adventure,87
+2024-04-06,California Adventure,86
+2024-04-07,California Adventure,28
+2024-04-08,California Adventure,55
+2024-04-09,California Adventure,33
+2024-04-10,California Adventure,60
+2024-04-11,California Adventure,62
+2024-04-12,California Adventure,43
+2024-04-13,California Adventure,56
+2024-04-14,California Adventure,51
+2024-04-15,California Adventure,72
+2024-04-16,California Adventure,92
+2024-04-17,California Adventure,89
+2024-04-18,California Adventure,75
+2024-04-19,California Adventure,46
+2024-04-20,California Adventure,85
+2024-04-21,California Adventure,50
+2024-04-22,California Adventure,35
+2024-04-23,California Adventure,65
+2024-04-24,California Adventure,65
+2024-04-25,California Adventure,56
+2024-04-26,California Adventure,40
+2024-04-27,California Adventure,79
+2024-04-28,California Adventure,60
+2024-04-29,California Adventure,55
+2024-04-30,California Adventure,63
+2024-05-01,California Adventure,25
+2024-05-02,California Adventure,64
+2024-05-03,California Adventure,46
+2024-05-04,California Adventure,31
+2024-05-05,California Adventure,53
+2024-05-06,California Adventure,24
+2024-05-07,California Adventure,35
+2024-05-08,California Adventure,64
+2024-05-09,California Adventure,32
+2024-05-10,California Adventure,13
+2024-05-11,California Adventure,56
+2024-05-12,California Adventure,40
+2024-05-13,California Adventure,21
+2024-05-14,California Adventure,48
+2024-05-15,California Adventure,54
+2024-05-16,California Adventure,51
+2024-05-17,California Adventure,22
+2024-05-18,California Adventure,75
+2024-05-19,California Adventure,56
+2024-05-20,California Adventure,73
+2024-05-21,California Adventure,80
+2024-05-22,California Adventure,74
+2024-05-23,California Adventure,72
+2024-05-24,California Adventure,39
+2024-05-25,California Adventure,81
+2024-05-26,California Adventure,95
+2024-05-27,California Adventure,86
+2024-05-28,California Adventure,89
+2024-05-29,California Adventure,93
+2024-05-30,California Adventure,89
+2024-05-31,California Adventure,41
+2024-06-01,California Adventure,75
+2024-06-02,California Adventure,67
+2024-06-03,California Adventure,79
+2024-06-04,California Adventure,79
+2024-06-05,California Adventure,69
+2024-06-06,California Adventure,67
+2024-06-07,California Adventure,49
+2024-06-08,California Adventure,48
+2024-06-09,California Adventure,61
+2024-06-10,California Adventure,43
+2024-06-11,California Adventure,88
+2024-06-12,California Adventure,78
+2024-06-13,California Adventure,60
+2024-06-14,California Adventure,63
+2024-06-15,California Adventure,44
+2024-06-16,California Adventure,18
+2024-06-17,California Adventure,39
+2024-06-18,California Adventure,94
+2024-06-19,California Adventure,80
+2024-06-20,California Adventure,92
+2024-06-21,California Adventure,51
+2024-06-22,California Adventure,38
+2024-06-23,California Adventure,22
+2024-06-24,California Adventure,55
+2024-06-25,California Adventure,81
+2024-06-26,California Adventure,85
+2024-06-27,California Adventure,72
+2024-06-28,California Adventure,38
+2024-06-29,California Adventure,37
+2024-06-30,California Adventure,33
+2024-07-01,California Adventure,49
+2024-07-02,California Adventure,80
+2024-07-03,California Adventure,78
+2024-07-04,California Adventure,63
+2024-07-05,California Adventure,66
+2024-07-06,California Adventure,57
+2024-07-07,California Adventure,24
+2024-07-08,California Adventure,38
+2024-07-09,California Adventure,97
+2024-07-10,California Adventure,74
+2024-07-11,California Adventure,51
+2024-07-12,California Adventure,49
+2024-07-13,California Adventure,28
+2024-07-14,California Adventure,40
+2024-07-15,California Adventure,44
+2024-07-16,California Adventure,91
+2024-07-17,California Adventure,84
+2024-07-18,California Adventure,89
+2024-07-19,California Adventure,34
+2024-07-20,California Adventure,32
+2024-07-21,California Adventure,50
+2024-07-22,California Adventure,94
+2024-07-23,California Adventure,95
+2024-07-24,California Adventure,95
+2024-07-25,California Adventure,78
+2024-07-26,California Adventure,60
+2024-07-27,California Adventure,59
+2024-07-28,California Adventure,70
+2024-07-29,California Adventure,83
+2024-07-30,California Adventure,94
+2024-07-31,California Adventure,94
+2024-08-01,California Adventure,77
+2024-08-02,California Adventure,43
+2024-08-03,California Adventure,57
+2024-08-04,California Adventure,46
+2024-08-05,California Adventure,66
+2024-08-06,California Adventure,92
+2024-08-07,California Adventure,96
+2024-08-08,California Adventure,80
+2024-08-09,California Adventure,31
+2024-08-10,California Adventure,34
+2024-08-11,California Adventure,40
+2024-08-12,California Adventure,62
+2024-08-13,California Adventure,90
+2024-08-14,California Adventure,83
+2024-08-15,California Adventure,69
+2024-08-16,California Adventure,26
+2024-08-17,California Adventure,66
+2024-08-18,California Adventure,29
+2024-08-19,California Adventure,89
+2024-08-20,California Adventure,60
+2024-08-21,California Adventure,56
+2024-08-22,California Adventure,66
+2024-08-23,California Adventure,16
+2024-08-24,California Adventure,53
+2024-08-25,California Adventure,33
+2024-08-26,California Adventure,88
+2024-08-27,California Adventure,17
+2024-08-28,California Adventure,88
+2024-08-29,California Adventure,36
+2024-08-30,California Adventure,34
+2024-08-31,California Adventure,61
+2024-09-01,California Adventure,69
+2024-09-02,California Adventure,54
+2024-09-03,California Adventure,14
+2024-09-04,California Adventure,77
+2024-09-05,California Adventure,13
+2024-09-06,California Adventure,7
+2024-09-07,California Adventure,15
+2024-09-08,California Adventure,1
+2024-09-09,California Adventure,10
+2024-09-10,California Adventure,3
+2024-09-11,California Adventure,79
+2024-09-12,California Adventure,20
+2024-09-13,California Adventure,36
+2024-09-14,California Adventure,68
+2024-09-15,California Adventure,39
+2024-09-16,California Adventure,86
+2024-09-17,California Adventure,39
+2024-09-18,California Adventure,95
+2024-09-19,California Adventure,39
+2024-09-20,California Adventure,52
+2024-09-21,California Adventure,76
+2024-09-22,California Adventure,46
+2024-09-23,California Adventure,82
+2024-09-24,California Adventure,29
+2024-09-25,California Adventure,94
+2024-09-26,California Adventure,7
+2024-09-27,California Adventure,31
+2024-09-28,California Adventure,67
+2024-09-29,California Adventure,27
+2024-09-30,California Adventure,58
+2024-10-01,California Adventure,6
+2024-10-02,California Adventure,63
+2024-10-03,California Adventure,33
+2024-10-04,California Adventure,59
+2024-10-05,California Adventure,63
+2024-10-06,California Adventure,30
+2024-10-07,California Adventure,86
+2024-10-08,California Adventure,20
+2024-10-09,California Adventure,91
+2024-10-10,California Adventure,51
+2024-10-11,California Adventure,81
+2024-10-12,California Adventure,99
+2024-10-13,California Adventure,79
+2024-10-14,California Adventure,69
+2024-10-15,California Adventure,40
+2024-10-16,California Adventure,85
+2024-10-17,California Adventure,49
+2024-10-18,California Adventure,68
+2024-10-19,California Adventure,82
+2024-10-20,California Adventure,21
+2024-10-21,California Adventure,55
+2024-10-22,California Adventure,11
+2024-10-23,California Adventure,57
+2024-10-24,California Adventure,18
+2024-10-25,California Adventure,51
+2024-10-26,California Adventure,54
+2024-10-27,California Adventure,23
+2024-10-28,California Adventure,28
+2024-10-29,California Adventure,5
+2024-10-30,California Adventure,19
+2024-10-31,California Adventure,3
+2024-11-01,California Adventure,45
+2024-11-02,California Adventure,12
+2024-11-03,California Adventure,23
+2024-11-04,California Adventure,72
+2024-11-05,California Adventure,34
+2024-11-06,California Adventure,44
+2024-11-07,California Adventure,23
+2024-11-08,California Adventure,2
+2024-11-09,California Adventure,46
+2024-11-10,California Adventure,48
+2024-11-11,California Adventure,47
+2024-11-12,California Adventure,71
+2024-11-13,California Adventure,67
+2024-11-14,California Adventure,23
+2024-11-15,California Adventure,12
+2024-11-16,California Adventure,40
+2024-11-17,California Adventure,22
+2024-11-18,California Adventure,38
+2024-11-19,California Adventure,44
+2024-11-20,California Adventure,41
+2024-11-21,California Adventure,28
+2024-11-22,California Adventure,17
+2024-11-23,California Adventure,23
+2024-11-24,California Adventure,45
+2024-11-25,California Adventure,66
+2024-11-26,California Adventure,75
+2024-11-27,California Adventure,55
+2024-11-28,California Adventure,36
+2024-11-29,California Adventure,77
+2024-11-30,California Adventure,50
+2024-12-01,California Adventure,17
+2024-12-02,California Adventure,20
+2024-12-03,California Adventure,62
+2024-12-04,California Adventure,37
+2024-12-05,California Adventure,16
+2024-12-06,California Adventure,24
+2024-12-07,California Adventure,36
+2024-12-08,California Adventure,17
+2024-12-09,California Adventure,37
+2024-12-10,California Adventure,50
+2024-12-11,California Adventure,27
+2024-12-12,California Adventure,23
+2024-12-13,California Adventure,61
+2024-12-14,California Adventure,42
+2024-12-15,California Adventure,34
+2024-12-16,California Adventure,14
+2024-12-17,California Adventure,9
+2024-12-18,California Adventure,16
+2024-12-19,California Adventure,28
+2024-12-20,California Adventure,37
+2024-12-21,California Adventure,68
+2024-12-22,California Adventure,69
+2024-12-23,California Adventure,72
+2024-12-24,California Adventure,69
+2024-12-25,California Adventure,86
+2024-12-26,California Adventure,80
+2024-12-27,California Adventure,96
+2024-12-28,California Adventure,94
+2024-12-29,California Adventure,90
+2024-12-30,California Adventure,96
+2024-12-31,California Adventure,82
+2025-01-01,California Adventure,84
+2025-01-02,California Adventure,97
+2025-01-03,California Adventure,95
+2025-01-04,California Adventure,84
+2025-01-05,California Adventure,44
+2025-01-06,California Adventure,46
+2025-01-07,California Adventure,72
+2025-01-08,California Adventure,59
+2025-01-09,California Adventure,72
+2025-01-10,California Adventure,42
+2025-01-11,California Adventure,45
+2025-01-12,California Adventure,55
+2025-01-13,California Adventure,57
+2025-01-14,California Adventure,36
+2025-01-15,California Adventure,60
+2025-01-16,California Adventure,59
+2025-01-17,California Adventure,36
+2025-01-18,California Adventure,66
+2025-01-19,California Adventure,88
+2025-01-20,California Adventure,64
+2025-01-21,California Adventure,34
+2025-01-22,California Adventure,34
+2025-01-23,California Adventure,47
+2025-01-24,California Adventure,20
+2025-01-25,California Adventure,44
+2025-01-26,California Adventure,22
+2025-01-27,California Adventure,71
+2025-01-28,California Adventure,64
+2025-01-29,California Adventure,50
+2025-01-30,California Adventure,44
+2025-01-31,California Adventure,51
+2025-02-01,California Adventure,62
+2025-02-02,California Adventure,52
+2025-02-03,California Adventure,35
+2025-02-04,California Adventure,49
+2025-02-05,California Adventure,40
+2025-02-06,California Adventure,48
+2025-02-07,California Adventure,43
+2025-02-08,California Adventure,78
+2025-02-09,California Adventure,89
+2025-02-10,California Adventure,62
+2025-02-11,California Adventure,74
+2025-02-12,California Adventure,26
+2025-02-13,California Adventure,3
+2025-02-14,California Adventure,88
+2025-02-15,California Adventure,99
+2025-02-16,California Adventure,97
+2025-02-17,California Adventure,98
+2025-02-18,California Adventure,89
+2025-02-19,California Adventure,96
+2025-02-20,California Adventure,95
+2025-02-21,California Adventure,83
+2025-02-22,California Adventure,90
+2025-02-23,California Adventure,77
+2025-02-24,California Adventure,56
+2025-02-25,California Adventure,84
+2025-02-26,California Adventure,90
+2025-02-27,California Adventure,89
+2025-02-28,California Adventure,84
+2025-03-01,California Adventure,92
+2025-03-02,California Adventure,67
+2025-03-03,California Adventure,42
+2025-03-04,California Adventure,55
+2025-03-05,California Adventure,1
+2025-03-06,California Adventure,6
+2025-03-07,California Adventure,80
+2025-03-08,California Adventure,96
+2025-03-09,California Adventure,95
+2025-03-10,California Adventure,89
+2025-03-11,California Adventure,98
+2025-03-12,California Adventure,99
+2025-03-13,California Adventure,47
+2025-03-14,California Adventure,69
+2025-03-15,California Adventure,99
+2025-03-16,California Adventure,98
+2025-03-17,California Adventure,95
+2025-03-18,California Adventure,98
+2025-03-19,California Adventure,99
+2025-03-20,California Adventure,98
+2025-03-21,California Adventure,78
+2025-03-22,California Adventure,88
+2025-03-23,California Adventure,84
+2025-03-24,California Adventure,80
+2025-03-25,California Adventure,94
+2025-03-26,California Adventure,92
+2025-03-27,California Adventure,82
+2025-03-28,California Adventure,64
+2025-03-29,California Adventure,92
+2025-03-30,California Adventure,86
+2025-03-31,California Adventure,88
+2025-04-01,California Adventure,89
+2025-04-02,California Adventure,92
+2025-04-03,California Adventure,93
+2025-04-04,California Adventure,70
+2025-04-05,California Adventure,85
+2025-04-06,California Adventure,79
+2025-04-07,California Adventure,49
+2025-04-08,California Adventure,79
+2025-04-09,California Adventure,46
+2025-04-10,California Adventure,75
+2025-04-11,California Adventure,56
+2025-04-12,California Adventure,66
+2025-04-13,California Adventure,78
+2025-04-14,California Adventure,58
+2025-04-15,California Adventure,75
+2025-04-16,California Adventure,80
+2025-04-17,California Adventure,75
+2025-04-18,California Adventure,82
+2025-04-19,California Adventure,91
+2025-04-20,California Adventure,84
+2025-04-21,California Adventure,36
+2025-04-22,California Adventure,83
+2025-04-23,California Adventure,50
+2025-04-24,California Adventure,92
+2025-04-25,California Adventure,60
+2025-04-26,California Adventure,92
+2025-04-27,California Adventure,57
+2025-04-28,California Adventure,53
+2025-04-29,California Adventure,84
+2025-04-30,California Adventure,61
+2025-05-01,California Adventure,62
+2025-05-02,California Adventure,60
+2025-05-03,California Adventure,92
+2025-05-04,California Adventure,46
+2025-05-05,California Adventure,54
+2025-05-06,California Adventure,76
+2025-05-07,California Adventure,66
+2025-05-08,California Adventure,63
+2025-05-09,California Adventure,36
+2025-05-10,California Adventure,69
+2025-05-11,California Adventure,62
+2025-05-12,California Adventure,90
+2025-05-13,California Adventure,74
+2025-05-14,California Adventure,81
+2025-05-15,California Adventure,75
+2025-05-16,California Adventure,5
+2025-05-17,California Adventure,21
+2025-05-18,California Adventure,26
+2025-05-19,California Adventure,48
+2025-05-20,California Adventure,58
+2025-05-21,California Adventure,56
+2025-05-22,California Adventure,46
+2025-05-23,California Adventure,28
+2025-05-24,California Adventure,45
+2025-05-25,California Adventure,79
+2025-05-26,California Adventure,61
+2025-05-27,California Adventure,85
+2025-05-28,California Adventure,92
+2025-05-29,California Adventure,89
+2025-05-30,California Adventure,64
+2025-05-31,California Adventure,65
+2025-06-01,California Adventure,61
+2025-06-02,California Adventure,73
+2025-06-03,California Adventure,83
+2025-06-04,California Adventure,81
+2025-06-05,California Adventure,81
+2025-06-06,California Adventure,68
+2025-06-07,California Adventure,58
+2025-06-08,California Adventure,61
+2025-06-09,California Adventure,35
+2025-06-10,California Adventure,82
+2025-06-11,California Adventure,88
+2025-06-12,California Adventure,56
+2025-06-13,California Adventure,45
+2025-06-14,California Adventure,56
+2025-06-15,California Adventure,10
+2025-06-16,California Adventure,47
+2025-06-17,California Adventure,33
+2025-06-18,California Adventure,90
+2025-06-19,California Adventure,86
+2025-06-20,California Adventure,87
+2025-06-21,California Adventure,73
+2025-06-22,California Adventure,35
+2025-06-23,California Adventure,24
+2025-06-24,California Adventure,94
+2025-06-25,California Adventure,58
+2025-06-26,California Adventure,52
+2025-06-27,California Adventure,33
+2025-06-28,California Adventure,72
+2025-06-29,California Adventure,31
+2025-06-30,California Adventure,22
+2025-07-01,California Adventure,48
+2025-07-02,California Adventure,70
+2025-07-03,California Adventure,41
+2025-07-04,California Adventure,14
+2025-07-05,California Adventure,45
+2025-07-06,California Adventure,22
+2025-07-07,California Adventure,20
+2025-07-08,California Adventure,54
+2025-07-09,California Adventure,52
+2025-07-10,California Adventure,25
+2025-07-11,California Adventure,27
+2025-07-12,California Adventure,19
+2025-07-13,California Adventure,29
+2025-07-14,California Adventure,48
+2025-07-15,California Adventure,75
+2025-07-16,California Adventure,85
+2025-07-17,California Adventure,24
+2025-07-18,California Adventure,46
+2025-07-19,California Adventure,34
+2025-07-20,California Adventure,35
+2025-07-21,California Adventure,74
+2025-07-22,California Adventure,99
+2025-07-23,California Adventure,71
+2025-07-24,California Adventure,71
+2025-07-25,California Adventure,51
+2025-07-26,California Adventure,35
+2025-07-27,California Adventure,56
+2025-07-28,California Adventure,54
+2025-07-29,California Adventure,78
+2025-07-30,California Adventure,88
+2025-07-31,California Adventure,56
+2025-08-01,California Adventure,32
+2025-08-02,California Adventure,39
+2025-08-03,California Adventure,54
+2025-08-04,California Adventure,89
+2025-08-05,California Adventure,92
+2025-08-06,California Adventure,87
+2025-08-07,California Adventure,59
+2025-08-08,California Adventure,62
+2025-08-09,California Adventure,75
+2025-08-10,California Adventure,71
+2025-08-11,California Adventure,83
+2025-08-12,California Adventure,85
+2025-08-13,California Adventure,66
+2025-08-14,California Adventure,39
+2025-08-15,California Adventure,18
+2025-08-16,California Adventure,39
+2025-08-17,California Adventure,31
+2025-08-18,California Adventure,35
+2025-08-19,California Adventure,22
+2025-08-20,California Adventure,72
+2025-08-21,California Adventure,13
+2025-08-22,California Adventure,19
+2025-08-23,California Adventure,26
+2025-08-24,California Adventure,21
+2025-08-25,California Adventure,46
+2025-08-26,California Adventure,4
+2025-08-27,California Adventure,25
+2025-08-28,California Adventure,10
+2025-08-29,California Adventure,35
+2025-08-30,California Adventure,82
+2025-08-31,California Adventure,70
+2025-09-01,California Adventure,26
+2025-09-02,California Adventure,2
+2025-09-03,California Adventure,17
+2025-09-04,California Adventure,24
+2025-09-05,California Adventure,25
+2025-09-06,California Adventure,32
+2025-09-07,California Adventure,40
+2025-09-08,California Adventure,14
+2025-09-09,California Adventure,14
+2025-09-10,California Adventure,23
+2025-09-11,California Adventure,26
+2025-09-12,California Adventure,43
+2025-09-13,California Adventure,66
+2025-09-14,California Adventure,46
+2025-09-15,California Adventure,45
+2025-09-16,California Adventure,16
+2025-09-17,California Adventure,85
+2025-09-18,California Adventure,25
+2025-09-19,California Adventure,50
+2025-09-20,California Adventure,67
+2025-09-21,California Adventure,56
+2025-09-22,California Adventure,36
+2025-09-23,California Adventure,20
+2025-09-24,California Adventure,38
+2025-09-25,California Adventure,7
+2025-09-26,California Adventure,65
+2025-09-27,California Adventure,78
+2025-09-28,California Adventure,49
+2025-09-29,California Adventure,67
+2025-09-30,California Adventure,20
+2025-10-01,California Adventure,84
+2025-10-02,California Adventure,55
+2025-10-03,California Adventure,81
+2025-10-04,California Adventure,78
+2025-10-05,California Adventure,28
+2025-10-06,California Adventure,89
+2025-10-07,California Adventure,32
+2025-10-08,California Adventure,71
+2025-10-09,California Adventure,29
+2025-10-10,California Adventure,89
+2025-10-11,California Adventure,94
+2025-10-12,California Adventure,84
+2025-10-13,California Adventure,94
+2025-10-14,California Adventure,42
+2025-10-15,California Adventure,91
+2025-10-16,California Adventure,53
+2025-10-17,California Adventure,67
+2025-10-18,California Adventure,82
+2025-10-19,California Adventure,54
+2025-10-20,California Adventure,74
+2025-10-21,California Adventure,30
+2025-10-22,California Adventure,77
+2025-10-23,California Adventure,25
+2025-10-24,California Adventure,70
+2025-10-25,California Adventure,88
+2025-10-26,California Adventure,40
+2025-10-27,California Adventure,60
+2025-10-28,California Adventure,3
+2025-10-29,California Adventure,11
+2025-10-30,California Adventure,52
+2025-10-31,California Adventure,7
+2025-11-01,California Adventure,22
+2025-11-02,California Adventure,39
+2025-11-03,California Adventure,63
+2025-11-04,California Adventure,27
+2025-11-05,California Adventure,22
+2025-11-06,California Adventure,46
+2025-11-07,California Adventure,2
+2025-11-08,California Adventure,27
+2025-11-09,California Adventure,38
+2025-11-10,California Adventure,95
+2025-11-11,California Adventure,91
+2025-11-12,California Adventure,77
+2025-11-13,California Adventure,76
+2025-11-14,California Adventure,43
+2025-11-15,California Adventure,23
+2025-11-16,California Adventure,74
+2025-11-17,California Adventure,38
+2025-11-18,California Adventure,74
+2025-11-19,California Adventure,69
+2025-11-20,California Adventure,14
+2025-11-21,California Adventure,32
+2025-11-22,California Adventure,80
+2025-11-23,California Adventure,81
+2025-11-24,California Adventure,89
+2025-11-25,California Adventure,92
+2025-11-26,California Adventure,84
+2025-11-27,California Adventure,78
+2025-11-28,California Adventure,93
+2025-11-29,California Adventure,72
+2025-11-30,California Adventure,54
+2025-12-01,California Adventure,41
+2025-12-02,California Adventure,56
+2025-12-03,California Adventure,65
+2025-12-04,California Adventure,64
+2025-12-05,California Adventure,80
+2025-12-06,California Adventure,90
+2025-12-07,California Adventure,70
+2025-12-08,California Adventure,46
+2025-12-09,California Adventure,57
+2025-12-10,California Adventure,47
+2025-12-11,California Adventure,50
+2025-12-12,California Adventure,68
+2025-12-13,California Adventure,72
+2025-12-14,California Adventure,65
+2025-12-15,California Adventure,41
+2025-12-16,California Adventure,41
+2025-12-17,California Adventure,17
+2025-12-18,California Adventure,19
+2025-12-19,California Adventure,29
+2025-12-20,California Adventure,68
+2025-12-21,California Adventure,76
+2025-12-22,California Adventure,87
+2025-12-23,California Adventure,77
+2025-12-24,California Adventure,13
+2025-12-25,California Adventure,28
+2025-12-26,California Adventure,36
+2025-12-27,California Adventure,96
+2025-12-28,California Adventure,99
+2025-12-29,California Adventure,98
+2025-12-30,California Adventure,99
+2025-12-31,California Adventure,42
+2026-01-01,California Adventure,75
+2026-01-02,California Adventure,96
+2026-01-03,California Adventure,93
+2026-01-04,California Adventure,60
+2026-01-05,California Adventure,95
+2026-01-06,California Adventure,94
+2026-01-07,California Adventure,94
+2026-01-08,California Adventure,87
+2026-01-09,California Adventure,77
+2026-01-10,California Adventure,93
+2026-01-11,California Adventure,86
+2026-01-12,California Adventure,63
+2026-01-13,California Adventure,57
+2026-01-14,California Adventure,61
+2026-01-15,California Adventure,46
+2026-01-16,California Adventure,56
+2026-01-17,California Adventure,89
+2026-01-18,California Adventure,94
+2026-01-19,California Adventure,75
+2026-01-20,California Adventure,24
+2026-01-21,California Adventure,20
+2026-01-22,California Adventure,24
+2026-01-23,California Adventure,45
+2026-01-24,California Adventure,80
+2026-01-25,California Adventure,45
+2026-01-26,California Adventure,45
+2026-01-27,California Adventure,47
+2026-01-28,California Adventure,14
+2026-01-29,California Adventure,28
+2026-01-30,California Adventure,58
+2026-01-31,California Adventure,87
+2026-02-01,California Adventure,70
+2026-02-02,California Adventure,14
+2026-02-03,California Adventure,25
+2026-02-04,California Adventure,18
+2026-02-05,California Adventure,45
+2026-02-06,California Adventure,71
+2026-02-07,California Adventure,84
+2026-02-08,California Adventure,82
+2026-02-09,California Adventure,58
+2026-02-10,California Adventure,74
+2026-02-11,California Adventure,60
+2026-02-12,California Adventure,81
+2026-02-13,California Adventure,79
+2026-02-14,California Adventure,97
+2026-02-15,California Adventure,97
+2026-02-16,California Adventure,20
+2026-02-17,California Adventure,84
+2026-02-18,California Adventure,87
+2026-02-19,California Adventure,50
+2026-02-20,California Adventure,91
+2026-02-21,California Adventure,95
+2026-02-22,California Adventure,92
+2026-02-23,California Adventure,63
+2026-02-24,California Adventure,78
+2026-02-25,California Adventure,80
+2026-02-26,California Adventure,88
+2026-02-27,California Adventure,67
+2026-02-28,California Adventure,94
+2026-03-01,California Adventure,66
+2026-03-02,California Adventure,16
+2026-03-03,California Adventure,31
+2026-03-04,California Adventure,31
+2026-03-05,California Adventure,37
+2026-03-06,California Adventure,51
+2026-03-07,California Adventure,94
+2026-03-08,California Adventure,74
+2026-03-09,California Adventure,91
+2026-03-10,California Adventure,97
+2026-03-11,California Adventure,94
+2026-03-12,California Adventure,63
+2026-03-13,California Adventure,92
+2026-03-14,California Adventure,97
+2026-03-15,California Adventure,94
+2026-03-16,California Adventure,98
+2026-03-17,California Adventure,96
+2026-03-18,California Adventure,99
+2026-03-19,California Adventure,95
+2026-03-20,California Adventure,96
+2026-03-21,California Adventure,95
+2026-03-22,California Adventure,82
+2026-03-23,California Adventure,89
+2026-03-24,California Adventure,97
+2026-03-25,California Adventure,98
+2026-03-26,California Adventure,81
+2026-03-27,California Adventure,91
+2026-03-28,California Adventure,94
+2026-03-29,California Adventure,87
+2026-03-30,California Adventure,94
+2026-03-31,California Adventure,98
+2026-04-01,California Adventure,99
+2026-04-02,California Adventure,99
+2026-04-03,California Adventure,95
+2026-04-04,California Adventure,95
+2026-04-05,California Adventure,90
+2026-04-06,California Adventure,97
+2026-04-07,California Adventure,98
+2026-04-08,California Adventure,99
+2026-04-09,California Adventure,99
+2026-04-10,California Adventure,99
+2026-04-11,California Adventure,90
+2026-04-12,California Adventure,71
+2026-04-13,California Adventure,65
+2026-04-14,California Adventure,67
+2026-04-15,California Adventure,57
+2026-04-16,California Adventure,61
+2026-04-17,California Adventure,74
+2026-04-18,California Adventure,89
+2026-04-19,California Adventure,83
+2026-04-20,California Adventure,73
+2026-04-21,California Adventure,90
+2026-04-22,California Adventure,88
+2026-04-23,California Adventure,93
+2026-04-24,California Adventure,79
+2026-04-25,California Adventure,86
+2026-04-26,California Adventure,80
+2026-04-27,California Adventure,64
+2026-04-28,California Adventure,85
+2026-04-29,California Adventure,67
+2026-04-30,California Adventure,85
+2026-05-01,California Adventure,82
+2026-05-02,California Adventure,93
+2026-05-03,California Adventure,80
+2026-05-04,California Adventure,66
+2026-05-05,California Adventure,75
+2026-05-06,California Adventure,86
+2026-05-07,California Adventure,72
+2026-05-08,California Adventure,38
+2026-05-09,California Adventure,86
+2026-05-10,California Adventure,73
+2026-05-11,California Adventure,85
+2026-05-12,California Adventure,85
+2026-05-13,California Adventure,89
+2026-05-14,California Adventure,94
+2026-05-15,California Adventure,69
+2026-05-16,California Adventure,91
+2026-05-17,California Adventure,88
+2026-05-18,California Adventure,92
+2026-05-19,California Adventure,88
+2026-05-20,California Adventure,82
+2026-05-21,California Adventure,74
+2026-05-22,California Adventure,27
+2026-05-23,California Adventure,81
+2026-05-24,California Adventure,83
+2026-05-25,California Adventure,64
+2026-05-26,California Adventure,83
+2026-05-27,California Adventure,88
+2026-05-28,California Adventure,76
+2026-05-29,California Adventure,46
+2026-05-30,California Adventure,70
+2026-05-31,California Adventure,55
+2026-06-01,California Adventure,93
+2026-06-02,California Adventure,99
+2026-06-03,California Adventure,96
+2026-06-04,California Adventure,92
+2026-06-05,California Adventure,54
+2026-06-06,California Adventure,62
+2026-06-07,California Adventure,41
+2026-06-08,California Adventure,33
+2026-06-09,California Adventure,97
+2026-06-10,California Adventure,72
+2026-06-11,California Adventure,36
+2026-06-12,California Adventure,18
+2026-06-13,California Adventure,45
+2026-06-14,California Adventure,39
+2026-06-15,California Adventure,17
+2026-06-16,California Adventure,72
+2026-06-17,California Adventure,16
+2026-06-18,California Adventure,60
+2026-06-19,California Adventure,56
+2026-06-20,California Adventure,51
+2026-06-21,California Adventure,14
+2026-06-22,California Adventure,6
+2026-06-23,California Adventure,76
+2026-06-24,California Adventure,62
+2026-06-25,California Adventure,41
+2026-06-26,California Adventure,35
+2026-06-27,California Adventure,28
+2026-06-28,California Adventure,56
+2026-06-29,California Adventure,7
+2026-06-30,California Adventure,43
+2026-07-01,California Adventure,24
+2026-07-02,California Adventure,55
+2026-07-03,California Adventure,68
+2026-07-04,California Adventure,12
+2026-07-05,California Adventure,4
+2026-07-06,California Adventure,19
+2026-07-07,California Adventure,27
+2026-07-08,California Adventure,34
+2026-07-09,California Adventure,49
+2026-07-10,California Adventure,13
+2026-07-11,California Adventure,31
+2026-07-12,California Adventure,40
+2026-07-13,California Adventure,64
+2026-07-14,California Adventure,55
+2026-07-15,California Adventure,33
+2026-07-16,California Adventure,44
+2026-07-17,California Adventure,16
+2026-07-18,California Adventure,50
+2026-07-19,California Adventure,27
+2026-07-20,California Adventure,69
+2026-07-21,California Adventure,84
+2026-07-22,California Adventure,46
+2026-07-23,California Adventure,84
+2026-07-24,California Adventure,26
+2026-07-25,California Adventure,42
+2026-07-26,California Adventure,64
+2026-07-27,California Adventure,55
+2026-07-28,California Adventure,52
+2026-07-29,California Adventure,48
+2026-07-30,California Adventure,39
+2026-07-31,California Adventure,10
+2026-08-01,California Adventure,30
+2026-08-02,California Adventure,39
+2026-08-03,California Adventure,68
+2026-08-04,California Adventure,81
+2026-08-05,California Adventure,76
+2026-08-06,California Adventure,26
+2026-08-07,California Adventure,39
+2026-08-08,California Adventure,24
+2026-08-09,California Adventure,27
+2026-08-10,California Adventure,70
+2026-08-11,California Adventure,65
+2026-08-12,California Adventure,37
+2026-08-13,California Adventure,40
+2026-08-14,California Adventure,5
+2026-08-15,California Adventure,4
+2026-08-16,California Adventure,11
+2026-08-17,California Adventure,42
+2026-08-18,California Adventure,16
+2026-08-19,California Adventure,70
+2026-08-20,California Adventure,15
+2026-08-21,California Adventure,34
+2026-08-22,California Adventure,33
+2026-08-23,California Adventure,18
+2026-08-24,California Adventure,21
+2026-08-25,California Adventure,11
+2026-08-26,California Adventure,21
+2026-08-27,California Adventure,14
+2026-08-28,California Adventure,19
+2026-08-29,California Adventure,23
+2026-08-30,California Adventure,4
+2026-08-31,California Adventure,5
+2026-09-01,California Adventure,35
+2026-09-02,California Adventure,39
+2026-09-03,California Adventure,27
+2026-09-04,California Adventure,26
+2026-09-05,California Adventure,36
+2026-09-06,California Adventure,28
+2026-09-07,California Adventure,57
+2026-09-08,California Adventure,33
+2026-09-09,California Adventure,37
+2026-09-10,California Adventure,26
+2026-09-11,California Adventure,25
+2026-09-12,California Adventure,36
+2026-09-13,California Adventure,29
+2026-09-14,California Adventure,33
+2026-09-15,California Adventure,35
+2026-09-16,California Adventure,40
+2026-09-17,California Adventure,30
+2026-09-18,California Adventure,30
+2026-09-19,California Adventure,43
+2026-09-20,California Adventure,37
+2026-09-21,California Adventure,43
+2026-09-22,California Adventure,46
+2026-09-23,California Adventure,54
+2026-09-24,California Adventure,44
+2026-09-25,California Adventure,46
+2026-09-26,California Adventure,59
+2026-09-27,California Adventure,55
+2026-09-28,California Adventure,61
+2026-09-29,California Adventure,64
+2026-09-30,California Adventure,70
+2026-10-01,California Adventure,68
+2026-10-02,California Adventure,70
+2026-10-03,California Adventure,79
+2026-10-04,California Adventure,76
+2026-10-05,California Adventure,74
+2026-10-06,California Adventure,75
+2026-10-07,California Adventure,79
+2026-10-08,California Adventure,73
+2026-10-09,California Adventure,73
+2026-10-10,California Adventure,80
+2026-10-11,California Adventure,75
+2026-10-12,California Adventure,91
+2026-10-13,California Adventure,77
+2026-10-14,California Adventure,79
+2026-10-15,California Adventure,71
+2026-10-16,California Adventure,68
+2026-10-17,California Adventure,74
+2026-10-18,California Adventure,67
+2026-10-19,California Adventure,68
+2026-10-20,California Adventure,66
+2026-10-21,California Adventure,67
+2026-10-22,California Adventure,55
+2026-10-23,California Adventure,51

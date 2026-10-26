@@ -1,0 +1,2 @@
+import{Da as o,Ea as t}from"./chunk-UB2HML5X.js";var s="[object Arguments]";function a(r){return t(r)&&o(r)==s}var e=a;var n=Object.prototype,m=n.hasOwnProperty,p=n.propertyIsEnumerable,i=e((function(){return arguments})())?e:function(r){return t(r)&&m.call(r,"callee")&&!p.call(r,"callee")},A=i;var c=9007199254740991;function u(r){return typeof r=="number"&&r>-1&&r%1==0&&r<=c}var E=u;export{A as a,E as b};
+//# sourceMappingURL=chunk-26MMI4ND.js.map

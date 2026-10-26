@@ -1,0 +1,2 @@
+import{f as r,ja as c}from"./chunk-3RQOQ5TH.js";var e=class{constructor(i=!1){this.horizontalSeparator=i}};var b=(()=>{class t{constructor(){this.footerSubject=new r}watchFooter(){return this.footerSubject.asObservable()}emitFooter(o){this.footerSubject.next(o)}restoreDefault(){this.footerSubject.next(new e)}static{this.\u0275fac=function(s){return new(s||t)}}static{this.\u0275prov=c({token:t,factory:t.\u0275fac,providedIn:"root"})}}return t})();export{e as a,b};
+//# sourceMappingURL=chunk-54WUXQJT.js.map

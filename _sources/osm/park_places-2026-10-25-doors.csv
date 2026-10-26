@@ -1,0 +1,97 @@
+park,kind,name,lat,lon,osm,ent_lat,ent_lon,exit_lat,exit_lon
+Disneyland,ride,Rise of the Resistance,33.814395,-117.922717,w607524502,33.813751,-117.923316,33.813751,-117.923316
+Disneyland,ride,Smugglers Run,33.815209,-117.921378,w515673763,33.814872,-117.921390,33.814869,-117.921531
+Disneyland,ride,Indiana Jones Adventure,33.810296,-117.92117,w824031782,33.811026,-117.920488,33.811026,-117.920488
+Disneyland,ride,Matterhorn Bobsleds,33.813074,-117.917846,w107280556,33.813400,-117.917801,33.813400,-117.917801
+Disneyland,ride,Tiana's Bayou Adventure,33.811918,-117.922839,w361504826,33.812253,-117.922833,33.812201,-117.922913
+Disneyland,ride,Space Mountain,33.810969,-117.917501,w122090695,33.811214,-117.917300,33.811214,-117.917300
+Disneyland,ride,Haunted Mansion,33.81149,-117.92256,w178254960,33.811694,-117.922052,33.811866,-117.922182
+Disneyland,ride,Roger Rabbit's Car Toon Spin,33.815308,-117.918022,w133337113,33.815207,-117.918119,33.815355,-117.918208
+Disneyland,ride,Big Thunder Mountain,33.812669,-117.920359,w266074156,33.812588,-117.920285,33.812588,-117.920285
+Disneyland,ride,Mickey & Minnie's Runaway Railway,33.815946,-117.918733,w868763698,33.815553,-117.918453,33.815553,-117.918453
+Disneyland,ride,Peter Pan's Flight,33.8131,-117.918832,n632049634,33.813149,-117.918867,33.813319,-117.918790
+Disneyland,ride,Pirates of the Caribbean,33.810792,-117.92152,w824031784,33.811299,-117.920832,33.811299,-117.920832
+Disneyland,ride,Jungle Cruise,33.811405,-117.920046,w194261873,33.811434,-117.920121,33.811402,-117.920139
+Disneyland,ride,Finding Nemo Submarine Voyage,33.812831,-117.917176,n632049645,33.812737,-117.916906,33.812737,-117.916906
+Disneyland,ride,Autopia,33.81265,-117.916526,w168833464,33.812558,-117.916465,33.812558,-117.916465
+Disneyland,ride,Star Tours,33.811693,-117.917706,w169215396,33.812015,-117.918025,33.811913,-117.917353
+Disneyland,ride,Buzz Lightyear Astro Blasters,33.812393,-117.917716,w363559932,33.812183,-117.917959,33.812193,-117.917637
+Disneyland,ride,"""it's a small world""",33.815133,-117.917592,w499783300,33.814705,-117.917694,33.814705,-117.917694
+Disneyland,ride,Alice in Wonderland,33.813161,-117.918366,n1444178750,33.813161,-117.918286,33.813174,-117.918312
+Disneyland,ride,Snow White's Enchanted Wish,33.813089,-117.919103,n632049636,33.813149,-117.918867,33.813319,-117.918790
+Disneyland,ride,Mr. Toad's Wild Ride,33.813311,-117.91872,n632049635,33.813350,-117.918754,33.813319,-117.918790
+Disneyland,ride,Dumbo the Flying Elephant,33.813668,-117.918904,r7752012,33.813608,-117.918724,33.813608,-117.918724
+Disneyland,ride,Chip 'n' Dale's GADGETcoaster,33.815222,-117.919491,w107280551,33.815213,-117.919440,33.815234,-117.919534
+Disneyland,ride,Winnie the Pooh,33.81272,-117.923199,w122744025,33.812537,-117.922966,33.812405,-117.923278
+California Adventure,ride,Radiator Springs Racers,33.804244,-117.919065,w753161662,33.804703,-117.918777,33.804703,-117.918777
+California Adventure,ride,Guardians – Mission: BREAKOUT!,33.806625,-117.916905,w313039853,33.806839,-117.917154,33.806839,-117.917154
+California Adventure,ride,WEB SLINGERS,33.806896,-117.918685,w721810397,33.806628,-117.918417,33.806584,-117.918608
+California Adventure,ride,Incredicoaster,33.804563,-117.9205,w194882116,33.804538,-117.920588,33.804538,-117.920588
+California Adventure,ride,Soarin',33.808422,-117.920019,w312369808,33.808257,-117.920000,33.808257,-117.920000
+California Adventure,ride,Toy Story Midway Mania!,33.804484,-117.921779,w113878103,33.804633,-117.921950,33.804559,-117.921408
+California Adventure,ride,Grizzly River Run,33.807211,-117.920202,n3167856921,33.807317,-117.920440,33.807317,-117.920440
+California Adventure,ride,"Monsters, Inc.",33.80849,-117.917178,w188171538,33.808346,-117.917429,33.808399,-117.917134
+California Adventure,ride,The Little Mermaid,33.806337,-117.921469,w337426362,33.806188,-117.921114,33.806213,-117.921200
+California Adventure,ride,Goofy's Sky School,33.806435,-117.922868,w108865231,33.806337,-117.922850,33.806337,-117.922850
+California Adventure,ride,Luigi's Rollickin' Roadsters,33.805673,-117.918122,w755354603,33.805557,-117.918472,33.805534,-117.918345
+California Adventure,ride,Mater's Junkyard Jamboree,33.806467,-117.919137,w336617708,33.806301,-117.919036,33.806301,-117.919036
+California Adventure,ride,Pixar Pal-A-Round,33.805135,-117.922188,w123138989,33.805159,-117.922247,33.805159,-117.922247
+California Adventure,ride,Inside Out Emotional Whirlwind,33.805235,-117.922878,w690246998,33.805155,-117.922835,33.805155,-117.922835
+California Adventure,ride,Golden Zephyr,33.805962,-117.922268,w342771469,33.806049,-117.922276,33.806049,-117.922276
+California Adventure,ride,Silly Symphony Swings,33.805656,-117.922668,w364262516,33.805561,-117.922870,33.805561,-117.922870
+California Adventure,ride,Jumpin' Jellyfish,33.805997,-117.922689,n1149646454,33.806163,-117.922507,33.806163,-117.922507
+California Adventure,ride,Jessie's Critter Carousel,33.804539,-117.921177,w120639750,33.804632,-117.921159,33.804632,-117.921159
+Disneyland,food,Jolly Holiday Bakery Café,33.811661,-117.919368,n1401745785,,,,
+Disneyland,food,Carnation Café,33.811065,-117.919143,n1231986905,,,,
+Disneyland,food,Gibson Girl Ice Cream Parlor,33.811151,-117.919136,n1231986605,,,,
+Disneyland,food,Tropical Hideaway,33.811472,-117.919597,n1239435812,,,,
+Disneyland,food,Bengal Barbecue,33.811572,-117.920319,w262190363,,,,
+Disneyland,food,Tiki Juice Bar,33.811824,-117.919579,w108039683,,,,
+Disneyland,food,Tiana's Palace,33.811203,-117.921595,n1231986446,,,,
+Disneyland,food,Café Orléans,33.811211,-117.921253,n1231986911,,,,
+Disneyland,food,Blue Bayou Restaurant,33.811004,-117.92121,n1231986248,,,,
+Disneyland,food,Hungry Bear Barbecue Jamboree,33.812599,-117.922633,n1231986464,,,,
+Disneyland,food,Rancho del Zócalo,33.812669,-117.919751,w210671491,,,,
+Disneyland,food,Stage Door Café,33.811873,-117.920296,n1231986854,,,,
+Disneyland,food,Golden Horseshoe,33.811936,-117.920254,n1231986518,,,,
+Disneyland,food,Red Rose Taverne,33.813329,-117.919518,n1231986497,,,,
+Disneyland,food,Edelweiss Snacks,33.813773,-117.917724,w107526236,,,,
+Disneyland,food,Café Daisy,33.815538,-117.918739,n1231986383,,,,
+Disneyland,food,Alien Pizza Planet,33.811541,-117.916757,w377094499,,,,
+Disneyland,food,Docking Bay 7 Food and Cargo,33.814693,-117.92149,n6348928543,,,,
+Disneyland,food,Ronto Roasters,33.814428,-117.921505,n6348928542,,,,
+California Adventure,food,Carthay Circle Restaurant,33.807389,-117.918927,w338063157,,,,
+California Adventure,food,"Fiddler, Fifer & Practical Café",33.807904,-117.919349,n1439067446,,,,
+California Adventure,food,Clarabelle's Hand-Scooped Ice Cream,33.808013,-117.919225,n1238366182,,,,
+California Adventure,food,Award Wieners,33.807761,-117.918124,w127409412,,,,
+California Adventure,food,Schmoozies,33.807764,-117.917628,n1234468408,,,,
+California Adventure,food,Pym Test Kitchen,33.806857,-117.917746,w951842102,,,,
+California Adventure,food,Smokejumpers Grill,33.808063,-117.919695,w676908479,,,,
+California Adventure,food,Cocina Cucamonga Mexican Grill,33.805511,-117.92036,w49824674,,,,
+California Adventure,food,Lucky Fortune Cookery,33.805779,-117.919812,n1149646380,,,,
+California Adventure,food,Paradise Garden Grill,33.806134,-117.923495,w49824810,,,,
+California Adventure,food,Angry Dogs,33.804813,-117.921969,w107918245,,,,
+California Adventure,food,Poultry Palace,33.804753,-117.921438,w339628293,,,,
+California Adventure,food,Flo's V8 Café,33.805575,-117.919203,w337560481,,,,
+California Adventure,food,Cozy Cone Motel,33.80599,-117.918638,n1324541868,,,,
+California Adventure,show,Turtle Talk with Crush,33.807286,-117.917839,n1149646686,,,,
+California Adventure,show,The Sanctum,33.806283,-117.918055,n1149646783,,,,
+California Adventure,show,Hollywood Backlot Stage,33.807786,-117.917258,n1231986181,,,,
+California Adventure,show,Animation Academy,33.807431,-117.917297,n1232033931,,,,
+California Adventure,show,Ahwahnee Camp Circle,33.806726,-117.921401,n1235708498,,,,
+Disneyland,show,Pixie Hollow,33.812503,-117.918284,n1424937325,,,,
+California Adventure,show,Character Close-Up with Anna & Elsa,33.807289,-117.917327,n2353146260,,,,
+California Adventure,show,Five & Dime,33.80769,-117.919087,n3438492155,,,,
+California Adventure,show,Guardians of the Galaxy: Awesome Dance Off!,33.806999,-117.917052,n5213383044,,,,
+California Adventure,show,Pixar Promenade Band Shell,33.80489,-117.922443,n5655362203,,,,
+California Adventure,show,Hyperion Theater,33.807674,-117.916615,w49824967,,,,
+Disneyland,show,French Market Stage,33.811325,-117.9217,w108428278,,,,
+California Adventure,show,Paradise Garden Bandstand,33.806075,-117.923274,w120076534,,,,
+Disneyland,show,Fantasyland Theatre,33.814469,-117.919332,w131936892,,,,
+Disneyland,show,Main Street Opera House,33.810263,-117.918337,w132551289,,,,
+California Adventure,show,Disney Theater,33.807389,-117.918353,w144283156,,,,
+Disneyland,show,Mickey's House,33.815544,-117.919365,w186539115,,,,
+Disneyland,show,Tomorrowland Terrace Stage,33.812373,-117.917003,w288608889,,,,
+Disneyland,show,Royal Theatre,33.812442,-117.919432,w359403613,,,,
+Disneyland,show,The Golden Horseshoe,33.811941,-117.920191,w616075967,,,,
+Disneyland,show,Walt Disney's Enchanted Tiki Room,33.811656,-117.919579,w653252856,,,,

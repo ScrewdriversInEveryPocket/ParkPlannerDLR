@@ -1,0 +1,2 @@
+import{b as o}from"./chunk-WJSRMCDT.js";import{a as n}from"./chunk-VT37MYTJ.js";import{ma as e}from"./chunk-3RQOQ5TH.js";import{h as T}from"./chunk-OCZYKTJU.js";var m=T(n());var f=(a=new Date,r)=>{let t=o.fullDateFormat;return r&&(t=o[`${r.toLowerCase().replace(/[^a-z]+/,"")}FullDateFormat`]||t),(0,m.default)(a).format(t)},F=new e("GET_FULL_DATE_STRING",{factory:()=>f});export{F as a};
+//# sourceMappingURL=chunk-TZ22QPCA.js.map

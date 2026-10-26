@@ -1,0 +1,2 @@
+import{b as e}from"./chunk-WJSRMCDT.js";import{a as c}from"./chunk-VT37MYTJ.js";import{ma as n}from"./chunk-3RQOQ5TH.js";import{h as T}from"./chunk-OCZYKTJU.js";var r=T(c());var f=(a=new Date,o,m)=>{let t=e.scheduleDateFormat;return o&&(t=e[`${o.toLowerCase().replace(/[^a-z]+/,"")}ShortDateFormat`]||t),m&&(t=m),r.default.locale(o),(0,r.default)(a).format(t)},S=new n("GET_DATE_STRING",{factory:()=>f});export{S as a};
+//# sourceMappingURL=chunk-YUORMQKS.js.map

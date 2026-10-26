@@ -1,0 +1,2 @@
+import{g as a,ja as r}from"./chunk-3RQOQ5TH.js";var s=(()=>{class e{constructor(){this.updateData$=new a(null),this.dashMap=new Map}checkForUpdate(t){return this.dashMap.get(t)||{}}sendUpdate(t){this.dashMap.set(t.facilityId,t),this.updateData$.next(t)}listenForUpdates$(){return this.updateData$.asObservable()}static{this.\u0275fac=function(i){return new(i||e)}}static{this.\u0275prov=r({token:e,factory:e.\u0275fac,providedIn:"root"})}}return e})();export{s as a};
+//# sourceMappingURL=chunk-UUQW6WU3.js.map

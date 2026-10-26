@@ -1,0 +1,2 @@
+import{Ba as s,c,ca as d,h as a,hd as i,jd as b,oa as o,za as l}from"./chunk-3RQOQ5TH.js";function R(t){t||(t=o(s));let r=new c(e=>{if(t.destroyed){e.next();return}return t.onDestroy(e.next.bind(e))});return e=>e.pipe(d(r))}function O(t,r){let e=r?.injector??o(l),n=new a(1),v=b(()=>{let u;try{u=t()}catch(f){i(()=>n.error(f));return}i(()=>n.next(u))},{injector:e,manualCleanup:!0});return e.get(s).onDestroy(()=>{v.destroy(),n.complete()}),n.asObservable()}export{R as a,O as b};
+//# sourceMappingURL=chunk-5GLJREQ3.js.map
