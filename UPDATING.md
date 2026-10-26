@@ -403,7 +403,7 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
 
 1. Copy an existing `data/*.js` file, rename it, and fill in the header (`id` must match the file name) and the CSV.
 2. Add its id to `data/manifest.js`.
-3. Read it in `index.html` with `dash.data('<id>').data` (an array of row objects whose values are all strings).
+3. Read it in the app code (`js/*.js`) with `dash.data('<id>').data` (an array of row objects whose values are all strings).
 4. Bump `version.js`, then run `check.html`.
 
-To add a column, add it to both the CSV header and `columns`. To find every place a dataset is used, search `index.html` for its id.
+To add a column, add it to both the CSV header and `columns`. To find every place a dataset is used, search the `js` folder for its id.

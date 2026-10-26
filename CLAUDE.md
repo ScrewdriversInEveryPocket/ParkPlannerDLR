@@ -6,7 +6,9 @@ The Disneyland Resort Planning Tool by ScrewdriversInEveryPocket ("DLR Planner" 
 
 | Path | What it is |
 |---|---|
-| `index.html` | All the UI, plus one large inline script holding the planner logic. |
+| `index.html` | The page: all the markup (tabs, wizard steps, dialogs), then the script tags in load order. |
+| `css/app.css` | All the styles, light and dark. |
+| `js/*.js` | The app's code, as plain scripts (no modules, so it still opens straight from the folder). See **Where the code lives**. |
 | `shim.js` | Data layer (`window.dash`). It parses and checks each dataset, runs calcs, and fetches the live forecast. |
 | `data/*.js` | One bundled dataset per file. Each has CSV text plus a header: source, `pulled`, `until`, `review`, `columns`. |
 | `data/manifest.js` | Lists every data file. Both `index.html` and `sw.js` read it. |
@@ -18,6 +20,28 @@ The Disneyland Resort Planning Tool by ScrewdriversInEveryPocket ("DLR Planner" 
 | `icons/`, `manifest.webmanifest` | App icons and install manifest. |
 | `_BACKUP/` | Local only, gitignored: backups. |
 | `_sources/` | Raw source downloads and the scripts that fetch them (Disney calendar, showtimes, dining; Queue-Times; OpenStreetMap). Uploaded with the app. |
+
+## Where the code lives
+
+The scripts load in this order, and they share one set of top-level names (every function and setting is visible to every file, as if it were one script):
+
+| File | What's in it |
+|---|---|
+| `js/core.js` | Saved settings, month names, forecast loaders, derived data (waits by week and month, highlights), colour legends |
+| `js/charts.js` | Chart helpers (tooltips, axes, redraw on resize), week charts, grouped bars, the ride table |
+| `js/explore.js` | Hourly and planner data, the best-dates finder (wizard Dates step), best time of day heatmaps, events chart |
+| `js/controls.js` | Shared settings (`dpState`), repeat rides, ride details, tap-to-cycle and restaurant chips, hotels (`HOTEL_WALK`), start and finish, break |
+| `js/engine.js` | The planner: day context, waits, About-the-data table, walks, gates and security, the scheduler, Lightning Lane, meals, Park Hopper, fit checks |
+| `js/plan-day.js` | Plan a day: fit banner, ride chips, schedule list, day charts, Tonight, checklist, copy text |
+| `js/wizard.js` | Trip wizard: trip scoring and dates, days, rides, day pages, export step, walking chart |
+| `js/time-of-day.js` | Time of day overlay chart and its chips |
+| `js/state.js` | Restoring and saving settings (localStorage `pdp-state`) |
+| `js/pdf.js` | Day PDF (Plan a day) and trip PDF (Trip wizard) |
+| `js/app.js` | Settings dialog, redraw when data loads, tabs, startup |
+
+- Put new code in the file it belongs to. Functions can be used from any file once the page has loaded.
+- **Code that runs while the page loads** (not inside a function, e.g. hooking up a button) may only call functions from its own file or an earlier one, since later files haven't loaded yet.
+- A new file goes in three places: a script tag in `index.html` (in order, with `onerror="pdpMissing(this)"` so a missing file is named on screen), the `js` list in `sw.js`, and the table above.
 
 ## Updating data
 
@@ -55,7 +79,7 @@ Follow **[UPDATING.md](UPDATING.md)**. If you're asked to "update all the data" 
   - Relaxed is 50 m/min, Normal 65, Go-go 80.
   - Walks are up to 15% slower in the busiest weeks.
   - Before a break or a park hop, the plan walks to the gate.
-  - Hotel times (`HOTEL_WALK` in `index.html`): routed footpath metres from an average room to the turnstiles, at the group's pace, plus elevator minutes. The Grand Californian has its own California Adventure entrance. Every entry from the hotel (morning, return from a break) adds the security and tap-in line from `data/security_waits.js` (by time from opening, scaled by how busy the day is). Hops only tap in. Grand Californian guests use its own California Adventure entrance (gate `gc` in `data/gates.js`) when it's open; hops always use the Esplanade.
+  - Hotel times (`HOTEL_WALK` in `js/controls.js`): routed footpath metres from an average room to the turnstiles, at the group's pace, plus elevator minutes. The Grand Californian has its own California Adventure entrance. Every entry from the hotel (morning, return from a break) adds the security and tap-in line from `data/security_waits.js` (by time from opening, scaled by how busy the day is). Hops only tap in. Grand Californian guests use its own California Adventure entrance (gate `gc` in `data/gates.js`) when it's open; hops always use the Esplanade.
 - **Start and finish:** each day can start at rope drop, 10 am, 1 pm or a set time, and finish at close or a set time. A start after lunch or a finish by 4 pm turns the midday break off for that day, and the plan says so.
 - **Shortest rider:** rides above their height (`min_height_in` in `ride_profiles`) stay pickable but are flagged "(N in and up)" on chips and "Riders must be at least N in tall" on plans, with a Rider Switch note. Every ride's height is shown on plans and PDFs, since families may have children of different heights.
 - **Refurbishments:** a ride in `refurbs` on that date is left out of the plan, and the wizard only puts it on days when it's open.
