@@ -110,9 +110,9 @@ function scheduleBlock(ctx, start, end, pool, opts) {
   const rideCost = (r, t, from, lastLL) => {
     const w = wxAt(ctx, t);
     const isLL = opts.ll && opts.ll.has(r) && (r.ll === 'Single Pass' || t >= lastLL + LL.gap);
-    const standby = expWait(ctx, r, t);
+    const hw = hourWaits(ctx, r), standby = hw[Math.max(0, Math.min(24, Math.floor(t)))];
     const wait = isLL ? LL.wait : standby;
-    let minW = standby; for (let hh = Math.floor(t) + 1; hh < Math.min(24, end); hh++) minW = Math.min(minW, expWait(ctx, r, hh));
+    let minW = standby; for (let hh = Math.floor(t) + 1; hh < Math.min(24, end); hh++) minW = Math.min(minW, hw[hh]);
     let score = isLL ? 1.0 + (t < ctx.open + 1 ? 0.6 : 0) - Math.min(0.3, standby / 200) : standby / Math.max(minW, 5);
     if (w.feels >= 85) score += r.expo === 'Outdoor' ? 0.3 : r.expo === 'Mixed' ? 0.12 : -0.08;
     if (w.rain >= 8) score += r.expo === 'Outdoor' ? 0.25 : r.expo === 'Mixed' ? 0.1 : 0;

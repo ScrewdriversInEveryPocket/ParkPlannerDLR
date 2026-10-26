@@ -121,6 +121,12 @@ function dataNotes(ctx) {
   if (count.review) bits.push(`${count.review} due for a refresh`);
   document.getElementById('ds-summary').textContent = bits.join(' · ') + '.';
 })();
+// a ride's expected wait for each hour of a day (expWait only looks at the hour), worked out once per ride and day
+const WAITS_MEMO = new WeakMap();
+function hourWaits(ctx, r) {
+  let m = WAITS_MEMO.get(r); if (m && m.wf === ctx.weekFactor) return m.w;
+  m = { wf: ctx.weekFactor, w: d3.range(25).map(h => expWait(ctx, r, h)) }; WAITS_MEMO.set(r, m); return m.w;
+}
 function expWait(ctx, r, t) {
   let h = Math.min(23, Math.max(8, Math.floor(t)));
   let base = r.h[h]; let k = 1;

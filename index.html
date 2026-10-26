@@ -53,14 +53,17 @@ window.addEventListener('error', (e) => {
     <button type="button" role="tab" class="tab-extra" id="tab-weather" aria-controls="panel-weather" aria-selected="false" data-tab="weather">Weather</button>
     <button type="button" role="tab" class="tab-extra" id="tab-timeofday" aria-controls="panel-timeofday" aria-selected="false" data-tab="timeofday">Time of day</button>
     <button type="button" role="tab" class="tab-extra" id="tab-explore" aria-controls="panel-explore" aria-selected="false" data-tab="explore">Explore</button>
-    <button type="button" role="tab" class="tab-extra" id="tab-walks" aria-controls="panel-walks" aria-selected="false" data-tab="walks">Walking times</button> aria-controls="panel-about" aria-selected="false" data-tab="about">About the data</button>
+    <button type="button" role="tab" class="tab-extra" id="tab-walks" aria-controls="panel-walks" aria-selected="false" data-tab="walks">Walking times</button>
+    <button type="button" role="tab" class="tab-extra" id="tab-about" aria-controls="panel-about" aria-selected="false" data-tab="about">About the data</button>
     <button type="button" class="tab-more" id="tab-more" aria-haspopup="true" aria-expanded="false">More ▾</button>
   </nav>
   <div class="tab-menu" id="tab-menu" hidden>
     <button type="button" data-tab="when">When to go</button>
+    <button type="button" data-tab="weather">Weather</button>
     <button type="button" data-tab="timeofday">Time of day</button>
     <button type="button" data-tab="explore">Explore</button>
     <button type="button" data-tab="walks">Walking times</button>
+    <button type="button" data-tab="about">About the data</button>
   </div>
   <div class="qt-panel" role="tabpanel" id="panel-wizard" aria-labelledby="tab-wizard">
   <div id="wz-stepper" class="qt-chipgroup" style="margin:var(--cds-gap-md) 0 var(--cds-gap-sm)"></div>
@@ -128,7 +131,7 @@ window.addEventListener('error', (e) => {
     </div>
     <div class="qt-controls">
       <label><input type="checkbox" id="wz-b2b"> Allow repeat rides back to back (otherwise at least an hour apart)</label>
-      <label class="qt-walk">Shorter waits <input type="range" id="wz-walk" min="0" max="4" step="1" value="2" aria-label="Shorter waits or fewer steps"> Fewer steps</label><span class="qt-walkhint" id="wz-walk-hint" aria-live="polite"></span>
+      <div class="qt-walkrow"><label class="qt-walk">Shorter waits <input type="range" id="wz-walk" min="0" max="4" step="1" value="2" aria-label="Shorter waits or fewer steps"> Fewer steps</label><span class="qt-walkhint" id="wz-walk-hint" aria-live="polite"></span></div>
     </div>
     <p class="qt-note">Start, finish, the midday break and the waits or steps slider are starting points; you can change them for each day later. A day that starts after lunch or finishes by 4 pm skips the break.</p>
   </section>
@@ -209,7 +212,7 @@ window.addEventListener('error', (e) => {
     <p class="qt-seth">Rides and lines</p>
     <div class="qt-controls">
       <label><input type="checkbox" id="dp-b2b"> Allow repeat rides back to back (otherwise at least an hour apart)</label>
-      <label class="qt-walk">Shorter waits <input type="range" id="dp-walk" min="0" max="4" step="1" value="2" aria-label="Shorter waits or fewer steps"> Fewer steps</label><span class="qt-walkhint" id="dp-walk-hint" aria-live="polite"></span>
+      <div class="qt-walkrow"><label class="qt-walk">Shorter waits <input type="range" id="dp-walk" min="0" max="4" step="1" value="2" aria-label="Shorter waits or fewer steps"> Fewer steps</label><span class="qt-walkhint" id="dp-walk-hint" aria-live="polite"></span></div>
     </div>
     <p class="qt-note">Tap a picked ride again to do it more than once (up to 3 times a day). Press and hold a ride to take it off.</p>
     <div class="qt-chipgroup" id="dp-rides" style="margin-bottom:var(--cds-gap-sm)"></div>

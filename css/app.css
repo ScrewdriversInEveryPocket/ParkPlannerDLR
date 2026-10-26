@@ -328,4 +328,6 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
 .qt-warn { color: var(--color-fg); }
 .qt-warn:has(.qt-btn) { background: color-mix(in srgb, var(--sun) 16%, var(--color-panel)); border: 2px solid var(--sun); border-radius: 14px; padding: 12px 16px; }
 .qt-chip.closed, .qt-chip.closed:hover { opacity: .5; cursor: not-allowed; border-style: dotted; } .qt-chip.closed .dclosed { font-weight: 600; }
-.qt-walkhint { display: block; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-top: var(--cds-gap-xs); }
+/* the waits-vs-steps slider and its help line: a full-width row, with room kept for two lines so nothing below moves as the text changes */
+.qt-walkrow { flex: 1 1 100%; width: 100%; }
+.qt-walkhint { display: block; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-top: var(--cds-gap-xs); min-height: 2.8em; line-height: 1.4; }

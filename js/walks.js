@@ -76,7 +76,16 @@ const paceWalk = (S = dpState) => WALK_SPEED / (PACE_SPEED[S.pace] || WALK_SPEED
 const WALK_LABEL = ['shortest waits first', 'shorter waits first', 'balanced waits and steps', 'fewer steps first', 'fewest steps first'];
 const walkPref = (v) => WALK_LABEL[v == null ? 2 : v];
 // minutes at normal pace between two places (null = the park gate)
+// walks between two places (not the gate) never change, so they're remembered per pair (the scheduler asks the same ones a lot)
+const WALK_MEMO = new WeakMap();
 function walkMin(park, from, to, gates) {
+  if (from && to && typeof from === 'object' && typeof to === 'object') {
+    let m = WALK_MEMO.get(from); if (!m) WALK_MEMO.set(from, m = new Map());
+    let v = m.get(to); if (v === undefined) m.set(to, v = walkMin0(park, from, to)); return v;
+  }
+  return walkMin0(park, from, to, gates);
+}
+function walkMin0(park, from, to, gates) {
   const a = posOf(park, from, 'exit', gates), b = posOf(park, to, 'ent', gates);
   if (a && b) return Math.max(1, Math.round(distM(a, b) * PATH_WIND / WALK_SPEED));
   const la = from ? from.land : 'Entrance', lb = to ? to.land : 'Entrance';
