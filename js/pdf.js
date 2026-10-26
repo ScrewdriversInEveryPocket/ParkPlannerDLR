@@ -83,7 +83,7 @@ async function pdfSave(doc, name, title) {
 function dayHeadLines(ctx, P) {
   const wx = `${ctx.fc ? `forecast (${ctx.fc.src}): ${ctx.fc.conditions}, ` : 'typical '}high ${f0(Number(ctx.wxd.avg_high_f))}°F, ${f0(Number(ctx.wxd.rain_chance_pct))}% chance of rain`;
   const hrs = P.hop ? ['Disneyland', 'California Adventure'].map(p => `${p} ${fmtClock(P.H.ctxs[p].open)}-${fmtClock(P.H.ctxs[p].close % 24)}`).join(' · ') :
-    `${ctx.published ? 'Published' : 'Typical'} hours ${fmtClock(ctx.open)}-${fmtClock(ctx.close % 24)}`;
+    `${ctx.hoursSrc === 'live' ? 'Live' : ctx.published ? 'Published' : 'Typical'} hours ${fmtClock(ctx.open)}-${fmtClock(ctx.close % 24)}`;
   return [`${hrs} · sunset ${fmtClock(ctx.sunset)} · ${wx}`];
 }
 const kindOf = (P, ctx) => P.hop ? 'hop' : ctx.park === 'Disneyland' ? 'dl' : 'dca';

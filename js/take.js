@@ -65,7 +65,7 @@ function planItems(kind) {
   return { kind, title, items, llp: head[0], ctx };
 }
 function planText(pi) {
-  const L = [pi.title, `${pi.ctx.published ? 'Published' :
+  const L = [pi.title, `${pi.ctx.hoursSrc === 'live' ? 'Live' : pi.ctx.published ? 'Published' :
       'Typical'} hours ${fmtClock(pi.ctx.open)}–${fmtClock(pi.ctx.close % 24)} · sunset ${fmtClock(pi.ctx.sunset)} ` +
       `· high ${f0(Number(pi.ctx.wxd.avg_high_f))}°F · ${f0(Number(pi.ctx.wxd.rain_chance_pct))}% chance of rain`,
     ''];

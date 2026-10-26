@@ -174,4 +174,99 @@
   }
   window.PDP_refreshForecast = refreshForecast;
   if (!window.PDP_NO_FORECAST) window.addEventListener('DOMContentLoaded', refreshForecast);
+
+  // ---- live park hours, and today's showtimes, from ThemeParks.wiki (free, no key). Called live in the background, kept
+  // in this browser for up to 12 hours, never bundled into the app's files. Only dates it covers use it; on any failure,
+  // offline, or with bad-looking hours, the app quietly uses the bundled hours and showtimes. Off in the tests (PDP_NO_FORECAST).
+  // PDP_LIVE: { status: 'off' | 'loading' | 'ok' | 'error', at: when it was fetched (ms), hours: { park: { iso: { open, close } } },
+  // shows: { park: { iso: [{ name, times: [hour] }] } } }; hours are on the park's clock, past midnight as 24+.
+  const TPW = 'https://api.themeparks.wiki/v1/entity/', LIVE_KEY = 'pdp-live', LIVE_TTL = 12 * 3600e3;
+  // entity ids from https://api.themeparks.wiki/v1/destinations (Disneyland Resort), looked up once
+  const TPW_IDS = { 'Disneyland': '7340550b-c14d-4def-80bb-acdb51d49a66', 'California Adventure': '832fcd51-ea19-4e77-85c7-75d5843b127c' };
+  window.PDP_LIVE = { status: 'off', at: null, hours: {}, shows: {} };
+  // "2026-10-26T22:00:00-07:00" read against the day it belongs to: 22, or 25 for 1 am the next day
+  const isoDay = (s) => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10));
+  function clockOf(t, iso) {
+    const m = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})/.exec(String(t || '')); if (!m) return NaN;
+    return (isoDay(m[1]) - isoDay(iso)) / 864e5 * 24 + Number(m[2]) + Number(m[3]) / 60;
+  }
+  // only hours that make sense: open 5 am to 2 pm, close at least 3 h later and by 3 am, under 20 h in all
+  const saneHours = (o, c) => isFinite(o) && isFinite(c) && o >= 5 && o <= 14 && c >= o + 3 && c <= 27 && c - o <= 20;
+  function readSchedule(j) {
+    const out = {};
+    (j && j.schedule || []).filter(r => r.type === 'OPERATING' && /^\d{4}-\d{2}-\d{2}$/.test(r.date)).forEach(r => {
+      const o = clockOf(r.openingTime, r.date), c = clockOf(r.closingTime, r.date); if (!saneHours(o, c)) return;
+      const was = out[r.date]; out[r.date] = was ? { open: Math.min(was.open, o), close: Math.max(was.close, c) } : { open: o, close: c };
+    });
+    Object.keys(out).forEach(d => { if (!saneHours(out[d].open, out[d].close)) delete out[d]; });
+    return out;
+  }
+  function readShows(j) {
+    const out = {};
+    (j && j.liveData || []).filter(x => x.entityType === 'SHOW' && Array.isArray(x.showtimes) && x.name).forEach(x => {
+      x.showtimes.filter(s => s && s.type === 'Performance Time' && s.startTime).forEach(s => {
+        const d = String(s.startTime).slice(0, 10), t = clockOf(s.startTime, d); if (!isFinite(t) || t < 5 || t > 27) return;
+        const L = out[d] = out[d] || [], o = L.find(y => y.name === x.name) || (L.push({ name: String(x.name), times: [] }), L[L.length - 1]);
+        if (!o.times.includes(t)) o.times.push(t);
+      });
+    });
+    return out;
+  }
+  async function getJSON(u) {
+    const ac = new AbortController(), to = setTimeout(() => ac.abort(), 8000);
+    try { const r = await fetch(u, { signal: ac.signal, cache: 'no-store' }); if (!r.ok) throw new Error('HTTP ' + r.status); return await r.json(); } finally { clearTimeout(to); }
+  }
+  async function refreshLive() {
+    const L = window.PDP_LIVE;
+    let cached = null; try { cached = JSON.parse(localStorage.getItem(LIVE_KEY) || 'null'); } catch (e) { cached = null; }
+    const fresh = cached && cached.at && Date.now() - cached.at >= 0 && Date.now() - cached.at < LIVE_TTL && cached.hours;
+    if (fresh) { Object.assign(L, { status: 'ok', at: cached.at, hours: cached.hours, shows: cached.shows || {} }); version++; run(); return; }
+    L.status = 'loading';
+    try {
+      const hours = {}, shows = {}, parks = Object.keys(TPW_IDS);
+      await Promise.all(parks.map(async (p) => {
+        hours[p] = readSchedule(await getJSON(TPW + TPW_IDS[p] + '/schedule'));
+        // showtimes are a bonus: without them the bundled ones stay
+        try { shows[p] = readShows(await getJSON(TPW + TPW_IDS[p] + '/live')); } catch (e) { shows[p] = {}; }
+      }));
+      if (!parks.some(p => Object.keys(hours[p]).length)) throw new Error('no usable hours');
+      Object.assign(L, { status: 'ok', at: Date.now(), hours, shows });
+      try { localStorage.setItem(LIVE_KEY, JSON.stringify({ at: L.at, hours, shows })); } catch (e) { /* storage full or blocked: fine */ }
+    } catch (e) { Object.assign(L, { status: 'error', at: null, hours: {}, shows: {} }); console.warn('Live park hours unavailable, using the bundled hours', e); }
+    version++; run();
+  }
+  // live hours for a date and park, or null (then the bundled hours are used)
+  window.PDP_liveHours = (iso, park) => { const L = window.PDP_LIVE; const h = L.status === 'ok' && L.hours[park] && L.hours[park][iso];
+    return h && saneHours(h.open, h.close) ? h : null; };
+  // ---- US public holidays from Nager.Date (free, no key), for the long-weekend warning. Called in the background, kept in
+  // this browser for up to 30 days; offline or on any failure the app works them out from the usual rules (usHolidays in js/day.js).
+  // PDP_HOLIDAYS: { status, at, years: { 2027: [{ date, name }] } }, federal holidays only, on the day they're observed.
+  const HOL_KEY = 'pdp-holidays', HOL_TTL = 30 * 864e5;
+  window.PDP_HOLIDAYS = { status: 'off', at: null, years: {} };
+  async function refreshHolidays() {
+    const H = window.PDP_HOLIDAYS, y0 = new Date().getFullYear(), want = [y0, y0 + 1];
+    let cached = null; try { cached = JSON.parse(localStorage.getItem(HOL_KEY) || 'null'); } catch (e) { cached = null; }
+    if (cached && cached.at && Date.now() - cached.at >= 0 && Date.now() - cached.at < HOL_TTL && cached.years && want.every(y => cached.years[y])) {
+      Object.assign(H, { status: 'ok', at: cached.at, years: cached.years }); version++; run(); return;
+    }
+    H.status = 'loading';
+    try {
+      const years = {};
+      await Promise.all(want.map(async (y) => {
+        const j = await getJSON(`https://date.nager.at/api/v3/PublicHolidays/${y}/US`);
+        const L = (Array.isArray(j) ? j : []).filter(h => h && h.global && /^\d{4}-\d{2}-\d{2}$/.test(h.date) && h.date.slice(0, 4) === String(y) && h.localName)
+          .map(h => ({ date: h.date, name: String(h.localName) }));
+        // a US year has about 11 federal holidays; anything far off is a bad answer
+        if (L.length < 8 || L.length > 15) throw new Error('unexpected holiday list for ' + y);
+        years[y] = L.filter((h, i) => L.findIndex(x => x.date === h.date) === i);
+      }));
+      Object.assign(H, { status: 'ok', at: Date.now(), years });
+      try { localStorage.setItem(HOL_KEY, JSON.stringify({ at: H.at, years })); } catch (e) { /* fine */ }
+    } catch (e) { Object.assign(H, { status: 'error', at: null, years: {} }); console.warn('Holidays unavailable, working them out instead', e); }
+    version++; run();
+  }
+  window.PDP_refreshHolidays = refreshHolidays;
+  if (!window.PDP_NO_FORECAST) window.addEventListener('DOMContentLoaded', refreshHolidays);
+  window.PDP_refreshLive = refreshLive;
+  if (!window.PDP_NO_FORECAST) window.addEventListener('DOMContentLoaded', refreshLive);
 })();

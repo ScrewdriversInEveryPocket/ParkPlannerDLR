@@ -9,7 +9,7 @@ The Disneyland Resort Planning Tool by ScrewdriversInEveryPocket ("DLR Planner" 
 | `index.html` | The page: all the markup (tabs, wizard steps, dialogs), then the script tags in load order. |
 | `css/app.css` | All the styles, light and dark. |
 | `js/*.js` | The app's code, as plain scripts (no modules, so it still opens straight from the folder). See **Where the code lives**. |
-| `shim.js` | Data layer (`window.dash`). It parses and checks each dataset, runs calcs, and fetches the live forecast. |
+| `shim.js` | Data layer (`window.dash`). It parses and checks each dataset, runs calcs, and fetches the live forecast, live park hours (ThemeParks.wiki) and US public holidays (Nager.Date). |
 | `data/*.js` | One bundled dataset per file. Each has CSV text plus a header: source, `pulled`, `until`, `review`, `columns`. |
 | `data/manifest.js` | Lists every data file. Both `index.html` and `sw.js` read it. |
 | `version.js` | The app's only version label: the date and which version of that day (`2026/10/26 - v1`, back to v1 each new day; plain `pdp-vNN` up to v54). Raise it whenever any file changes: `sw.js` uses it to refresh the offline cache, and the page shows it at the top. |
@@ -62,11 +62,11 @@ Follow **[UPDATING.md](UPDATING.md)**. If you're asked to "update all the data" 
 
 ## Rules
 
-- **No new outside calls.** The only runtime network calls allowed are for the weather forecast: Open-Meteo, or Xweather with the user's own keys. Everything else is bundled into `data/`.
+- **No outside calls for features that don't have an offline fallback.** Every feature must still work offline from what's bundled in `data/`. Runtime calls today: the weather forecast (Open-Meteo, or Xweather with the user's own keys) , live park hours and today's showtimes from ThemeParks.wiki, and US public holidays from Nager.Date (all in `shim.js`); each falls back to the bundled data on any failure.
 - **Sources we don't use:**
   - Don't use TouringPlans; its terms ban automated access.
   - Don't get around Queue-Times' Cloudflare bot check or scrape it in bulk.
-  - Never bundle or call ThemeParks.wiki; its terms forbid bundling.
+  - ThemeParks.wiki: call it live only (hours and showtimes), cache briefly in the browser (12 h), and never bundle its data into the app's files; its terms forbid bundling.
 - **OpenStreetMap credit.** The data in `data/park_places.js` is © OpenStreetMap contributors under the ODbL. Keep that credit in the app (Plan a day card, wizard day pages, PDF footers, About) and in the README.
 - **Back up before editing.** Copy files to `_BACKUP/<date>-<change>/` first.
 - **Never commit or push without the owner's go-ahead.**

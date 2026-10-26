@@ -290,9 +290,14 @@ function tonightShows(iso, ctxs) {
       if (md >= r.from_md && md <= r.to_md && dayOk && close >= Number(r.min_close)) add(r.park, r.name, r.times.split(';').map(x => tm(x, close)));
     });
   }
+  // today's times live from ThemeParks.wiki (shim.js), for the shows already listed (it also lists roaming acts we leave out)
+  const key = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, ''), L = window.PDP_LIVE || {};
+  let live = false;
+  if (L.status === 'ok') by.forEach(o => { const day = L.shows && L.shows[o.park] && L.shows[o.park][iso]; const m = day && day.find(x => key(x.name) === key(o.name));
+    if (m) { const ts = m.times.filter(t => t >= 17 - 1e-9).map(t => ({ t })); if (ts.length) { o.times = ts; live = true; } } });
   const list = [...by.values()].filter(o => o.times.length).map(o => Object.assign(o, {
         times: o.times.filter((x, i, a) => a.findIndex(y => y.t === x.t) === i).sort((a, b) => a.t - b.t) })).sort((a, b) => a.times[0].t - b.times[0].t);
-  return { list, est: !covered };
+  return { list, est: !covered && !live, live };
 }
 function tonightText(iso, ctxs) {
   const T = tonightShows(iso, ctxs); if (!T.list.length) return null;
@@ -301,7 +306,7 @@ function tonightText(iso, ctxs) {
   const one = (o) => `${o.name}${both ? ` (${o.park})` : ''} ${o.times.length > 2 ? o.times.slice(0,
       -1).map(at).join(', ') + ' and ' + at(o.times[o.times.length - 1]) : o.times.map(at).join(' and ')}`;
   return { t: T.list[0].times[0].t, lines: T.list.map(one), text: `Tonight, if you still have energy: ${T.list.map(one).join('; ')}.`,
-    note: T.est ? "Typical times, our estimate: Disney hasn't published showtimes for this date yet, so check the Disneyland app." :
+    note: T.live ? 'Showtimes live from ThemeParks.wiki for today; they can change, so check the Disneyland app.' : T.est ? "Typical times, our estimate: Disney hasn't published showtimes for this date yet, so check the Disneyland app." :
     "Showtimes from Disney's calendar; they can change, so check the Disneyland app on the day." };
 }
 const tonightCtxs = (L) => L.P.hop ? L.P.H.ctxs : { [L.ctx.park]: L.ctx };
@@ -344,8 +349,9 @@ function drawHopperDay(D) {
     ctx.fc ? `forecast: ${ctx.fc.conditions}, high ${f0(ctx.fc.high)}°F, ${f0(Number(ctx.wxd.rain_chance_pct))}% chance of rain` :
     `high ${f0(Number(ctx.wxd.avg_high_f))}°F, ${f0(Number(ctx.wxd.rain_chance_pct))}% chance of rain`].join(' · ');
   wxBadge(document.getElementById('dp-wxsrc'), ctx);
+  document.getElementById('dp-hrsrc').textContent = hoursSrcLine([dl, dca]);
   const warn = document.getElementById('dp-warn'); warn.textContent = '';
-  const notes = [], seen = new Set();
+  const notes = longWeekendNotes(ctx.iso, ctx.iso), seen = new Set();
   [dl, dca].forEach(c => {
     c.evs.forEach(e => { const n = `${e.name}: ${e.notes}`; if (!seen.has(n)) { seen.add(n); notes.push(n); } });
     notes.push(...closedNotes(c, true));
@@ -454,14 +460,15 @@ function drawDay() {
   const dateLbl = new Date(Date.UTC(ctx.Y, ctx.M - 1, ctx.Dd)).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
   const busy = ctx.weekFactor * d3.mean(pool.length ? pool : ctx.rides, r => r.mf * r.df);
   const busyTxt = busy > 1.08 ? 'busier than a typical day' : busy < 0.92 ? 'quieter than a typical day' : 'about average';
-  const bits = [`${wd}, ${dateLbl}`, `${ctx.published ? 'published' : 'typical'} hours ${fmtClock(ctx.open)}–${fmtClock(ctx.close % 24)}`,
+  const bits = [`${wd}, ${dateLbl}`, `${ctx.hoursSrc === 'live' ? 'live' : ctx.published ? 'published' : 'typical'} hours ${fmtClock(ctx.open)}–${fmtClock(ctx.close % 24)}`,
     `sunset ${fmtClock(ctx.sunset)}`,
     ctx.fc ? `forecast: ${ctx.fc.conditions}, high ${f0(ctx.fc.high)}°F, ${f0(Number(ctx.wxd.rain_chance_pct))}% chance of rain` :
     `high ${f0(Number(ctx.wxd.avg_high_f))}°F`, ctx.fc ? null : `${f0(Number(ctx.wxd.rain_chance_pct))}% chance of rain`, `waits ${busyTxt}`].filter(Boolean);
   info.textContent = bits.join(' · ');
   wxBadge(document.getElementById('dp-wxsrc'), ctx);
+  document.getElementById('dp-hrsrc').textContent = hoursSrcLine(ctx);
   const warn = document.getElementById('dp-warn'); warn.textContent = '';
-  const notes = [];
+  const notes = longWeekendNotes(ctx.iso, ctx.iso);
   ctx.evs.forEach(e => notes.push(`${e.name}: ${e.notes}`));
   notes.push(...closedNotes(ctx));
   notes.push(...dataNotes(ctx));

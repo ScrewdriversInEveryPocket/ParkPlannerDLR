@@ -121,6 +121,8 @@ function wzRenderPlan(box, iso, opt, day, D) {
     mk('p', 'qt-dayinfo').textContent = `${hoursTxt} · sunset ${fmtClock(c0.sunset)} · ${c0.fc ?
       `forecast: ${c0.fc.conditions}, high ${f0(c0.fc.high)}°F, ${f0(Number(c0.wxd.rain_chance_pct))}% rain` :
       `typical high ${f0(Number(c0.wxd.avg_high_f))}°F, ${f0(Number(c0.wxd.rain_chance_pct))}% rain`}`;
+    mk('p', 'qt-wxsrc').textContent = hoursSrcLine(opt.parks.map(p => ctxs[p]));
+    longWeekendNotes(iso, iso).forEach(n => { mk('p', 'qt-note').textContent = '⚠️ ' + n; });
     c0.evs.forEach(e => { mk('p', 'qt-note').textContent = `${e.name}: ${e.notes}`; });
     [...new Set(opt.parks.flatMap(p => dataNotes(ctxs[p])))].forEach(n => { mk('p', 'qt-note').textContent = n; });
     { const sn = shortNote(pickedOf(Object.values(ctxs), cfg)); if (sn) mk('p', 'qt-note').textContent = sn; }

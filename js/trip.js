@@ -220,6 +220,7 @@ function drawTrip() {
     show.parts.forEach(p => lines.push(`${p.park === 'Disneyland' ? 'DL' : 'DCA'} ${fmtClock(p.ctx.open)}–${fmtClock(p.ctx.close % 24)} · ~${f0(p.wait)} min avg wait`));
     lines.push((m0.ctx.fc ? `Forecast (${m0.ctx.fc.src}): ${m0.ctx.fc.conditions}, ` : 'Typical: ') + `high ${f0(Number(m0.ctx.wxd.avg_high_f))}°F · ${f0(Number(m0.ctx.wxd.rain_chance_pct))}% rain`);
     lines.push(m0.price != null ? `1‑day ticket $${f0(m0.price)} (tier ${m0.tier})` : '1‑day price not published yet');
+    longWeekendNotes(iso, iso).forEach(n => lines.push('⚠️ ' + n));
     show.parts.forEach(p => { if (p.early) lines.push('DCA early‑close party night'); if (p.closedNames.length) lines.push('Closed or often closed: ' + p.closedNames.join(', ')); });
     if (!pick) lines.push('Pool time, a nap, or a day out' + (dOpts[i].length > 1 ? `. Best park if you go: ${bestOpt.label}` : ''));
     lines.forEach(t => { const d = document.createElement('div'); d.textContent = t; facts.append(d); });
@@ -329,7 +330,8 @@ function drawTripCards(shown, wins, dates) {
       `Check out ${fmtShort(checkout)} by ${fmtClock(hhmm(tpState.outT))}`,
       `~${f0(d3.mean(w.pick, o => o.m.wait))} min avg wait · highs ${f0(d3.mean(w.pick, o => Number(o.parts[0].ctx.wxd.avg_high_f)))}°F · ${f0(d3.mean(w.pick, o => o.m.rain))}% rain`,
       (() => { const ps = w.pick.map(o => o.m.price).filter(v => v != null); return ps.length === w.pick.length ? `1‑day tickets avg $${f0(d3.mean(ps))}` : null; })(),
-      (() => { const ev = [...new Set(w.pick.flatMap(o => o.parts.flatMap(p => p.ctx.evs.map(e => e.name))))]; return ev.length ? ev.join(', ') : null; })()
+      (() => { const ev = [...new Set(w.pick.flatMap(o => o.parts.flatMap(p => p.ctx.evs.map(e => e.name))))]; return ev.length ? ev.join(', ') : null; })(),
+      (() => { const n = longWeekendNotes(checkin, checkout); return n.length ? '⚠️ ' + n.join(' ') : null; })()
     ].filter(Boolean);
     lines.forEach(x => { const d = document.createElement('div'); d.textContent = x; ul.append(d); });
     const b = document.createElement('button'); b.type = 'button'; b.className = w.start === tpState.start ? 'qt-chip' : 'qt-btn';

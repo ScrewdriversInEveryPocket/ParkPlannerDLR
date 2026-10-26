@@ -2,7 +2,7 @@
 
 Plan a Disneyland Resort trip around quieter days, better weather and shorter lines. This planner (DLR Planner once installed) picks your best dates, chooses which days to spend in which park, and builds a ride-by-ride schedule for each day, with Lightning Lane order, meal ideas, restaurant booking reminders and a printable PDF.
 
-It runs entirely in your browser. There's no account, no install and no tracking, and once it's loaded it works offline (except the live weather forecast).
+It runs entirely in your browser. There's no account, no install and no tracking, and once it's loaded it works offline (the live weather forecast, park hours and holidays fall back to built-in data).
 
 > **Unofficial.** This is a fan-made tool and is not affiliated with, endorsed by or connected to Disney. Wait times and crowds are estimates from historical data, not promises.
 
@@ -244,9 +244,11 @@ Pick any two spots (rides, restaurants, shows, restrooms, park gates or a hotel;
 ## Settings, saving and privacy
 
 - **Settings** (top of the page) holds the optional weather keys and Reset. Your hotel and Lightning Lane choices are on the first page of the Trip wizard and are used by every tab.
-- Your choices (sliders, rides, hotel, trip dates and settings) are saved **in your browser only**, on that device. Nothing is sent anywhere. The only thing the app downloads is the weather forecast. **Settings → Reset saved settings** clears them.
+- Your choices (sliders, rides, hotel, trip dates and settings) are saved **in your browser only**, on that device. Nothing is sent anywhere. The only things the app downloads are the weather forecast, live park hours and showtimes (ThemeParks.wiki) and US public holidays (Nager.Date); no personal data is sent. **Settings → Reset saved settings** clears them.
 - The live forecast uses [Open-Meteo](https://open-meteo.com) by default, with no key needed. If you have a [Vaisala Xweather](https://www.xweather.com) account you can enter your own client ID and secret in **Settings** to use it instead. Keys stay in your browser. If you host a public copy, don't build your keys into it.
 - Outside the forecast range, or offline, weather falls back to 10-year averages.
+- **Live park hours:** park hours for about the next month, and today's evening showtimes, come live from [ThemeParks.wiki](https://themeparks.wiki), checked in the background and kept in your browser for up to 12 hours. Each plan says where its hours came from ("Hours: live from ThemeParks.wiki (checked 3:10 pm)"). Offline, or for later dates, the plan uses Disney's published calendar or typical hours instead.
+- **Long-weekend warning:** when a Plan a day date, or your trip's dates, touch a US holiday long weekend (a Monday or Friday holiday with its weekend, or a Tuesday or Thursday one with the day between) or a Southern California school break, the plan says so: "Presidents' Day long weekend (Sat Feb 13 to Mon Feb 15): expect bigger crowds." Holidays come from [Nager.Date](https://date.nager.at), kept in your browser for 30 days; offline they're worked out from the federal rules.
 
 ---
 
@@ -262,9 +264,11 @@ Pick any two spots (rides, restaurants, shows, restrooms, park gates or a hotel;
 | Restrooms | [Disney's restroom map](https://disneyland.disney.go.com/guest-services/restrooms/), read Oct 26, 2026 |
 | Restaurants, lands, park gates, Lightning Lane rules | Compiled by hand from Disney's listings and [MickeyVisit](https://www.mickeyvisit.com)'s 2026 Lightning Lane guide; the gates, land map and hotel walking times (`data/hotels.js`, routed on OpenStreetMap paths) are our own estimates |
 | Live forecast | [Open-Meteo](https://open-meteo.com), or [Vaisala Xweather](https://www.xweather.com) with your own keys |
+| Live park hours and today's showtimes | [ThemeParks.wiki](https://themeparks.wiki) (api.themeparks.wiki), called live and never built into the app |
+| US public holidays (long weekends) | [Nager.Date](https://date.nager.at), called live; offline, worked out from the federal rules |
 | Ride, restaurant and show locations | © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), extracted Oct 25, 2026 and built into the app as `data/park_places.js`. Each ride's entrance and exit are our best guess from the doors mapped on its building; [ThemeParks.wiki](https://www.themeparks.wiki/)'s published ride locations were used once, by hand, as a reference to choose between doors. None of their data is in the app and the app never contacts them. |
 
-The historical data is a snapshot from October 2026 and doesn't update by itself; only the forecast is live. When you plan a day past what a dataset covers (Disney's published hours, announced event dates, announced refurbishments), the planner falls back to typical values and says so on that day's plan. Walks run from one ride's exit to the next ride's entrance, as a straight line stretched for winding paths, so they're approximate; a restaurant without a location falls back to a simpler land-by-land map. Dates past Disney's published hours use the typical schedule.
+The historical data is a snapshot from October 2026 and doesn't update by itself; only the forecast and park hours are live. When you plan a day past what a dataset covers (Disney's published hours, announced event dates, announced refurbishments), the planner falls back to typical values and says so on that day's plan. Walks run from one ride's exit to the next ride's entrance, as a straight line stretched for winding paths, so they're approximate; a restaurant without a location falls back to a simpler land-by-land map. Dates past Disney's published hours use the typical schedule.
 
 ---
 

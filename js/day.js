@@ -14,11 +14,12 @@ function dayContext(iso, park, D) {
   const js = new Date(Date.UTC(Y, M - 1, Dd));
   const dow = js.getUTCDay(), wkN = weekOf(M, Dd), monName = MONTHS[M - 1];
   const wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dow];
-  // Disney's published hours for this exact date when we have them, else the matching 2025 day
+  // live hours (ThemeParks.wiki, see shim.js) for this date when we have them, then Disney's published hours, else the matching 2025 day
+  const live = window.PDP_liveHours ? window.PDP_liveHours(iso, park) : null;
   const pub = D.park_hours_published.find(r => r.date === iso && r.park === park);
   const hrs = D.park_hours_2025.filter(r => r.park === park);
   let an = pub || hrs.find(r => Number(r.week) === wkN && r.weekday === wd) || hrs.filter(r => r.weekday === wd && r.date.slice(5, 7) === pad2(M))[0] || hrs[0];
-  const open = Number(an.open), close = Number(an.close);
+  const open = live ? live.open : Number(an.open), close = live ? live.close : Number(an.close);
   const wx = new Map(D.weather_by_hour.filter(r => Number(r.week) === wkN).map(r => [Number(r.hour), { feels: Number(r.feels_like_f), rain: Number(r.rain_chance_pct) }]));
   const wxd = Object.assign({}, D.weather_by_week.find(r => Number(r.week) === wkN) || {});
   const sun = D.sun_by_week.find(r => Number(r.week) === wkN) || {};
@@ -71,7 +72,7 @@ function dayContext(iso, park, D) {
   } else fc.src = (window.PDP_FC_SRC || 'Live');
   // how busy the day is against a typical one (1 = typical), from the ride wait factors
   const crowd = weekFactor * (d3.mean(rides, r => r.mf * r.df) || 1);
-  return { crowd, iso, Y, M, Dd, dow, wkN, monName, open, close, analog: an.date, published: !!pub, hoursNote: pub ? pub.note : '', refurbs, wx, wxd,
+  return { crowd, iso, Y, M, Dd, dow, wkN, monName, open, close, analog: an.date, published: !!(pub || live), hoursSrc: live ? 'live' : pub ? 'published' : 'typical', hoursNote: pub ? pub.note : '', refurbs, wx, wxd,
     sunset: Number(sun.sunset_hour), weekFactor, walkBusy, evs, closedSet, rides, park, fc };
 }
 // Warning lines for closures: announced refurbishments first, then rides often closed that month
@@ -91,6 +92,50 @@ function dataNotes(ctx) {
   add('events', ctx.evs.length > 0);
   add('refurbs', true);
   return out;
+}
+// ---------- long weekends ----------
+// US federal holidays for a year, on the day they're observed: from Nager.Date when it answered (shim.js), else worked out
+// from the usual rules, so it works offline. [{ date: 'YYYY-MM-DD', name }]
+const isoOf = (d) => d.toISOString().slice(0, 10), dayUTC = (iso) => new Date(iso + 'T00:00:00Z'), addDays = (iso, n) => isoOf(new Date(dayUTC(iso).getTime() + n * 864e5));
+const HOL_NAMES = { "Washington's Birthday": "Presidents' Day", 'Martin Luther King, Jr. Day': 'MLK Day', 'Juneteenth National Independence Day': 'Juneteenth',
+  'Thanksgiving Day': 'Thanksgiving', 'Christmas Day': 'Christmas', "New Year's Day": "New Year's" };
+function usHolidays(y) {
+  const H = window.PDP_HOLIDAYS, got = H && H.status === 'ok' && H.years[y];
+  if (got) return got.map(h => ({ date: h.date, name: HOL_NAMES[h.name] || h.name }));
+  // nth weekday (0 Sun..6 Sat) of a month, n = -1 for the last
+  const nth = (m, wd, n) => { if (n < 0) { const d = new Date(Date.UTC(y, m, 0)); d.setUTCDate(d.getUTCDate() - (d.getUTCDay() - wd + 7) % 7); return isoOf(d); }
+    const d = new Date(Date.UTC(y, m - 1, 1)); d.setUTCDate(1 + (wd - d.getUTCDay() + 7) % 7 + (n - 1) * 7); return isoOf(d); };
+  // a fixed date on a Saturday is observed the Friday before, on a Sunday the Monday after
+  const fixed = (m, d) => { const iso = `${y}-${pad2(m)}-${pad2(d)}`, w = dayUTC(iso).getUTCDay(); return w === 6 ? addDays(iso, -1) : w === 0 ? addDays(iso, 1) : iso; };
+  return [[fixed(1, 1), "New Year's"], [nth(1, 1, 3), 'MLK Day'], [nth(2, 1, 3), "Presidents' Day"], [nth(5, 1, -1), 'Memorial Day'], [fixed(6, 19), 'Juneteenth'],
+    [fixed(7, 4), 'Independence Day'], [nth(9, 1, 1), 'Labor Day'], [nth(10, 1, 2), 'Columbus Day'], [fixed(11, 11), 'Veterans Day'], [nth(11, 4, 4), 'Thanksgiving'],
+    [fixed(12, 25), 'Christmas']].map(([date, name]) => ({ date, name }));
+}
+// "Presidents' Day long weekend (Sat Feb 13 to Mon Feb 15): expect bigger crowds." for every long weekend, and Southern
+// California school break (from the bundled holidays data), that touches the dates from..to (YYYY-MM-DD)
+function longWeekendNotes(from, to) {
+  const fmt = (iso) => dayUTC(iso).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' }).replace(',', '');
+  const out = [], y0 = +from.slice(0, 4), y1 = +to.slice(0, 4);
+  for (let y = y0 - 1; y <= y1; y++) usHolidays(y).forEach(h => {
+    // a Monday or Friday holiday with its weekend; a Tuesday or Thursday one with the day between it and the weekend
+    const w = dayUTC(h.date).getUTCDay(), span = { 1: [-2, 0], 5: [0, 2], 2: [-3, 0], 4: [0, 3] }[w]; if (!span) return;
+    const a = addDays(h.date, span[0]), b = addDays(h.date, span[1]);
+    if (a <= to && b >= from) out.push(`${h.name} long weekend (${fmt(a)} to ${fmt(b)}): expect bigger crowds.`);
+  });
+  const hol = (window.dash && dash.data('holidays').data) || [];
+  for (let y = y0; y <= y1; y++) hol.filter(r => r.kind === 'school').forEach(r => {
+    const a = `${y}-${r.start}`, b = r.end >= r.start ? `${y}-${r.end}` : `${y + 1}-${r.end}`;
+    if (a <= to && b >= from) out.push(`${r.name}, Southern California schools are out (${fmt(a)} to ${fmt(b)}): expect bigger crowds.`);
+  });
+  return [...new Set(out)];
+}
+// where a day's hours came from, one short line: "Hours: live from ThemeParks.wiki (checked 3:10 pm)."
+function hoursSrcLine(ctxs) {
+  const src = [].concat(ctxs).map(c => c.hoursSrc), L = window.PDP_LIVE || {};
+  if (src.every(s => s === 'live')) return `Hours: live from ThemeParks.wiki (checked ${new Date(L.at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).toLowerCase()}).`;
+  const off = L.status === 'error' ? ' (live hours not available right now)' : L.status === 'loading' ? ' (checking for live hours)' : '';
+  return `Hours: ${src.some(s => s === 'live') ? 'partly live from ThemeParks.wiki, partly ' : ''}${src.every(s => s === 'typical') ? 'typical for this date (Disney hasn\'t published them yet)' :
+      'Disney\'s published calendar'}${off}.`;
 }
 // About the data: every dataset's source, dates and status, plus anything the load checks found
 (function dataStatusTable() {

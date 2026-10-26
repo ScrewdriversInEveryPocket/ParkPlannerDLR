@@ -2,7 +2,7 @@
 
 This guide covers refreshing the DLR Planner's bundled data. It assumes you know nothing about the project except these files. Read **How the data is stored** and **The routine** once. After that, each dataset has its own section below.
 
-The app makes no network calls except the live weather forecast. Everything else is built in, so it only changes when someone follows this guide.
+The app's only network calls are the live weather forecast, live park hours and showtimes (ThemeParks.wiki) and US public holidays (Nager.Date), and each falls back to the bundled data when offline. Everything else is built in, so it only changes when someone follows this guide.
 
 ---
 
@@ -136,8 +136,8 @@ Excel rewrites dates such as `2026-11-05` and `01-01` unless you import every co
 
 - **TouringPlans:** don't use it. Its terms ban automated access.
 - **Queue-Times:** don't get around its Cloudflare bot check, and don't scrape it in bulk. Read pages one at a time at a human pace, or stop.
-- **ThemeParks.wiki:** never bundle its data or call its API. Its terms forbid bundling. It was used once, by hand, as a reference for choosing ride doors.
-- **No new runtime calls.** The only outside calls the app makes are for the weather forecast (Open-Meteo, or Xweather with the user's own keys). Data is bundled, never fetched while the app runs.
+- **ThemeParks.wiki:** never bundle its data into `data/`; its terms forbid bundling. The app calls its API live for park hours and today's showtimes (`shim.js`), keeps the answer in the browser for up to 12 hours, and falls back to the bundled hours. It was also used once, by hand, as a reference for choosing ride doors.
+- **No outside calls for features that don't have an offline fallback.** The app's outside calls are the weather forecast (Open-Meteo, or Xweather with the user's own keys) live park hours and showtimes (ThemeParks.wiki) and US public holidays for the long-weekend warning (Nager.Date; offline they're worked out from the federal rules); each falls back to bundled data. Datasets are bundled, never fetched while the app runs.
 - **OpenStreetMap credit:** OpenStreetMap data is under the ODbL. Keep "© OpenStreetMap contributors" in the app, README and PDFs, and keep `park_places` under the ODbL.
 - **Unofficial dates:** only put official Disney hours in `park_hours_published`. Leave dates out until Disney publishes them; the planner falls back on its own.
 
