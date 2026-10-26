@@ -292,8 +292,9 @@ function planDay0(ctx, pool, S) {
 // get shorter (keeping at least FLEX_BRK_MIN_H at the hotel after the trip each way). Each plan takes whichever way meets
 // the most chosen meal times, then fits the most left-over rides, with the fewest extra minutes, in FLEX_STEP_H steps; on a
 // tie the break is kept, since it's for rest. A chosen meal time that still doesn't fit falls back to whenever fits.
-// The plan that changed gets flex: { kind: 'end' or 'brk', names: rides it made room for, meals: meal times it made room
-// for, from, brk, back }, and mealNote when a meal time had to fall back.
+// The plan that changed gets flex: { kind: 'end' or 'brk', min: minutes added, names: rides it made room for, meals: meal
+// times it made room for, from, brk, back, hotel: minutes at the hotel }, and mealNote when a meal time had to fall back.
+// A plan that was short of time gets flexTried: the ways that were tried ('end', 'brk'), so it can say when even they weren't enough.
 const flexClock = (t) => { const m = Math.round(t * 60); return `${pad2(Math.floor(m / 60) % 24)}:${pad2(m % 60)}`; };
 // later finish times to try, earliest first (none unless the group set a finish time before close)
 function flexEnds(W, close, S) {
@@ -312,7 +313,8 @@ function flexBrks(L0, overhead, S) {
   return out;
 }
 // X0: the plan as it is; run(c): the plan with candidate c's settings (null if it doesn't work); stepsOf / leftOf: its steps
-// and left-over rides; backOf(X): when a break plan is back in the park; auto(S2): the plan again with settings S2.
+// and left-over rides; backOf(X): { back, hotel }, when a break plan is back in the park and its minutes at the hotel;
+// auto(S2): the plan again with settings S2.
 // Returns the plan to use: X0 itself, or a new one with its flex and mealNote.
 function flexFix(X0, S, cands, run, stepsOf, leftOf, backOf, auto) {
   const score = (X) => mealMisses(stepsOf(X), S).length * 1000 + leftOf(X).length, s0 = score(X0);
@@ -330,18 +332,22 @@ function flexFix(X0, S, cands, run, stepsOf, leftOf, backOf, auto) {
     if (!best || n < best.n || (n === best.n && c.min < best.c.min)) best = { X, c, n };
   });
   let X = X0, S1 = S;
+  const tried = ['end', 'brk'].filter(kind => cands.some(c => c.kind === kind));
   if (best) {
     X = best.X; S1 = best.c.S;
     const count = (L) => d3.rollup(L, v => v.length, r => r.park + '|' + r.name), after = count(leftOf(X));
     const missed = mealMisses(stepsOf(X), S), meals = mealMisses(stepsOf(X0), S).filter(k => !missed.includes(k));
-    X.flex = { kind: best.c.kind, names: [...count(leftOf(X0))].filter(([k, n]) => (after.get(k) || 0) < n).map(([k]) => k.split('|')[1]),
-      meals: meals.map(k => ({ kind: k, at: mealAtOf(S, k) })), from: best.c.from, brk: best.c.brk, back: best.c.kind === 'brk' ? backOf(X) : null };
+    const b = best.c.kind === 'brk' ? backOf(X) || {} : {};
+    X.flex = { kind: best.c.kind, min: best.c.min, names: [...count(leftOf(X0))].filter(([k, n]) => (after.get(k) || 0) < n).map(([k]) => k.split('|')[1]),
+      meals: meals.map(k => ({ kind: k, at: mealAtOf(S, k) })), from: best.c.from, brk: best.c.brk, back: b.back != null ? b.back : null,
+      hotel: b.hotel != null ? b.hotel : null };
   }
+  if (tried.length) X.flexTried = tried;
   // a chosen meal time that still doesn't fit: plan that meal whenever it fits best, and say so
   const missed = mealMisses(stepsOf(X), S);
   if (missed.length) {
     const Y = auto(Object.assign({}, S1, Object.fromEntries(missed.map(k => [k + 'At', 'auto']))));
-    if (Y) { if (X.flex) Y.flex = X.flex; X = Y; }
+    if (Y) { if (X.flex) Y.flex = X.flex; if (X.flexTried) Y.flexTried = X.flexTried; X = Y; }
     const brk = X.brk != null ? [X.brk, X.ret] : X.segs ? (h => h ? [h.back - (h.hotel + h.overhead) / 60, h.back] : null)(hopHotel(X, S1)) : null;
     X.mealNote = missed.map(k => { const T = mealAtOf(S, k), why = brk && T >= brk[0] && T <= brk[1] ? 'falls in your break' : T > X.leave ? 'is after you leave' :
         "doesn't fit this day"; return `${k === 'lunch' ? 'Lunch' : 'Dinner'} around ${hourLbl(T)} ${why}, so it's when it fits best.`; }).join(' ');
@@ -362,21 +368,34 @@ function planDay(ctx, pool, S = dpState) {
     const steps = (X) => X.morning.steps.concat(X.evening.steps);
     const brks = flexBrks(P.split.ret - P.split.brk, splitHotel(ctx, P.split, S).overhead, S);
     P.split = flexFix(P.split, S, ends.concat(brks), c => { const Y = planDay0(ctx, pool, c.S).split;
-        return Y && (c.kind !== 'brk' || splitHotel(ctx, Y, S).hotel >= FLEX_BRK_MIN_H * 60 - 1e-9) ? Y : null; }, steps, X => X.left, X => X.ret,
+        return Y && (c.kind !== 'brk' || splitHotel(ctx, Y, S).hotel >= FLEX_BRK_MIN_H * 60 - 1e-9) ? Y : null; }, steps, X => X.left,
+      X => ({ back: X.ret, hotel: splitHotel(ctx, X, S).hotel }),
       S2 => planDay0(ctx, pool, S2).split);
   }
   return P;
 }
-// the note on a plan that got more time: "To fit Space Mountain, you leave at 8:15 pm instead of 7:30 pm."
+// the warning on a plan that got more time, for the "Your day" box and the plan's notes:
+// "Your break is 15 min shorter to fit Space Mountain: 1 h 45 min, with about 1 h 5 min at your hotel, back in the park by 12:45 pm."
+// and, when picked rides still don't fit: "A shorter break (down to about 1 h at your hotel) still wouldn't make room for Goofy's Sky School."
 const flexList = (xs) => xs.length < 2 ? xs.join('') : xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1];
-const flexHours = (h) => { const m = Math.round(h * 60), r = m % 60; return `${Math.floor(m / 60)} h${r ? ` ${r} min` : ''}`; };
-function flexText(X) {
+const flexHours = (h) => { const m = Math.round(h * 60), r = m % 60; return m < 60 ? `${m} min` : `${Math.floor(m / 60)} h${r ? ` ${r} min` : ''}`; };
+function flexWarn(X) {
   const f = X && X.flex, out = [];
   if (f && (f.names.length || f.meals.length)) {
     const why = [f.names.length ? `fit ${flexList(f.names)}` : '', ...f.meals.map(m => `have ${m.kind} around ${hourLbl(m.at)}`)].filter(Boolean).join(' and ');
-    out.push(f.kind === 'end' ? `To ${why}, you leave at ${fmtClock(X.leave % 24)} instead of ${fmtClock(f.from % 24)}.` :
-      `Your break is shortened to ${flexHours(f.brk)} (back by ${fmtClock(f.back % 24)}) to ${why}.`);
+    const hotel = f.hotel != null ? `, with about ${flexHours(Math.round(f.hotel / 5) * 5 / 60)} at your hotel` : '';
+    out.push(f.kind === 'end' ? `You leave ${flexHours(f.min / 60)} later, at ${fmtClock(X.leave % 24)} instead of ${fmtClock(f.from % 24)}, to ${why}.` :
+      `Your break is ${flexHours(f.min / 60)} shorter to ${why}: ${flexHours(f.brk)}${hotel}${f.back != null ? `, back in the park by ${fmtClock(f.back % 24)}` : ''}.`);
   }
-  if (X && X.mealNote) out.push(X.mealNote);
+  const left = X && X.flexTried ? [...new Set(((X.plan ? X.plan.left : X.left) || []).map(r => r.name))] : [];
+  if (left.length) {
+    const t = X.flexTried, brk = `a shorter break (down to about ${flexHours(FLEX_BRK_MIN_H)} at your hotel)`,
+      end = `leaving later (up to ${flexHours(FLEX_END_MAX_H)}, never past close)`;
+    const names = left.length > 4 ? `${left.slice(0, 3).join(', ')} and ${left.length - 3} more rides` : flexList(left);
+    out.push(t.includes('brk') && t.includes('end') ? `Neither ${brk} nor ${end} would make room for ${names}.` :
+      `${t.includes('brk') ? 'A' + brk.slice(1) : 'L' + end.slice(1)} still wouldn't make room for ${names}.`);
+  }
   return out.join(' ');
 }
+// the same, with the note on a chosen meal time that had to fall back
+const flexText = (X) => [flexWarn(X), X && X.mealNote].filter(Boolean).join(' ');

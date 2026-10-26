@@ -183,6 +183,7 @@ span.dash-skeleton, b.dash-skeleton, div.v.dash-skeleton { color: transparent; }
 @media (max-width: 520px) { .qt-tabs button, .qt-tabs .tab-more { padding: 10px 8px; font-size: 14px; } }
 .qt-glance { display: block; margin-bottom: 4px; font-weight: 600; }
 .qt-glance .qt-link { font-weight: 600; margin-left: .3em; }
+.qt-flexwarn { display: block; margin: 2px 0 6px; padding: 4px 8px; border-radius: 8px; font-weight: 600; background: color-mix(in srgb, var(--sun) 22%, var(--color-panel)); }
 .qt-tabs button { font: inherit; font-size: var(--cds-font-size-body); background: none; border: 0; border-bottom: 2px solid transparent; padding: var(--cds-pad-sm) var(--cds-pad-md); color: var(--color-fg-muted); cursor: pointer; white-space: nowrap; margin-bottom: -1px; }
 .qt-tabs button[aria-selected="true"] { color: var(--color-fg); border-bottom-color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
 .qt-tabs button:focus-visible { outline: 2px solid var(--color-fg-muted); outline-offset: -2px; }

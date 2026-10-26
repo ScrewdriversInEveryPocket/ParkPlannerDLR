@@ -390,7 +390,7 @@ function drawHopperDay(D) {
         const Y = (Hb && planHopper(dpState.date, D, true)) || planHopper(dpState.date, D, false); return Y ? Y.left : V.left; } finally {
         if (had) dpState.rides[p].add(name); } };
     const fit = (adv) => dpFitStatus([dl, dca], V.left, last.end, Math.max(dl.close, dca.close), trial, adv,
-      { text: glanceText(V.leave, V.done, V.total, V.totalWait, V.flat), target: document.getElementById(Hb && dpState.brk > 0 ? 'dp-split' : 'dp-stay') });
+      { warn: flexWarn(V), text: glanceText(V.leave, V.done, V.total, V.totalWait, V.flat), target: document.getElementById(Hb && dpState.brk > 0 ? 'dp-split' : 'dp-stay') });
     // with rides left over, the plan shows now and the advice on what to take off fills in a moment later
     if (!V.left.length) fit(null);
     else { const tap = lastTap; fit(null); dpLater(() => { lastTap = tap; fit(fullAdvice(V.segs.flatMap(s => s.steps), V.left, drop)); }); } }
@@ -513,10 +513,10 @@ function drawDay() {
   { const trial = (qs) => { const P2 = planDay(ctx, withRides(ctx, pool, qs)); return !((X && P2.split) ? P2.split.left : P2.stay.plan.left).length; };
     const drop = (p, name) => { const P2 = planDay(ctx, pool.filter(r => r.name !== name)); return (X && P2.split) ? P2.split.left : P2.stay.plan.left; };
     if (X) dpFitStatus(ctx, X.left, Math.max(X.evening.end, X.ret), P.win.t1, trial, fullAdvice(X.morning.steps.concat(X.evening.steps), X.left, drop), {
-        text: glanceText(X.leave, X.done, pool.length, X.totalWait, X.morning.steps.concat(X.evening.steps), X.heat),
+        warn: flexWarn(X), text: glanceText(X.leave, X.done, pool.length, X.totalWait, X.morning.steps.concat(X.evening.steps), X.heat),
         target: document.getElementById('dp-split') });
     else dpFitStatus(ctx, S.plan.left, S.plan.end, P.win.t1, trial, fullAdvice(S.plan.steps, S.plan.left, drop), {
-        text: glanceText(S.leave, S.done, pool.length, S.plan.totalWait, S.plan.steps, S.heat), target: document.getElementById('dp-stay') }); }
+        warn: flexWarn(S), text: glanceText(S.leave, S.done, pool.length, S.plan.totalWait, S.plan.steps, S.heat), target: document.getElementById('dp-stay') }); }
   dayChart(document.getElementById('dp-chart'), ctx, pool, P);
   renderTake();
   // week at a glance

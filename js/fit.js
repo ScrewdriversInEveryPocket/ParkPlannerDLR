@@ -16,7 +16,7 @@ function roomFor(ctxs, isFree, trial) {
 }
 // more: { fit, total } from roomFor, or null when not checked (then estimate from spare time)
 // adv: fullAdvice() for a day that's over, or null
-// glance: { text, target } a one-line summary of the plan and the element "See the plan" scrolls to
+// glance: { text, target, warn } a one-line summary of the plan, the element "See the plan" scrolls to, and flexWarn() for the plan
 const glanceText = (leave, done, total, wait, steps, heat) => { const free = d3.sum(steps.filter(x => x.gap), x => x.dur);
   return [`Leave about ${fmtClock(leave % 24)}`, `${done} of ${total} rides`, `about ${wait >= 90 ? f1(wait / 60) + ' h' : Math.round(wait) + ' min'} in lines`,
     heat ? `${heat} h in 85°F+ heat` : '', free ? `${free} min free before a break or hop` : ''].filter(Boolean).join(' · '); };
@@ -34,6 +34,8 @@ function fitStatus(box, left, slack, freeCosts, hint, more, adv, glance) {
   box.querySelectorAll('.qt-chip').forEach(b => { const k = b.getAttribute('aria-pressed') === 'true' ? null : b.dataset.add || b.dataset.fit;
       b.classList.toggle('fits', !!(tick && k && tick.has(k))); if (tick && k && tick.has(k)) b.title = 'Would still fit on this day'; });
   const tap = lastTap; lastTap = null;
+  // drawn again (e.g. once the advice fills in): replace the box, don't add a second one
+  box.querySelectorAll(':scope > .qt-fit').forEach(b => b.remove());
   if (!box.querySelector('.qt-chip[data-fit][aria-pressed="true"]')) return;
   const bar = document.createElement('div'); bar.className = 'qt-fit'; bar.setAttribute('role', 'status');
   if (glance && glance.text) {
@@ -42,6 +44,8 @@ function fitStatus(box, left, slack, freeCosts, hint, more, adv, glance) {
       a.addEventListener('click', () => glance.target.scrollIntoView({ behavior: 'smooth', block: 'start' })); g.append(a); }
     bar.append(g);
   }
+  // a shorter break or a later finish than the group set (flexWarn): say so first
+  if (glance && glance.warn) { const w = document.createElement('span'); w.className = 'qt-flexwarn'; w.textContent = '⚠️ ' + glance.warn; bar.append(w); }
   const lead = document.createElement('b');
   if (left.length) {
     bar.classList.add('full');

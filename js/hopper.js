@@ -155,7 +155,7 @@ function planHopper(iso, D, withBreak, S = dpState) {
   const ends = flexEnds(H.win, Math.max(...Object.values(H.ctxs).map(c => c.close)), S), b = withBreak ? hopHotel(H, S) : null;
   return flexFix(H, S, ends.concat(b ? flexBrks(S.brk, b.overhead, S) : []), c => { const Y = planHopper0(iso, D, withBreak, c.S); if (!Y) return null;
       if (c.kind === 'brk') { const h = hopHotel(Y, S); if (!h || h.hotel < FLEX_BRK_MIN_H * 60 - 1e-9) return null; } return Y; },
-    Y => Y.flat, Y => Y.left, Y => (hopHotel(Y, S) || {}).back, S2 => planHopper0(iso, D, withBreak, S2));
+    Y => Y.flat, Y => Y.left, Y => hopHotel(Y, S), S2 => planHopper0(iso, D, withBreak, S2));
 }const planHopperBoth = (iso, D, S = dpState) => { const H = planHopper(iso, D, false, S);
   return { hop: true, H, Hb: S.brk > 0 ? planHopper(iso, D, true, S) : null, ctx: H.ctx }; };
 function hopLL(H) {

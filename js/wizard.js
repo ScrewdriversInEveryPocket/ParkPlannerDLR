@@ -147,7 +147,7 @@ function wzRenderPlan(box, iso, opt, day, D) {
         wzDine(mk('p', 'qt-note'), X.morning.steps.concat(X.evening.steps), [park], box, day, D);
         if (flexText(X)) mk('p', 'qt-note').textContent = flexText(X);
         if (P.brkMoved) mk('p', 'qt-note').textContent = `No break fits around ${brkAtLbl(day.brkAt)} on this day, so the planner picked the best time for it.`;
-        return { left: X.left, slack: P.win.t1 - X.leave, freeCosts, more, adv, where: mealWhere(planSegs(P, park, cfg)), glance: {
+        return { left: X.left, slack: P.win.t1 - X.leave, freeCosts, more, adv, where: mealWhere(planSegs(P, park, cfg)), glance: { warn: flexWarn(X),
             text: glanceText(X.leave, X.done, pool.length, X.totalWait, X.morning.steps.concat(X.evening.steps), X.heat), target: times } };
       } else {
         keyTimes(times, [['Arrive', fmtClock(S.arrive), `${arrSub(ctx, S.arrive, cfg)} · opens ${fmtClock(ctx.open)}`], ['Leave', fmtClock(S.leave % 24),
@@ -162,7 +162,7 @@ function wzRenderPlan(box, iso, opt, day, D) {
         note.textContent = wzSlack(S.plan.left, S.leave, P.win.t1, freeCosts, more, adv, cfg);
         wzDine(mk('p', 'qt-note'), S.plan.steps, [park], box, day, D);
         if (flexText(S)) mk('p', 'qt-note').textContent = flexText(S);
-        return { left: S.plan.left, slack: P.win.t1 - S.leave, freeCosts, more, adv, where: mealWhere(planSegs(P, park, cfg)), glance: {
+        return { left: S.plan.left, slack: P.win.t1 - S.leave, freeCosts, more, adv, where: mealWhere(planSegs(P, park, cfg)), glance: { warn: flexWarn(S),
             text: glanceText(S.leave, S.done, pool.length, S.plan.totalWait, S.plan.steps, S.heat), target: times } };
       }
     } else {
@@ -194,7 +194,7 @@ function wzRenderPlan(box, iso, opt, day, D) {
       if (flexText(H)) mk('p', 'qt-note').textContent = flexText(H);
       if (H.whyLeft) mk('p', 'qt-note').textContent = H.whyLeft;
       if (H.brkMoved) mk('p', 'qt-note').textContent = `No break fits around ${brkAtLbl(day.brkAt)} on this day, so the planner picked the best time for it.`;
-      return { left: H.left, slack: closeH - H.leave, freeCosts, more, adv: null, later: H.left.length ? advLater : null, where: mealWhere(planSegs(H)), glance: { text: glanceText(H.leave, H.done, H.total, H.totalWait, H.flat), target: times } };
+      return { left: H.left, slack: closeH - H.leave, freeCosts, more, adv: null, later: H.left.length ? advLater : null, where: mealWhere(planSegs(H)), glance: { warn: flexWarn(H), text: glanceText(H.leave, H.done, H.total, H.totalWait, H.flat), target: times } };
     }
   }
 }
