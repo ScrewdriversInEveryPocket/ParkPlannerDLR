@@ -15,7 +15,8 @@ The Disneyland Resort Planning Tool by ScrewdriversInEveryPocket ("DLR Planner" 
 | `scripts/*.ps1` | Windows PowerShell helpers: export or import a dataset CSV, download the OSM and weather sources. |
 | `vendor/` | d3 and jsPDF, served locally. |
 | `icons/`, `manifest.webmanifest` | App icons and install manifest. |
-| `_BACKUP/`, `_sources/` | Local only, gitignored. Backups, and raw source downloads. |
+| `_BACKUP/` | Local only, gitignored: backups. |
+| `_sources/` | Raw source downloads and the scripts that fetch them (Disney calendar, showtimes, dining; Queue-Times; OpenStreetMap). Uploaded with the app. |
 
 ## Updating data
 

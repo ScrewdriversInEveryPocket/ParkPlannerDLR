@@ -1,6 +1,6 @@
 # Disneyland Resort Planning Tool by ScrewdriversInEveryPocket
 
-Plan a Disneyland Resort trip around quieter days, better weather and shorter lines. This planner (DLR Planner once installed) picks your best dates, chooses which days to spend in which park, and builds a ride-by-ride schedule for each day, with Lightning Lane order, meal ideas and a printable PDF.
+Plan a Disneyland Resort trip around quieter days, better weather and shorter lines. This planner (DLR Planner once installed) picks your best dates, chooses which days to spend in which park, and builds a ride-by-ride schedule for each day, with Lightning Lane order, meal ideas, restaurant booking reminders and a printable PDF.
 
 It runs entirely in your browser. There's no account, no install and no tracking, and once it's loaded it works offline (except the live weather forecast).
 
@@ -49,15 +49,15 @@ The wizard walks you through a trip from "how long?" to a PDF you can take to th
 - **Break days:** days with no park at all, for resting, the pool or other plans (0 to 5).
 - **Ticket:** one park per day, Park Hopper, or a single park only. You can also ask it to visit each park at least once.
 - **Hotel check-in and checkout times** (defaults 3 pm and 11 am).
+- **Where you're staying:** your hotel. The list shows each hotel's time for your pace, because it's a walk (see [Hotel times](#hotel-times)). It's shared by every tab.
 
 The wizard adds a **check-in day** before your first park day and a **checkout day** after your last. Those travel days aren't counted as park days and aren't on your ticket. A summary shows your nights and how many ticket days you need.
 
 **Trip settings** below hold things that stay the same all trip:
 
 - **Your group:** group pace (which sets your walking speed, see [How the schedule is built](#how-the-schedule-is-built)) and the **shortest rider's height**. Rides they're too short for are still pickable but show "(40 in and up)", and the plan reminds you about Rider Switch so the adults can take turns. Plans and PDFs show the height for every ride that has one, since your children may be different heights.
-- **Where you're staying and Lightning Lane:** a line shows your hotel and Lightning Lane choices. Change them with **Change in Settings** (or the **Settings** button at the top). They're shared by every tab. The hotel list shows each hotel's time for your pace, because it's a walk (see [Hotel times](#hotel-times)).
 - **Your park days:** when to **start** (rope drop, mid-morning at 10 am, after lunch at 1 pm, or a set time) and **finish** (at close, or leave by a set time), the midday hotel break, and on Park Hopper trips which park to start in. A day that starts after lunch or finishes by 4 pm has no midday break, and the plan says so.
-- **Rides and lines:** whether repeat rides may go back to back, and the *shorter waits ↔ fewer steps* slider.
+- **Rides and lines:** whether you'll buy **Lightning Lane Multi Pass** and **Lightning Lane Single Pass** (Rise of the Resistance, Radiator Springs Racers), whether repeat rides may go back to back, and the *shorter waits ↔ fewer steps* slider.
 
 Start, finish, the break and the slider are starting points: each day's step lets you change them for that day.
 
@@ -98,6 +98,7 @@ As you add rides, a banner sums up the plan (when you'd leave, how many rides fi
 
 - **Page 1:** a trip overview with your check-in day, park days, break days and checkout, and every ride you picked, grouped by park and day, with how many times you'll ride it.
 - **One page per park day** with tick boxes: the schedule, Lightning Lane booking order, weather, meal ideas, closures and events.
+- **Restaurant bookings:** if you picked sit-down meals, the overview lists each one with the date and time to book it.
 
 On a phone it opens the share sheet so you can save or email it. On a computer it downloads.
 
@@ -108,8 +109,8 @@ On a phone it opens the share sheet so you can save or email it. On a computer i
 A quick, self-contained planner for a single day, ideal for locals and annual passholders. It doesn't touch your Trip wizard plan.
 
 1. Pick a **date** and a **park** (Disneyland, California Adventure or Park Hopper).
-2. Set your **group pace** and **shortest rider's height**, your **start** and **finish** times, a **break length** (no break, or a 1 to 5 hour midday break at your hotel) and when you'd like it (**break around**), and the **waits ↔ steps** slider. Your hotel and Lightning Lane choices come from the Trip wizard's Trip settings.
-3. Pick your **rides**.
+2. Set your **group pace** and **shortest rider's height**, your **start** and **finish** times, a **break length** (no break, or a 1 to 5 hour midday break at your hotel) and when you'd like it (**break around**), and the **waits ↔ steps** slider. Your hotel and Lightning Lane choices come from the Trip wizard (a line under Settings shows them, with **Change in the Trip wizard**).
+3. Pick your **rides**, and any **sit-down meals** you'd like (see [Sit-down meals](#sit-down-meals)).
 
 You get:
 
@@ -179,6 +180,21 @@ The limit is 3 per day in Plan a day and on each wizard day page, and 6 per trip
 
 Repeats are spaced at least an hour apart unless you tick **Allow repeat rides back to back**. Lightning Lane is only used for your first ride on each attraction; repeats use the standby line.
 
+### Sit-down meals
+
+Under the rides, on Plan a day and on each wizard day page, **Sit-down meals (optional)** lists the table-service restaurants and lounges in that day's park(s), with price, how booking works and what they serve.
+
+| Do this | What happens |
+|---|---|
+| **Tap** a restaurant | Have **Lunch** there |
+| **Tap** it again | Have **Dinner** there instead (if it serves dinner) |
+| **Tap** once more | Take it off |
+| **Press and hold** | Take it off straight away |
+
+You can pick one restaurant for lunch and one for dinner each day. The plan books about an hour for a sit-down meal (45 minutes in a lounge, a little longer at a relaxed pace) and fits your rides around it. Every other meal is still planned at the nearest quick-service place, with a tip to **mobile order** in the Disneyland app when that place offers it.
+
+Most sit-down places take bookings 60 days ahead. The meal step tells you **the date to book it** in the Disneyland app (at about 6 am, when new days open) and the time to ask for. If you didn't get a booking, it reminds you that you can join the **walk-up list** in the app on the day. Oga's Cantina is walk-up only. If a picked meal doesn't fit in the day, the plan says so and eats somewhere nearer instead.
+
 ---
 
 ## The data tabs
@@ -219,7 +235,7 @@ Crowds and waits through the year.
 
 ## Settings, saving and privacy
 
-- **Settings** (top of the page) holds your hotel, Lightning Lane choices and optional weather keys, used by every tab.
+- **Settings** (top of the page) holds the optional weather keys and Reset. Your hotel and Lightning Lane choices are on the first page of the Trip wizard and are used by every tab.
 - Your choices (sliders, rides, hotel, trip dates and settings) are saved **in your browser only**, on that device. Nothing is sent anywhere. The only thing the app downloads is the weather forecast. **Settings → Reset saved settings** clears them.
 - The live forecast uses [Open-Meteo](https://open-meteo.com) by default, with no key needed. If you have a [Vaisala Xweather](https://www.xweather.com) account you can enter your own client ID and secret in **Settings** to use it instead. Keys stay in your browser. If you host a public copy, don't build your keys into it.
 - Outside the forecast range, or offline, weather falls back to 10-year averages.

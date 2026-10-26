@@ -104,6 +104,12 @@ span.dash-skeleton, b.dash-skeleton, div.v.dash-skeleton { color: transparent; }
 .qt-chipgroup .g { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); min-width: 6.5rem; }
 .qt-chipgroup .g.wzh { flex-basis: 100%; font-size: var(--cds-font-size-body); font-weight: 600; color: var(--color-fg); margin: var(--cds-gap-md) 0 var(--cds-gap-xs); }
 .qt-chipgroup .g.wzh:first-child { margin-top: 0; }
+/* quick picks and hints get a row of their own above the chips */
+.qt-chipgroup .g.qt-quick, .qt-chipgroup .g.qt-dinehint { flex-basis: 100%; margin-bottom: var(--cds-gap-xs); }
+.qt-quick .qt-link { margin-right: var(--cds-gap-sm); }
+.qt-chip.dine { border-style: dashed; }
+.qt-chip.dine[aria-pressed="true"] { border-style: solid; }
+.qt-steps .tg.dine { color: var(--color-fg); }
 .qt-chip { font: inherit; font-size: var(--cds-font-size-caption); display: inline-flex; align-items: center; gap: var(--cds-gap-xs); padding: 3px var(--cds-pad-sm); border-radius: 999px; border: 1px solid var(--color-border-line); background: var(--color-bg); color: var(--color-fg-muted); cursor: pointer; }
 .qt-chip[aria-pressed="true"] { color: var(--color-fg); border-color: var(--color-fg-muted); background: var(--color-panel); }
 .qt-chip .qt-sw { background: transparent; border: 1.5px solid var(--color-border-line); box-sizing: border-box; }
@@ -374,6 +380,18 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
       <label>Hotel check-in <input type="time" id="tp-in" class="qt-input" value="15:00"></label>
       <label>Checkout <input type="time" id="tp-out" class="qt-input" value="11:00"></label>
     </div>
+    <p class="qt-seth">Where you’re staying</p>
+    <div class="qt-controls">
+      <label>Hotel <select id="dp-hotel" class="qt-input">
+        <option value="gc">Grand Californian</option>
+        <option value="dlh">Disneyland Hotel</option>
+        <option value="pp">Pixar Place Hotel</option>
+        <option value="walk">Walking‑distance hotel on Harbor Blvd</option>
+        <option value="art">Off‑site hotel using the ART shuttle bus</option>
+        <option value="custom">Custom travel time</option>
+      </select></label>
+      <label id="dp-custom-wrap" hidden>Minutes each way <input type="number" min="1" max="180" value="20" id="dp-custom" class="qt-input" style="width:4.5rem"></label>
+    </div>
     <p class="qt-dayinfo" id="tp-staysum"></p>
   </section>
 
@@ -385,8 +403,6 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
       <label>Group pace <select id="wz-pace" class="qt-input"><option value="relaxed">Relaxed (seniors, small kids)</option><option value="normal" selected>Normal (middle-aged adults)</option><option value="fast">Go-go (young adults)</option></select></label>
       <label>Shortest rider <select id="wz-height" class="qt-input"><option value="0" selected>48 in or taller (no limits)</option><option value="46">46–47 in</option><option value="42">42–45 in</option><option value="40">40–41 in</option><option value="38">38–39 in</option><option value="35">35–37 in</option><option value="32">32–34 in</option><option value="31">Under 32 in</option></select></label>
     </div>
-    <p class="qt-seth">Where you’re staying and Lightning Lane</p>
-    <p class="qt-note qt-staysum" id="wz-staysum"></p>
     <p class="qt-seth">Your park days</p>
     <div class="qt-controls">
       <label>Start <select id="wz-wstart" class="qt-input"><option value="rope" selected>Rope drop (be there before opening)</option><option value="10">Mid-morning (10 am)</option><option value="13">After lunch (1 pm)</option><option value="set">At a set time</option></select></label>
@@ -398,6 +414,10 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
       <label id="wz-start-wrap" hidden>Park Hopper days: start in <select id="wz-start" class="qt-input"><option value="auto">Whichever fits best</option><option value="Disneyland">Disneyland</option><option value="California Adventure">California Adventure</option></select></label>
     </div>
     <p class="qt-seth">Rides and lines</p>
+    <div class="qt-controls">
+      <label><input type="checkbox" id="dp-ll" checked> Lightning Lane Multi Pass</label>
+      <label><input type="checkbox" id="dp-ls"> Lightning Lane Single Pass (Rise of the Resistance, Radiator Springs Racers)</label>
+    </div>
     <div class="qt-controls">
       <label><input type="checkbox" id="wz-b2b"> Allow repeat rides back to back (otherwise at least an hour apart)</label>
       <label class="qt-walk">Shorter waits <input type="range" id="wz-walk" min="0" max="4" step="1" value="2" aria-label="Shorter waits or fewer steps"> Fewer steps</label>
@@ -508,6 +528,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
           <p class="qt-note" id="dp-split-note"></p>
         </div>
       </div>
+      <p class="qt-note" id="dp-dinenote" hidden></p>
       <div class="qt-note qt-tonight" id="dp-tonight" hidden></div>
       <div class="qt-controls qt-take" id="dp-take">
         <span>Take it with you</span>
@@ -801,24 +822,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
 
 <dialog id="app-settings" class="app-dialog">
   <h3>Settings</h3>
-  <p class="qt-note">These apply to every tab: the Trip wizard, Plan a day and the rest.</p>
-    <p class="qt-seth">Where you’re staying</p>
-    <div class="qt-controls">
-      <label>Hotel <select id="dp-hotel" class="qt-input">
-        <option value="gc">Grand Californian</option>
-        <option value="dlh">Disneyland Hotel</option>
-        <option value="pp">Pixar Place Hotel</option>
-        <option value="walk">Walking‑distance hotel on Harbor Blvd</option>
-        <option value="art">Off‑site hotel using the ART shuttle bus</option>
-        <option value="custom">Custom travel time</option>
-      </select></label>
-      <label id="dp-custom-wrap" hidden>Minutes each way <input type="number" min="1" max="180" value="20" id="dp-custom" class="qt-input" style="width:4.5rem"></label>
-    </div>
-    <p class="qt-seth">Lightning Lane</p>
-    <div class="qt-controls">
-      <label><input type="checkbox" id="dp-ll" checked> Lightning Lane Multi Pass</label>
-      <label><input type="checkbox" id="dp-ls"> Single Pass for Rise of the Resistance / Radiator Springs Racers</label>
-    </div>
+  <p class="qt-note">Your hotel and Lightning Lane choices are on the first page of the Trip wizard.</p>
   <p class="qt-seth">Live weather (optional)</p>
   <p class="qt-note">Add your Vaisala Xweather API keys for its hourly forecast. They're stored only in this browser. Without them the app uses Open‑Meteo's free forecast.</p>
   <label class="app-field">Xweather client ID <input class="qt-input" id="xw-id" autocomplete="off" spellcheck="false"></label>
@@ -1594,7 +1598,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
 
   // ---------- day planner ----------
   const DAY_IDS = ['ride_profiles', 'park_hours_2025', 'park_hours_published', 'refurbs', 'weather_by_hour', 'weather_by_week', 'sun_by_week', 'wait_by_week', 'wait_by_month', 'events', 'ride_closures_by_month'];
-  const dpState = { date: null, park: 'Disneyland', brk: 3, brkAt: 'auto', rides: { 'Disneyland': null, 'California Adventure': null }, reps: { 'Disneyland': new Map(), 'California Adventure': new Map() }, b2b: false, ll: true, single: false, hotel: 'gc', custom: 20, pace: 'normal', start: 'auto', walk: 2, height: 0, win: { start: 'rope', startAt: '09:00', end: 'close', endAt: '20:00' } };
+  const dpState = { date: null, park: 'Disneyland', brk: 3, brkAt: 'auto', dine: { lunch: null, dinner: null }, rides: { 'Disneyland': null, 'California Adventure': null }, reps: { 'Disneyland': new Map(), 'California Adventure': new Map() }, b2b: false, ll: true, single: false, hotel: 'gc', custom: 20, pace: 'normal', start: 'auto', walk: 2, height: 0, win: { start: 'rope', startAt: '09:00', end: 'close', endAt: '20:00' } };
   // ---------- repeat rides: a picked ride can be done more than once; reps maps ride name -> times (2+) ----------
   const REP_DAY_MAX = 3, REP_TRIP_MAX = 6;
   const lapsOf = (reps, name) => (reps && reps.get(name)) || 1;
@@ -1643,6 +1647,24 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
     b.addEventListener('click', e => { if (held) { held = false; e.preventDefault(); return; } onTap(); });
   }
   const nextLap = (on, n, max) => !on ? 1 : n < max ? n + 1 : 0;
+  // sit-down and walk-up restaurants as chips: tap for lunch, again for dinner (skipping a meal it doesn't serve), press and hold to clear.
+  // dine is { lunch, dinner } holding 'park|name'; one place per meal per day
+  function dineChips(box, parks, dine, onChange) {
+    const any = parks.some(p => (DINE_PICKS[p] || []).length); if (!any) return;
+    const g = document.createElement('span'); g.className = 'g wzh'; g.textContent = 'Sit-down meals (optional)'; box.append(g);
+    const hint = document.createElement('span'); hint.className = 'g qt-dinehint'; hint.textContent = 'Tap a restaurant once for lunch, again for dinner. Press and hold to take it off. Other meals are planned at the nearest quick-service place.'; box.append(hint);
+    parks.forEach(p => (DINE_PICKS[p] || []).forEach(r => {
+      const st = dine.lunch === r.key ? 'lunch' : dine.dinner === r.key ? 'dinner' : null;
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'qt-chip dine'; b.setAttribute('aria-pressed', st ? 'true' : 'false');
+      b.textContent = r.name + (parks.length > 1 ? ` (${p === 'Disneyland' ? 'DL' : 'DCA'})` : '') + (st ? ` · ${st === 'lunch' ? 'Lunch' : 'Dinner'}` : '');
+      const sp = document.createElement('span'); sp.className = 'ri';
+      sp.textContent = [r.price, r.book ? `book ${BOOK_DAYS} days ahead` : r.walkup ? 'walk-up list only' : 'no booking for lunch or dinner', r.book && r.walkup ? 'walk-up list on the day' : '', r.serves.join(' and '), r.cuisine].filter(Boolean).join(' · ');
+      b.append(sp);
+      const set = (v) => { ['lunch', 'dinner'].forEach(m => { if (dine[m] === r.key) dine[m] = null; }); if (v) dine[v] = r.key; onChange(); };
+      cycleTap(b, () => { const order = [null].concat(r.serves), i = order.indexOf(st); set(order[(i + 1) % order.length]); }, () => set(null));
+      box.append(b);
+    }));
+  }
   // hotel to the park turnstiles: footpath metres from an average room (routed on the OpenStreetMap paths, Oct 2026)
   // at the group's pace, plus minutes for elevators and hallways. The Grand Californian has its own entrance into
   // California Adventure (gate id 'gc' in data/gates.js). Harbor Blvd hotels are about 15 min at Normal pace; the ART
@@ -1690,12 +1712,12 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
     const b = w.end === 'set' ? `leave by ${fmtClock(clockH(w.endAt) % 24)}` : '';
     return [a, b].filter(Boolean).join(', ');
   }
-  // one line on the wizard and Plan a day saying which hotel and Lightning Lane choices are in use, with a button to Settings
+  // one line on Plan a day saying which hotel and Lightning Lane choices are in use, with a button to the Trip wizard's first page where they're set
   function staySum() {
     const a = travelMin('Disneyland'), b = travelMin('California Adventure', GC_GATE);
     const hn = { gc: 'Grand Californian', dlh: 'Disneyland Hotel', pp: 'Pixar Place Hotel', walk: 'a walking-distance hotel on Harbor Blvd', art: 'an off-site hotel (ART shuttle)', custom: 'your hotel' }[dpState.hotel] || 'your hotel';
     const txt = `Staying at ${hn} (${a} min${a === b ? ' each way' : `, ${b} to California Adventure`}) · Lightning Lane Multi Pass: ${dpState.ll ? 'yes' : 'no'}${dpState.single ? ' · Single Pass: yes' : ''}. `;
-    ['wz-staysum', 'dp-staysum'].forEach(id => { const el = document.getElementById(id); if (!el) return; el.textContent = txt; const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'qt-link'; bt.textContent = 'Change in Settings'; bt.addEventListener('click', () => document.getElementById('app-settings-btn').click()); el.append(bt); });
+    ['dp-staysum'].forEach(id => { const el = document.getElementById(id); if (!el) return; el.textContent = txt; const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'qt-link'; bt.textContent = 'Change in the Trip wizard'; bt.addEventListener('click', () => { document.getElementById('tab-wizard').click(); wzGo(0); setTimeout(() => document.getElementById('trip-card').scrollIntoView({ block: 'start' }), 50); }); el.append(bt); });
   }
   ['dp-hotel', 'dp-custom', 'dp-ll', 'dp-ls'].forEach(id => document.getElementById(id).addEventListener(id === 'dp-custom' ? 'input' : 'change', () => setTimeout(() => { staySum(); if (wz.D) drawWalk(wz.D); }, 0)));
   document.getElementById('dp-hotel').addEventListener('change', (e) => { dpState.hotel = e.target.value; document.getElementById('dp-custom-wrap').hidden = dpState.hotel !== 'custom'; drawDay(); });
@@ -1960,9 +1982,9 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
     if (!p || !q) return 10;
     return Math.round(Math.hypot(p[0] - q[0], p[1] - q[1]) * WALK_WIND);
   }
-  // meals: the nearest quick-service place from where you are (from the gate, that's on your way in)
+  // meals: the nearest quick-service place that serves lunch and dinner, from where you are (from the gate, that's on your way in)
   function mealSpot(park, from) {
-    const all = Object.entries(DINING[park] || {}).flatMap(([land, xs]) => xs.filter(([, k]) => k === 'quick service').map(([n, k]) => ({ name: n, kind: k, land, pos: lookupPlace(park, n, 'food', 'mid') })));
+    const all = Object.entries(DINING[park] || {}).flatMap(([land, xs]) => xs.filter(([, k, m]) => k === 'quick service' && (!m || /lunch|dinner/.test(m))).map(([n, k]) => ({ name: n, kind: k, land, pos: lookupPlace(park, n, 'food', 'mid') })));
     const here = from ? from.land : ENTRY_LAND[park];
     const located = all.filter(x => x.pos);
     if (located.length && posOf(park, from, 'exit')) return located.reduce((b, x) => walkMin(park, from, x) < walkMin(park, from, b) ? x : b);
@@ -2095,23 +2117,26 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
     };
     let walked = 0;
     // walk to the nearest quick-service place, eat, and carry on from there
-    const mealFits = (from) => { const sp = mealSpot(ctx.park, from); const w = sp ? walkMin(ctx.park, from, sp) * walkMult : 0; return { sp, w, ok: t + (w + mealMin + exitMin(sp || from)) / 60 <= end + tol }; };
+    // a restaurant picked for this meal (sit-down or walk-up list) takes the place of the nearest quick-service spot, and about an hour
+    const mealLen = (kind) => { const ps = kind && dinePicked(ctx.park, kind); return ps ? sitMin(ps.sit) + (pad.meal || 0) : mealMin; };
+    const mealFits = (from, kind) => { const ps = kind && dinePicked(ctx.park, kind), sp = ps || mealSpot(ctx.park, from), len = mealLen(kind); const w = sp ? walkMin(ctx.park, from, sp) * walkMult : 0; return { sp, w, len, ok: t + (w + len + exitMin(sp || from)) / 60 <= end + tol }; };
     const eat = (kind, m) => {
-      const lbl = kind === 'lunch' ? 'Lunch' : 'Dinner';
-      steps.push({ t: t + m.w / 60, meal: m.sp ? `${lbl} at ${m.sp.name}` : lbl, mealKind: kind, dur: mealMin, spot: m.sp, walk: Math.round(m.w) });
-      walked += m.w; t += (m.w + mealMin) / 60; eaten[kind] = true; lastRest = t; if (m.sp) prev = m.sp; afterMeal = true;
+      const lbl = kind === 'lunch' ? 'Lunch' : 'Dinner', at = t + m.w / 60, sit = m.sp && m.sp.sit;
+      const qs = !sit && m.sp && (dash.data('dining').data || []).find(r => r.park === ctx.park && r.name === m.sp.name);
+      steps.push({ t: at, meal: m.sp ? `${lbl} at ${m.sp.name}` : lbl, mealKind: kind, dur: m.len || mealMin, spot: m.sp, walk: Math.round(m.w), sit, tip: sit ? dineTip(sit, ctx.iso, at) : qs && qs.mobile_order === 'yes' ? 'Mobile order in the Disneyland app about 30 min ahead to skip the line.' : '' });
+      walked += m.w; t += (m.w + (m.len || mealMin)) / 60; eaten[kind] = true; lastRest = t; if (m.sp) prev = m.sp; afterMeal = true;
     };
     while (left.length && t < end - 0.1) {
       // meals are always in the park, never during the hotel break: lunch waits for the return if it won't fit before leaving
-      if (!eaten.lunch && t >= (opts.lunchFrom || earlyLunch) && t < (opts.lunchBy || 14.5)) { const m = mealFits(prev); if (m.ok) { eat('lunch', m); continue; } }
-      if (!eaten.dinner && t >= 17.5 && t < (opts.dinnerBy || 20)) { const m = mealFits(prev); if (m.ok) { eat('dinner', m); continue; } }
+      if (!eaten.lunch && t >= (opts.lunchFrom || earlyLunch) && t < (opts.lunchBy || 14.5)) { const m = mealFits(prev, 'lunch'); if (m.ok) { eat('lunch', m); continue; } }
+      if (!eaten.dinner && t >= 17.5 && t < (opts.dinnerBy || 20)) { const m = mealFits(prev, 'dinner'); if (m.ok) { eat('dinner', m); continue; } }
       if (restBreaks && t - lastRest >= 1.25 && t < end - 0.75) { const hot = wxAt(ctx, t).feels >= 82; steps.push({ t, meal: hot ? 'Rest break: something cold in the shade or an indoor show' : 'Rest break: snack, sit down or catch a show', dur: restMin }); t += restMin / 60; lastRest = t; continue; }
       // Pick the next ride by its own cost plus the cheapest ride that could follow it (one-ride look-ahead),
       // so the plan doesn't hop across the park for a small gain and then hop back.
       // before an early break, keep room to eat lunch in the park before leaving
       // (and before any break at all, keep room for lunch and the walk out, since there's no lunch at the hotel)
       const lunchFrom0 = opts.lunchFrom || (opts.exit === 'break' ? earlyLunch : null);
-      const lunchLatest = end - (mealMin + (opts.exit === 'break' ? 12 : 0)) / 60, lunchDue = !eaten.lunch && lunchFrom0 && lunchLatest >= lunchFrom0 - 0.01;
+      const lunchLatest = end - (mealLen('lunch') + (opts.exit === 'break' ? 12 : 0)) / 60, lunchDue = !eaten.lunch && lunchFrom0 && lunchLatest >= lunchFrom0 - 0.01;
       const cands = left.filter(r => !blocked(r, t)).map(r => rideCost(r, t, prev, lastLL)).filter(c => c && (!lunchDue || t + c.dur / 60 <= lunchLatest + 0.01)).sort((a, b) => a.score - b.score);
       // only repeats that are too soon, or character meets not started yet, are left: fill the gap until the next one may go
       if (!cands.length && left.length && left.every(r => blocked(r, t))) {
@@ -2121,7 +2146,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
       }
       // nothing else fits before lunch has to happen: eat now, but never before 11 (wait with free time if needed)
       if (!cands.length && lunchDue && t >= lunchFrom0 - 1) {
-        const t0 = t, at = Math.max(t, 11); t = at; const m = mealFits(prev);
+        const t0 = t, at = Math.max(t, 11); t = at; const m = mealFits(prev, 'lunch');
         if (!m.ok) { t = t0; break; }
         if (at - t0 >= 5 / 60) steps.push({ t: t0, meal: freeText(ctx.park, prev, 'catch a show, grab a snack or shop'), dur: Math.round((at - t0) * 60), free: true });
         eat('lunch', m); continue;
@@ -2151,7 +2176,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
       const meal = (kind, from, by, maxWait) => {
         if (eaten[kind] || t >= by) return;
         const t0 = t, at = Math.max(t, from); if (at - t0 > maxWait) return;
-        t = at; const m = mealFits(prev); if (!m.ok) { t = t0; return; }
+        t = at; const m = mealFits(prev, kind); if (!m.ok) { t = t0; return; }
         if (at - t0 >= 5 / 60) steps.push({ t: t0, meal: freeText(ctx.park, prev, 'catch a show, grab a snack or shop'), dur: Math.round((at - t0) * 60), free: true });
         eat(kind, m);
       };
@@ -2220,7 +2245,58 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
   // from data/dining.js (restaurants by land) and data/lands.js (which lands to borrow from when a land has few
   // places of its own, and each park's entrance land)
   const DINING = {}, DINING_NEAR = {}, ENTRY_LAND = {};
-  (dash.data('dining').data || []).forEach(r => { const P = DINING[r.park] = DINING[r.park] || {}; (P[r.land] = P[r.land] || []).push([r.name, r.kind]); });
+  // places to suggest for a meal: no dining events, seasonal festival booths or members-only rooms; quick service first
+  const DINE_ORDER = { 'quick service': 0, 'table service': 1, snack: 2, lounge: 3 };
+  (dash.data('dining').data || []).filter(r => r.kind in DINE_ORDER && !/holders only|Seasonal festival/i.test(r.note || '')).sort((a, b) => DINE_ORDER[a.kind] - DINE_ORDER[b.kind])
+    .forEach(r => { const P = DINING[r.park] = DINING[r.park] || {}; (P[r.land] = P[r.land] || []).push([r.name, r.kind, r.meals || '']); });
+  // sit-down and walk-up places you can pick for a day's lunch or dinner (dpState.dine / day.dine hold 'park|name')
+  const DINE_PICKS = {};
+  (dash.data('dining').data || []).filter(r => !/holders only/i.test(r.note || '') && ((r.kind === 'table service' && /lunch|dinner/.test(r.meals || '')) || (r.kind === 'lounge' && r.walkup === 'yes')))
+    .forEach(r => { (DINE_PICKS[r.park] = DINE_PICKS[r.park] || []).push(Object.assign({}, r, {
+      key: r.park + '|' + r.name,
+      serves: ['lunch', 'dinner'].filter(m => r.kind === 'lounge' || (r.meals || '').includes(m)),
+      // reservations for lunch or dinner: Disney opens them 60 days ahead; Plaza Inn only books breakfast
+      book: (r.reservations === 'accepted' || r.reservations === 'recommended') && !/only for breakfast/i.test(r.note || ''),
+      walkup: r.walkup === 'yes'
+    })); });
+  const DINE_BY_KEY = {}; Object.values(DINE_PICKS).flat().forEach(r => { DINE_BY_KEY[r.key] = r; });
+  const BOOK_DAYS = 60;
+  const sitMin = (r) => (r.kind === 'lounge' ? 45 : 60) + (dpState.pace === 'relaxed' ? 10 : dpState.pace === 'fast' ? -10 : 0);
+  const addDaysISO = (iso, n) => { const d = new Date(iso + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+  const fmtDay = (iso) => new Date(iso + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+  // what to tell people about a picked restaurant: when to book, or the walk-up list
+  function dineTip(r, iso, t) {
+    if (!r) return '';
+    const at = fmtClock(Math.round(t * 4) / 4);
+    if (r.book) {
+      const open = addDaysISO(iso, -BOOK_DAYS);
+      return `${open <= todayISO() ? `Book it now in the Disneyland app (reservations for this date are already open)` : `Book it in the Disneyland app on ${fmtDay(open)} at about 6 am, when reservations open ${BOOK_DAYS} days ahead`}, for about ${at}.${r.walkup ? ' No booking? Join the walk-up list in the app on the day, an hour or two ahead.' : ''}`;
+    }
+    if (r.walkup) return `Walk-up only: join the list in the Disneyland app about an hour before${r.note && /standby/i.test(r.note) ? ', or wait in the standby line' : ''}.`;
+    return 'No booking needed for lunch or dinner: just turn up.';
+  }
+  // every sit-down meal picked on the wizard's days that needs booking, earliest booking first
+  function tripBookings(pd) {
+    const out = [];
+    pd.forEach((x, k) => { const d = wz.days && wz.days[x.iso]; if (!d || !d.dine) return; ['lunch', 'dinner'].forEach(m => { const r = DINE_BY_KEY[d.dine[m]]; if (r && x.opt.parks.includes(r.park)) out.push({ r, meal: m, iso: x.iso, n: k + 1, open: addDaysISO(x.iso, -BOOK_DAYS) }); }); });
+    return out.sort((a, b) => a.iso.localeCompare(b.iso));
+  }
+  const bookingLine = (b) => `${b.r.name}, ${b.meal} on Day ${b.n} (${fmtDay(b.iso)}): ${b.r.book ? (b.open <= todayISO() ? 'book now in the Disneyland app, reservations are open' : `book in the Disneyland app on ${fmtDay(b.open)} at about 6 am`) + (b.r.walkup ? '; walk-up list on the day if you miss it' : '') : b.r.walkup ? 'walk-up list only: join it in the app on the day' : 'no booking needed'}.`;
+  const dineSpot = (park, name) => ({ name, kind: 'table service', land: (DINE_BY_KEY[park + '|' + name] || {}).land, pos: lookupPlace(park, name, 'food', 'mid'), sit: DINE_BY_KEY[park + '|' + name] });
+  // the restaurant picked for a meal on this day, if it's in this park
+  const dinePicked = (park, kind) => { const k = dpState.dine && dpState.dine[kind]; if (!k) return null; const [p, n] = k.split('|'); return p === park && DINE_BY_KEY[k] ? dineSpot(p, n) : null; };
+  // a picked meal that didn't make it into the plan
+  function dineMiss(steps) {
+    const out = [];
+    ['lunch', 'dinner'].forEach(kind => {
+      const k = dpState.dine && dpState.dine[kind]; if (!k || !DINE_BY_KEY[k]) return;
+      const m = steps.find(s => s.mealKind === kind);
+      if (m && m.sit && m.sit.key === k) return;
+      const r = DINE_BY_KEY[k];
+      out.push(m ? `${kind === 'lunch' ? 'Lunch' : 'Dinner'} at ${r.name} (${r.park}) didn't fit in this plan, so it eats somewhere nearer. Try fewer rides, or pick it for a different meal or day.` : `There's no ${kind} in this plan, so ${r.name} isn't used.`);
+    });
+    return out.join(' ');
+  }
   (dash.data('lands').data || []).forEach(r => {
     const near = (r.dining_near || '').split(';').map(x => x.trim()).filter(Boolean);
     if (near.length) (DINING_NEAR[r.park] = DINING_NEAR[r.park] || {})[r.land] = near;
@@ -2260,6 +2336,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
   function annotateMeals(flat) {
     flat.forEach((s, i) => {
       if (!s.mealKind) return;
+      if (s.sit) { s.dine = []; return; }
       let prev = null, next = null;
       for (let k = i - 1; k >= 0 && !prev; k--) { if (flat[k].brk) break; if (flat[k].ride) prev = flat[k].r; } // the hotel break resets where you are
       for (let k = i + 1; k < flat.length && !next; k++) { if (flat[k].brk) break; if (flat[k].ride) next = flat[k].r; }
@@ -2463,7 +2540,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
   function buildRideChips(ctxs) {
     ctxs = [].concat(ctxs);
     const box = document.getElementById('dp-rides'); box.textContent = '';
-    const lab = document.createElement('span'); lab.className = 'g'; lab.textContent = 'Rides to fit in'; box.append(lab);
+    const lab = document.createElement('span'); lab.className = 'g wzh'; lab.textContent = 'Rides to fit in'; box.append(lab);
     { const q = document.createElement('span'); q.className = 'g qt-quick'; q.append('Quick picks: ');
       const pick = (txt, f, tip) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'qt-link'; b.textContent = txt; if (tip) b.title = tip; b.addEventListener('click', () => { ctxs.forEach(ctx => { dpState.rides[ctx.park] = new Set(ctx.rides.filter(f).map(r => r.name)); dpState.reps[ctx.park] = new Map(); }); drawDay(); drawTrip(); }); q.append(b, ' '); };
       pick('Headliners only', r => r.head); pick('Good for little kids', kidPick, 'Gentle rides with no height limit'); pick('Everything', () => true); pick('Nothing', () => false, 'Take every ride off'); q.append(riToggle()); box.append(q); }
@@ -2486,6 +2563,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
         box.append(b);
       });
     });
+    dineChips(box, ctxs.map(c => c.park), dpState.dine, () => { drawDay(); drawTrip(); });
   }
 
   // the day's key moments as a timeline: time on the left, a dot, then the moment and its details one per line
@@ -2522,6 +2600,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
         if (s.book) { nm.textContent = s.meal; li.className = 'meal book'; }
         else if (s.meal) {
           nm.textContent = s.meal; li.className = 'meal';
+          if (s.tip) { const tp = document.createElement('span'); tp.className = 'tg' + (s.sit ? ' dine' : ''); tp.textContent = (s.sit ? '🍽️ ' : '📱 ') + s.tip; nm.append(tp); }
           if (s.dine && s.dine.length) { const dn = document.createElement('span'); dn.className = 'tg'; dn.textContent = 'Nearby: ' + dineText(s.dine); nm.append(dn); }
         }
         else {
@@ -2692,6 +2771,8 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
   const tonightCtxs = (L) => L.P.hop ? L.P.H.ctxs : { [L.ctx.park]: L.ctx };
   function drawTonight() {
     const el = document.getElementById('dp-tonight'); if (!el || !dpLast) return;
+    { const P = dpLast.P, steps = P.hop ? ((dpState.brk > 0 && P.Hb) || P.H).flat : P.split ? P.split.morning.steps.concat(P.split.evening.steps) : P.stay.plan.steps;
+      const dn = document.getElementById('dp-dinenote'), m = dineMiss(steps || []); dn.hidden = !m; dn.textContent = m; }
     const T = tonightText(dpLast.ctx.iso, tonightCtxs(dpLast)); el.hidden = !T; el.textContent = '';
     if (T) tonightInto(el, T);
   }
@@ -2890,7 +2971,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
     const items = []; const head = [];
     const dateLbl = new Date(Date.UTC(ctx.Y, ctx.M - 1, ctx.Dd)).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
     const title = kind === 'hop' ? `Park Hopper · ${dateLbl} · ${hopKind === 'split' ? 'with a midday break' : 'all day'}` : `${ctx.park} · ${dateLbl} · ${kind === 'split' ? 'Split day' : 'Stay all day'}`;
-    const step = (s) => s.book ? { t: s.t, n: s.meal.replace('📱 ', ''), x: 'Lightning Lane booking' } : s.meal ? { t: s.t, n: s.meal, x: `${s.dur} min` + (s.dine && s.dine.length ? ' · Nearby: ' + dineText(s.dine) : '') } : { t: s.t, n: s.ride, x: (s.walk >= 3 ? `${s.walk} min walk · ` : '') + (s.ll ? `Lightning Lane (around this time, when your window opens) · ~${s.wait} min (standby ~${s.standby})` : `~${s.wait} min wait${s.r.sr ? ' · Single Rider line available' : ''}`) + (s.r.minH ? (tooShort(s.r) ? ` · Riders must be at least ${s.r.minH} in tall, so not everyone can ride (ask for Rider Switch)` : ` · Riders must be at least ${s.r.minH} in tall`) : '') };
+    const step = (s) => s.book ? { t: s.t, n: s.meal.replace('📱 ', ''), x: 'Lightning Lane booking' } : s.meal ? { t: s.t, n: s.meal, x: `${s.dur} min` + (s.tip ? ' · ' + s.tip : '') + (s.dine && s.dine.length ? ' · Nearby: ' + dineText(s.dine) : '') } : { t: s.t, n: s.ride, x: (s.walk >= 3 ? `${s.walk} min walk · ` : '') + (s.ll ? `Lightning Lane (around this time, when your window opens) · ~${s.wait} min (standby ~${s.standby})` : `~${s.wait} min wait${s.r.sr ? ' · Single Rider line available' : ''}`) + (s.r.minH ? (tooShort(s.r) ? ` · Riders must be at least ${s.r.minH} in tall, so not everyone can ride (ask for Rider Switch)` : ` · Riders must be at least ${s.r.minH} in tall`) : '') };
     if (kind === 'hop') {
       const H = hopKind === 'split' ? P.Hb : P.H;
       { const [it, e] = morning(H.ctx, H.arrive); items.push(it); }
@@ -3287,10 +3368,10 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
   const dSet = (d, p, nm, n) => { if (n <= 0) { d.rides[p].delete(nm); d.reps[p].delete(nm); return; } d.rides[p].add(nm); if (n > 1) d.reps[p].set(nm, n); else d.reps[p].delete(nm); };
   // run a planner with one day's rides, break, pace and starting park standing in for the global settings
   function wzApply(d) {
-    const sv = { brk: dpState.brk, brkAt: dpState.brkAt, rides: dpState.rides, reps: dpState.reps, walk: dpState.walk, win: dpState.win };
+    const sv = { brk: dpState.brk, brkAt: dpState.brkAt, rides: dpState.rides, reps: dpState.reps, walk: dpState.walk, win: dpState.win, dine: dpState.dine };
     dpState.brk = d.brk; if (d.walk != null) dpState.walk = d.walk; if (d.win) dpState.win = d.win; if (d.brkAt != null) dpState.brkAt = d.brkAt;
     dpState.rides = { 'Disneyland': d.rides['Disneyland'], 'California Adventure': d.rides['California Adventure'] };
-    dpState.reps = d.reps;
+    dpState.reps = d.reps; dpState.dine = d.dine || { lunch: null, dinner: null };
     return () => Object.assign(dpState, sv);
   }
   function wzParkDays() {
@@ -3390,6 +3471,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
           const more = wzMore(X.left, ctxs, taken, qs => { const P2 = planDay(ctx, withRides(ctx, pool, qs)); return !(P2.split || P2.stay.plan).left.length; });
           const adv = fullAdvice(X.morning.steps.concat(X.evening.steps), X.left, (p, name) => { const P2 = planDay(ctx, pool.filter(r => r.name !== name)); return (P2.split || P2.stay.plan).left; });
           note.textContent = wzSlack(X.left, X.leave, P.win.t1, freeCosts, more, adv);
+          { const dm = dineMiss(X.morning.steps.concat(X.evening.steps)); if (dm) mk('p', 'qt-note').textContent = dm; }
           if (P.brkMoved) mk('p', 'qt-note').textContent = `No break fits around ${brkAtLbl(day.brkAt)} on this day, so the planner picked the best time for it.`;
           return { left: X.left, slack: P.win.t1 - X.leave, freeCosts, more, adv, glance: { text: glanceText(X.leave, X.done, pool.length, X.totalWait, X.morning.steps.concat(X.evening.steps), X.heat), target: times } };
         } else {
@@ -3400,6 +3482,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
           const more = wzMore(S.plan.left, ctxs, taken, qs => !planDay(ctx, withRides(ctx, pool, qs)).stay.plan.left.length);
           const adv = fullAdvice(S.plan.steps, S.plan.left, (p, name) => planDay(ctx, pool.filter(r => r.name !== name)).stay.plan.left);
           note.textContent = wzSlack(S.plan.left, S.leave, P.win.t1, freeCosts, more, adv);
+          { const dm = dineMiss(S.plan.steps); if (dm) mk('p', 'qt-note').textContent = dm; }
           return { left: S.plan.left, slack: P.win.t1 - S.leave, freeCosts, more, adv, glance: { text: glanceText(S.leave, S.done, pool.length, S.plan.totalWait, S.plan.steps, S.heat), target: times } };
         }
       } else {
@@ -3416,6 +3499,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
         const hopDrop = (p, name) => { const had = day.rides[p].has(name); day.rides[p].delete(name); try { const Y = (day.brk > 0 && planHopper(iso, D, true)) || planHopper(iso, D, false); return Y ? Y.left : H.left; } finally { if (had) day.rides[p].add(name); } };
         const adv = fullAdvice(H.segs.flatMap(s => s.steps), H.left, hopDrop);
         note.textContent = wzSlack(H.left, H.leave, closeH, freeCosts, more, adv);
+        { const dm = dineMiss(H.flat); if (dm) mk('p', 'qt-note').textContent = dm; }
         if (H.whyLeft) mk('p', 'qt-note').textContent = H.whyLeft;
         if (H.brkMoved) mk('p', 'qt-note').textContent = `No break fits around ${brkAtLbl(day.brkAt)} on this day, so the planner picked the best time for it.`;
         return { left: H.left, slack: closeH - H.leave, freeCosts, more, adv, glance: { text: glanceText(H.leave, H.done, H.total, H.totalWait, H.flat), target: times } };
@@ -3590,6 +3674,8 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
         section(`${pre}Add more`, free, r => wzChip(r.name, false, () => { lastTap = { key: p + '|' + r.name, added: true }; day.rides[p].add(r.name); drawWalk(D); }));
         section(`${pre}On other days (tap to do it today too; it stays on the other day)`, other, r => { const ns = daysOf(p, r.name).map(o => pd.findIndex(x => x.iso === o) + 1); return wzChip(`${r.name} (Day ${ns.join(', ')})`, false, () => { lastTap = { key: p + '|' + r.name, added: true }; day.rides[p].add(r.name); drawWalk(D); }); });
       });
+      if (!day.dine) day.dine = { lunch: null, dinner: null };
+      dineChips(chips, opt.parks, day.dine, () => drawWalk(D));
       body.append(chips);
       const planBox = el('div'); body.append(planBox);
       const fit = wzRenderPlan(planBox, iso, opt, day, D);
@@ -3615,6 +3701,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
     tbl.append(tb); const wrap = el('div', 'qt-tablewrap'); wrap.append(tbl); body.append(wrap);
     const left = WZ_PARKS.flatMap(p => { const all = dayContext(pd[0].iso, p, D).rides; return all.filter(r => wz.sel[p].has(r.name) && !pd.some(x => wz.days[x.iso].rides[p].has(r.name))).map(r => `${r.name} (${wzAbbr(p)})`); });
     if (left.length) body.append(el('p', 'qt-note', `Picked but not on any day: ${left.join(', ')}.`));
+    { const bk = tripBookings(pd); if (bk.length) { const box = el('div', 'qt-note qt-tonight'); const b = el('b', '', '🍽️ Restaurant bookings'); const ul = el('ul'); bk.forEach(x => ul.append(el('li', '', bookingLine(x)))); box.append(b, ul); body.append(box); } }
     body.append(el('p', 'qt-note', `Pace: ${{ relaxed: 'relaxed', normal: 'normal', fast: 'go-go' }[dpState.pace]}. The PDF starts with a trip overview (your days and the rides on each), then one page per park day with tick boxes: the schedule, Lightning Lane order, weather, meal ideas, closures and events.`));
     const nav = el('div', 'qt-controls');
     const back = el('button', 'qt-btn', `← Day ${nDays}`); back.type = 'button'; back.addEventListener('click', () => go(wz.step - 1));
@@ -3801,6 +3888,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
         const d = S.dp;
         ['park', 'brk', 'brkAt', 'hotel', 'custom', 'll', 'single', 'pace', 'start', 'walk', 'b2b', 'height'].forEach(k => { if (d[k] != null) dpState[k] = d[k]; });
         if (d.win && typeof d.win === 'object') dpState.win = Object.assign({}, dpState.win, d.win);
+        if (d.dine && typeof d.dine === 'object') dpState.dine = { lunch: d.dine.lunch || null, dinner: d.dine.dinner || null };
         if (d.reps) Object.keys(d.reps).forEach(p => { if (dpState.reps[p]) dpState.reps[p] = new Map(Object.entries(d.reps[p])); });
         if (d.date && d.date >= todayISO()) dpState.date = d.date;
         if (d.rides) Object.keys(d.rides).forEach(p => { if (Array.isArray(d.rides[p])) dpState.rides[p] = new Set(d.rides[p]); });
@@ -3817,7 +3905,7 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
         const W = S.wz; wz.key = W.key || ''; wz.step = 0;
         if (W.sel) wz.sel = Object.fromEntries(WZ_PARKS.map(p => [p, new Set(W.sel[p] || [])]));
         wz.reps = Object.fromEntries(WZ_PARKS.map(p => [p, new Map(Object.entries((W.reps && W.reps[p]) || {}))]));
-        if (W.days) wz.days = Object.fromEntries(Object.entries(W.days).map(([iso, d]) => [iso, { brk: d.brk, brkAt: d.brkAt, walk: d.walk, pace: d.pace, start: d.start, win: d.win && typeof d.win === 'object' ? Object.assign({}, dpState.win, d.win) : Object.assign({}, dpState.win), rides: Object.fromEntries(WZ_PARKS.map(p => [p, new Set((d.rides && d.rides[p]) || [])])), reps: Object.fromEntries(WZ_PARKS.map(p => [p, new Map(Object.entries((d.reps && d.reps[p]) || {}))])) }]));
+        if (W.days) wz.days = Object.fromEntries(Object.entries(W.days).map(([iso, d]) => [iso, { brk: d.brk, brkAt: d.brkAt, walk: d.walk, pace: d.pace, start: d.start, win: d.win && typeof d.win === 'object' ? Object.assign({}, dpState.win, d.win) : Object.assign({}, dpState.win), rides: Object.fromEntries(WZ_PARKS.map(p => [p, new Set((d.rides && d.rides[p]) || [])])), reps: Object.fromEntries(WZ_PARKS.map(p => [p, new Map(Object.entries((d.reps && d.reps[p]) || {}))])), dine: d.dine && typeof d.dine === 'object' ? { lunch: d.dine.lunch || null, dinner: d.dine.dinner || null } : { lunch: null, dinner: null } }]));
       }
       if (S.take) { if (S.take.which) takeState.which = S.take.which; if (S.take.ticks) Object.entries(S.take.ticks).forEach(([k, v]) => takeState.ticks.set(k, new Set(v))); }
     } catch (e) { console.warn('Could not restore settings', e); }
@@ -3843,10 +3931,10 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
       const ticks = {}; takeState.ticks.forEach((v, k) => { ticks[k] = [...v]; });
       localStorage.setItem('pdp-state', JSON.stringify({
         w: plState.w, pl: { park: plState.park, school: plState.school },
-        dp: { date: dpState.date, park: dpState.park, brk: dpState.brk, brkAt: dpState.brkAt, pace: dpState.pace, walk: dpState.walk, start: dpState.start, height: dpState.height, win: dpState.win, hotel: dpState.hotel, custom: dpState.custom, ll: dpState.ll, single: dpState.single, b2b: dpState.b2b, rides, reps: repsOut(dpState.reps) },
+        dp: { date: dpState.date, park: dpState.park, brk: dpState.brk, brkAt: dpState.brkAt, pace: dpState.pace, walk: dpState.walk, start: dpState.start, height: dpState.height, win: dpState.win, hotel: dpState.hotel, custom: dpState.custom, ll: dpState.ll, single: dpState.single, b2b: dpState.b2b, dine: dpState.dine, rides, reps: repsOut(dpState.reps) },
         tp: { v: 2, start: tpState.start, auto: tpState.auto, days: tpState.days, rest: tpState.rest, ticket: tpState.ticket, each: tpState.each, manual: tpState.manual, inT: tpState.inT, outT: tpState.outT },
         take: { which: takeState.which, ticks },
-        wz: { key: wz.key, step: wz.step, reps: repsOut(wz.reps), sel: wz.sel ? Object.fromEntries(WZ_PARKS.map(p => [p, [...wz.sel[p]]])) : null, days: wz.days ? Object.fromEntries(Object.entries(wz.days).map(([iso, d]) => [iso, { brk: d.brk, brkAt: d.brkAt, walk: d.walk, pace: d.pace, start: d.start, win: d.win, rides: Object.fromEntries(WZ_PARKS.map(p => [p, [...d.rides[p]]])), reps: repsOut(d.reps) }])) : null }
+        wz: { key: wz.key, step: wz.step, reps: repsOut(wz.reps), sel: wz.sel ? Object.fromEntries(WZ_PARKS.map(p => [p, [...wz.sel[p]]])) : null, days: wz.days ? Object.fromEntries(Object.entries(wz.days).map(([iso, d]) => [iso, { brk: d.brk, brkAt: d.brkAt, walk: d.walk, pace: d.pace, start: d.start, win: d.win, dine: d.dine, rides: Object.fromEntries(WZ_PARKS.map(p => [p, [...d.rides[p]]])), reps: repsOut(d.reps) }])) : null }
       }));
     } catch (e) { /* storage unavailable */ }
   }
@@ -3990,6 +4078,8 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
         rowsP.forEach(([iso, names]) => line(`Day ${dayNo.get(iso)} · ${shortD(iso)}: ${names.join(', ')}`, 9.5, { x: 8 }));
       });
     }
+    { const pd = parkDays.map((i, k) => ({ iso: days[i], opt: chosen.get(i) })), bk = tripBookings(pd);
+      if (bk.length) { y += 8; line('Restaurant bookings', 13, { bold: true }); bk.forEach(b => line(bookingLine(b), 9.5, { x: 8 })); } }
     // ---- one page per park day
     const savedLast = dpLast;
     try {

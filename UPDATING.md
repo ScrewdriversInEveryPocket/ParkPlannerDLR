@@ -89,7 +89,7 @@ it's a small world,Disneyland,2026-10-30,2026-11-12,Closed for its holiday overl
 
 ## The routine
 
-1. **Back up.** Copy the files you'll change into `_BACKUP\<date>-<what>\`, for example `_BACKUP\2027-01-10-before-hours`. `import-dataset.ps1` does this for you. `_BACKUP` and `_sources` are local only (see `.gitignore`).
+1. **Back up.** Copy the files you'll change into `_BACKUP\<date>-<what>\`, for example `_BACKUP\2027-01-10-before-hours`. `import-dataset.ps1` does this for you. `_BACKUP` is local only (see `.gitignore`); `_sources` is uploaded with the app.
 2. **Get the new data** from the source named in the dataset's section below. Save raw downloads under `_sources\<dataset>\` with the date in the file name, so the next person can see what was used.
 3. **Edit the CSV.**
    - Copy it out with `export-dataset.ps1`, edit it, then put it back with `import-dataset.ps1`.
@@ -292,15 +292,17 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
 
 ### `dining`: restaurants
 
-- **What:** `park`, `land` (must exist in `lands`), `name`, and `kind` (`quick service`, `table service` or `snack`).
+- **Source:** Disney's dining list feed, the one behind [disneyland.disney.go.com/dining/](https://disneyland.disney.go.com/dining/): `.../finder/api/v1/explorer-service/list-ancestor-entities/dlr/80008297;entityType=destination/YYYY-MM-DD/dining` for the list, and `.../details-entity-simple/dlr/<slug>/YYYY-MM-DD/` for each place. Disney's site can't be reached from a cloud sandbox, so run it on a PC.
+- **Columns:** `park`, `land` (must exist in `lands`), `name`, `kind` (`quick service`, `table service`, `snack`, `lounge`, `event` for dining packages, `festival` for seasonal booths), `reservations` (`none`, `accepted`, `recommended`, `required`), `walkup` (Disney's walk-up list in the app), `mobile_order`, `price` (`$` to `$$$$`), `meals` (split by `;`), `cuisine`, `note`, `disney_id`, `url`.
 - **How meals use it:**
-  - Meals are planned at the nearest `quick service` place that has a map point in `park_places` (kind `food`).
-  - The rest are offered as nearby alternatives.
+  - Meals are planned at the nearest `quick service` place, using its `food` point in `park_places`.
+  - Quick service, table service, snacks and lounges are offered as nearby alternatives. Events, festival booths and members-only places aren't suggested.
+  - The **Sit-down meals** picks are the `table service` places that serve lunch or dinner, plus lounges with a walk-up list. `reservations` of `accepted` or `recommended` (and a note that isn't "only for breakfast") gives the 60-day booking reminder; `walkup` = `yes` adds the walk-up list fallback; `mobile_order` = `yes` adds the mobile order tip on quick-service meals.
 - **How:**
-  1. Add, rename or remove places to match Disney's dining list.
-  2. For a new quick-service place, also add a `food` row to `park_places` so walking times are exact.
-  3. Don't add Downtown Disney: meals are always inside the parks.
-- **Check:** `check.html`'s Notes section lists restaurants without a map point.
+  1. On the PC: `cd _sources\dining`, then `.\fetch-dining.ps1 -Date YYYY-MM-DD` and `.\parse-dining.ps1 -Date YYYY-MM-DD` (see the README there). That writes `disney_dining.csv` (with Disney's map pins) and `disney_dining_hours.csv` (a week of hours).
+  2. Turn the CSV into `data/dining.js` with the app's land names (San Fransokyo Square is `Pacific Wharf`, the Performance Corridor wine terraces are `Pacific Wharf`; a place with no land gets the land of the nearest ride), and replace the `food` rows in `park_places` with Disney's pins (`osm` = `disney:<id>`). Carts listed for both parks go in the park where the pin is.
+  3. Don't add Downtown Disney or hotel restaurants: meals are always inside the parks.
+- **Check:** `check.html` shows no restaurants without a map point.
 
 ### `park_places`: map points (OpenStreetMap, ODbL)
 

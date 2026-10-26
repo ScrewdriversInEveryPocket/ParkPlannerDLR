@@ -73,7 +73,7 @@
       const unplaced = [...rideSet].filter(k => !placed.has(k)).map(k => k.split('|')[1]);
       if (unplaced.length) note('park_places', 'info', `no map point for ${unplaced.join(', ')} (walks use the land map)`);
       const food = new Set(store.park_places.data.filter(r => r.kind === 'food').map(r => r.park + '|' + r.name));
-      const nofood = (store.dining ? store.dining.data : []).filter(r => !food.has(r.park + '|' + r.name)).map(r => r.name);
+      const nofood = (store.dining ? store.dining.data : []).filter(r => r.kind !== 'event' && r.kind !== 'festival' && !food.has(r.park + '|' + r.name)).map(r => r.name);
       if (nofood.length) note('dining', 'info', `${nofood.length} without a map point (walks use the land map): ${nofood.join(', ')}`);
     }
   })();
