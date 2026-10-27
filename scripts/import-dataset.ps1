@@ -52,15 +52,15 @@ if ($Until) { $head = & $set $head 'until' $Until }
 if ($Review) { $head = & $set $head 'review' $Review }
 [IO.File]::WriteAllText($file, $head + $new + "`n" + '`);' + "`n", $utf8)
 
-# bump the offline cache so installed copies of the app download the new data: "yyyy/MM/dd - vN", N counting up within a day
+# bump the offline cache so installed copies of the app download the new data: 1.YYYYMM.N, N counting up within a month
 $swPath = Join-Path $root 'version.js'
 $sw = [IO.File]::ReadAllText($swPath, $utf8)
 $vm = [regex]::Match($sw, "PDP_VERSION = '([^']*)'")
 if ($vm.Success) {
-  $today = (Get-Date).ToString('yyyy/MM/dd', [Globalization.CultureInfo]::InvariantCulture)
-  $dm = [regex]::Match($vm.Groups[1].Value, '^(\d{4}/\d{2}/\d{2}) - v(\d+)$')
-  $n = if ($dm.Success -and $dm.Groups[1].Value -eq $today) { [int]$dm.Groups[2].Value + 1 } else { 1 }
-  $next = "$today - v$n"
+  $month = (Get-Date).ToString('yyyyMM', [Globalization.CultureInfo]::InvariantCulture)
+  $dm = [regex]::Match($vm.Groups[1].Value, '^1\.(\d{6})\.(\d+)$')
+  $n = if ($dm.Success -and $dm.Groups[1].Value -eq $month) { [int]$dm.Groups[2].Value + 1 } else { 1 }
+  $next = "1.$month.$n"
   [IO.File]::WriteAllText($swPath, $sw.Replace($vm.Value, "PDP_VERSION = '$next'"), $utf8)
   Write-Host "version.js is now $next."
 }

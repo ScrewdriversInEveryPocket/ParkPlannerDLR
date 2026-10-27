@@ -12,7 +12,7 @@ The Disneyland Resort Planning Tool by ScrewdriversInEveryPocket ("DLR Planner" 
 | `shim.js` | Data layer (`window.dash`). It parses and checks each dataset, runs calcs, and fetches the live forecast, live park hours (ThemeParks.wiki) and US public holidays (Nager.Date). |
 | `data/*.js` | One bundled dataset per file. Each has CSV text plus a header: source, `pulled`, `until`, `review`, `columns`. |
 | `data/manifest.js` | Lists every data file. Both `index.html` and `sw.js` read it. |
-| `version.js` | The app's only version label: the date and which version of that day (`2026/10/26 - v1`, back to v1 each new day; plain `pdp-vNN` up to v54). Raise it whenever any file changes: `sw.js` uses it to refresh the offline cache, and the page shows it at the top. |
+| `version.js` | The app's only version: `1.YYYYMM.N`, N counting the updates saved that month and back to 1 each new month (e.g. `1.202610.4`, shown as "Version 1.202610.4"; earlier `pdp-v19`–`pdp-v54`, then `2026/10/26 - v1`–`v3`). Raise it whenever any file changes: `sw.js` uses it to refresh the offline cache, and the page shows it at the top. |
 | `sw.js` | Offline cache. Reads its version from `version.js`. |
 | `check.html` | Quick check: every dataset, then 12 sample days in the real app. |
 | `tests/` | The full test run (`tests/run.html`) and the expected plans (`tests/golden/plans.json`). See `tests/README.md`. |
@@ -71,7 +71,7 @@ Follow **[UPDATING.md](UPDATING.md)**. If you're asked to "update all the data" 
 - **Back up before editing.** Copy files to `_BACKUP/<date>-<change>/` first.
 - **Never commit or push without the owner's go-ahead.**
 - **Every change:**
-  - bump the version in `version.js` (today's date, next number for the day) and add a line to `CHANGELOG.md`;
+  - bump the version in `version.js` (`1.YYYYMM.N`: next N this month, or 1 in a new month) and add a line to `CHANGELOG.md`;
   - run the tests: `powershell -ExecutionPolicy Bypass -File .\scripts\test.ps1` (about two minutes; see `tests/README.md`);
   - if plans changed on purpose, read the listed differences, then save them with `test.ps1 -Update`;
   - plan a day in each park.
