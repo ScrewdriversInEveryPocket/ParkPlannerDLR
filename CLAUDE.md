@@ -35,16 +35,16 @@ The scripts load in this order, and they share one set of top-level names (every
 | `js/explore.js` | Hourly and planner data, the best-dates finder (wizard Dates step), best time of day heatmaps, events chart |
 | `js/controls.js` | Shared settings (`dpState`, and `SETTINGS`: one list of every setting with a control, used to bind both tabs' copies, `syncGlobals` and saving), repeat rides, ride details, tap-to-cycle and restaurant chips, hotels (`HOTELS`, `HOTEL_WALK` and `travelMin`, from `data/hotels.js`), start and finish, break |
 | `js/day.js` | The planner's day: day context (`dayContext`), closure and data notes, the About-the-data table, expected waits |
-| `js/walks.js` | Gates (`GATE`, `GC_GATE`), security and tap-in lines (`SEC`, `entryInfo`), Lightning Lane settings (`LL`), places (`PLACES`), walking times (`walkMin`), meal and show spots |
+| `js/walks.js` | Gates (`GATE`, `GC_GATE`), security and tap-in lines (`SEC`, `entryInfo`), Lightning Lane settings (`LL`), places (`PLACES`), walking times (`walkMin`, remembered per pair of place objects in `WALK_MEMO`), meal and show spots (`mealSpots` builds each park's quick-service list once, so the same objects are reused and the memo hits; `dineSpot` in `js/meals.js` does the same per restaurant via `DINE_SPOTS`). Place objects are shared, so never change one |
 | `js/scheduler.js` | The scheduler: break timing, free time, fit advice, Lightning Lane bookings, `scheduleBlock`, `llPlan`, `planDay`; meal times (`mealWin`); more time when rides or meal times don't fit (`flexFix`, `flexText`) |
 | `js/meals.js` | Restaurants (`DINING`, `DINE_PICKS`), booking tips, picked meals and their notes, meal stops near the next ride (`annotateMeals`) |
 | `js/restrooms.js` | Restroom stops on plans (`RESTROOMS`, `annotateRestrooms`) |
 | `js/hopper.js` | Park Hopper days (`planHopper`, `planHopperBoth`) |
 | `js/fit.js` | Fit checks: which rides would still fit (`roomFor`), the summary line (`glanceText`, `fitStatus`) |
-| `js/plan-day.js` | Plan a day: fit banner, ride chips, schedule list, day charts, Tonight |
+| `js/plan-day.js` | Plan a day: fit banner, ride chips, schedule list, day charts, Tonight. Slow extras (`roomFor`, `fullAdvice`) run just after the plan paints in one `dpLater` job (one job at a time: a new draw replaces it; `dpFlush()` runs it now, which the tests use); the week-at-a-glance plans fill in on a timer guarded by `weekToken`. A restaurant tap redraws only the day (`drawDay`), not trip scoring |
 | `js/take.js` | Plan a day, take it with you: checklist and copy text |
 | `js/trip.js` | Trip wizard, first steps: your trip, trip scoring and best dates |
-| `js/wizard.js` | Trip wizard: days, rides, day pages, export step, walking chart |
+| `js/wizard.js` | Trip wizard: days, rides, day pages, export step, walking chart. A day page shows its plan first; `fit.later()` (room for more via `wzMore`, take-off advice via `fullAdvice`) runs just after as `wz.laterJob` |
 | `js/time-of-day.js` | Time of day overlay chart and its chips |
 | `js/walk-explorer.js` | Walking times page (More menu): the walk between any two mapped spots at each pace and crowd level |
 | `js/state.js` | Restoring and saving settings (localStorage `pdp-state`) |

@@ -95,12 +95,18 @@ function walkMin0(park, from, to, gates) {
   return Math.round(Math.hypot(p[0] - q[0], p[1] - q[1]) * WALK_WIND);
 }
 // meals: the nearest quick-service place that serves lunch and dinner, from where you are (from the gate, that's on your way in)
-function mealSpot(park, from, gates) {
+// each park's list is made once and reused (never changed), in the same order, so walkMin's memo (kept per object) finds them again
+const MEAL_SPOTS = new Map();
+function mealSpots(park) {
+  let L = MEAL_SPOTS.get(park); if (L) return L;
   const all = Object.entries(DINING[park] || {}).flatMap(([land, xs]) => xs.filter(([, k,
           m]) => k === 'quick service' && (!m || /lunch|dinner/.test(m))).map(([n, k]) => ({ name: n, kind: k, land, pos: lookupPlace(park, n, 'food', 'mid')
         })));
+  MEAL_SPOTS.set(park, L = { all, located: all.filter(x => x.pos) }); return L;
+}
+function mealSpot(park, from, gates) {
+  const { all, located } = mealSpots(park);
   const here = from ? from.land : ENTRY_LAND[park];
-  const located = all.filter(x => x.pos);
   if (located.length && posOf(park, from, 'exit', gates)) return located.reduce((b, x) => walkMin(park, from, x, gates) < walkMin(park, from, b, gates) ? x : b);
   const same = all.filter(x => x.land === here);
   return same[0] || ((DINING_NEAR[park] || {})[here] || []).map(l => all.find(x => x.land === l)).find(Boolean) || null;

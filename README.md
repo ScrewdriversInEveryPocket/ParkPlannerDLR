@@ -90,7 +90,7 @@ One page per park day, with that day's hours, weather, events and full schedule.
 - tap rides under **On this day** to ride them more times, or press and hold to take them off;
 - add a ride from **Add more**, or from **On other days** (it stays on the other day too).
 
-As you add rides, a banner sums up the plan (when you'd leave, how many rides fit, time in lines, any free time) with a **See the plan** link, and tells you whether there's **room for more** or the **day is full**. When there's room, it names the rides that would still fit and ticks them ✓ in the list. When the day is full, it lists the rides you picked that take the most time and what taking each one off would make room for. If the plan has spare time before a break or before park hopping opens at 11 am, it shows it as free time with rides that would fit there.
+As you add rides, a banner sums up the plan (when you'd leave, how many rides fit, time in lines, any free time) with a **See the plan** link, and tells you whether there's **room for more** or the **day is full**. When there's room, it names the rides that would still fit and ticks them ✓ in the list. When the day is full, it lists the rides you picked that take the most time and what taking each one off would make room for. If the plan has spare time before a break or before park hopping opens at 11 am, it shows it as free time with rides that would fit there. To keep taps quick, the plan itself shows first; the room-for-more check, the take-off advice and the week-at-a-glance plans (each of which plans the day again several times) fill in a moment later, with the same results as before.
 
 ### 6. Export
 

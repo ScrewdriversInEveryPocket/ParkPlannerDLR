@@ -45,7 +45,11 @@ function tripBookings(pd) {
 const bookingLine = (b) => `${b.r.name}, ${b.meal} on Day ${b.n} (${fmtDay(b.iso)}): ${b.r.book ? (b.open <= todayISO() ?
     'book now in the Disneyland app, reservations are open' : `book in the Disneyland app on ${fmtDay(b.open)} at about 6 am`) + (b.r.walkup ?
     '; walk-up list on the day if you miss it' : '') : b.r.walkup ? 'walk-up list only: join it in the app on the day' : 'no booking needed'}.`;
-const dineSpot = (park, name) => ({ name, kind: 'table service', land: (DINE_BY_KEY[park + '|' + name] || {}).land, pos: lookupPlace(park, name, 'food', 'mid'), sit: DINE_BY_KEY[park + '|' + name] });
+// one object per restaurant, made once and reused (never changed), so walkMin's memo (kept per object) finds it again
+const DINE_SPOTS = new Map();
+const dineSpot = (park, name) => { const k = park + '|' + name; let s = DINE_SPOTS.get(k);
+  if (!s) DINE_SPOTS.set(k, s = { name, kind: 'table service', land: (DINE_BY_KEY[k] || {}).land, pos: lookupPlace(park, name, 'food', 'mid'), sit: DINE_BY_KEY[k] });
+  return s; };
 // the restaurant picked for a meal on this day, if it's in this park
 const dinePicked = (park, kind, S = dpState) => { const k = S.dine && S.dine[kind]; if (!k) return null; const [p, n] = k.split('|'); return p === park && DINE_BY_KEY[k] ? dineSpot(p, n) : null; };
 // picked meals that didn't make it into the plan, and why: the restaurant is in a park the day doesn't visit ('park'),

@@ -1,13 +1,15 @@
 // DLR Planner: Plan a day: fit banner, ride chips, schedule list, day charts, Tonight.
 // Part of the app script. The js files load in the order of their script tags in index.html (listed in CLAUDE.md).
-// Work that can wait a moment after a plan is drawn (the "take X off to make room" advice, which re-plans the day a few
-// times): it runs just after, unless another draw comes first. dpFlush() runs it straight away (the tests use it).
+// Work that can wait a moment after a plan is drawn (the "room for more" check, which re-plans the day once per unpicked
+// ride, and the "take X off to make room" advice, which re-plans it a few times): it runs just after, so the plan shows
+// first, unless another draw comes first. One job at a time (a new draw replaces it). dpFlush() runs it straight away (the tests use it).
 let dpLaterJob = null;
 function dpLater(f) { dpLaterJob = f; setTimeout(() => { if (dpLaterJob === f) dpFlush(); }, 0); }
 function dpFlush() { const f = dpLaterJob; dpLaterJob = null; if (f) f(); }
-function dpFitStatus(ctxs, left, end, close, trial, adv, glance) {
+// the fit banner; more is dpRoom()'s answer, or null until it's worked out (the banner estimates from spare time meanwhile)
+const dpRoom = (ctxs, left, trial) => left.length ? null : roomFor(ctxs, (p, r) => !dpState.rides[p].has(r.name), trial);
+function dpFitStatus(ctxs, left, end, close, more, adv, glance) {
   const free = [].concat(ctxs).flatMap(c => c.rides.filter(r => !dpState.rides[c.park].has(r.name)).map(r => 20 + expWait(c, r, 14) + r.rmin));
-  const more = left.length ? null : roomFor(ctxs, (p, r) => !dpState.rides[p].has(r.name), trial);
   // only suggest what could still help: the planner has already tried every shorter break (down to FLEX_BRK_MIN_H at the
   // hotel) and a finish up to FLEX_END_MAX_H later, so a later finish is only worth suggesting when close is later still
   const W = dpState.win, endAt = W.end === 'set' ? (([h, m]) => h + m / 60)(W.endAt.split(':').map(Number)) : null;
@@ -54,7 +56,8 @@ function buildRideChips(ctxs) {
     });
   });
   if (dropped.length) { const n = document.createElement('span'); n.className = 'g qt-dinehint'; n.textContent = closedOffText(dropped, ctxs[0].iso); box.append(n); }
-  dpDineAt = dineChips(box, ctxs.map(c => c.park), dpState.dine, () => { drawDay(); drawTrip(); }, { value: { lunch: dpState.lunchAt, dinner: dpState.dinnerAt },
+  // a restaurant pick only changes this day's plan (trip scoring doesn't use it, and wizard days keep their own), so just the day is redrawn
+  dpDineAt = dineChips(box, ctxs.map(c => c.park), dpState.dine, () => drawDay(), { value: { lunch: dpState.lunchAt, dinner: dpState.dinnerAt },
     set: (k, v) => { dpState[k + 'At'] = v || 'auto'; syncGlobals(); drawDay(); if (wz.D) drawWalk(wz.D); } });
 }
 
@@ -399,11 +402,11 @@ function drawHopperDay(D) {
     const drop = (p, name) => { const had = dpState.rides[p].has(name); dpState.rides[p].delete(name); try {
         const Y = (Hb && planHopper(dpState.date, D, true)) || planHopper(dpState.date, D, false); return Y ? Y.left : V.left; } finally {
         if (had) dpState.rides[p].add(name); } };
-    const fit = (adv) => dpFitStatus([dl, dca], V.left, last.end, Math.max(dl.close, dca.close), trial, adv,
+    const fit = (more, adv) => dpFitStatus([dl, dca], V.left, last.end, Math.max(dl.close, dca.close), more, adv,
       { warn: flexWarn(V), text: glanceText(V.leave, V.done, V.total, V.totalWait, V.flat), target: document.getElementById(Hb && dpState.brk > 0 ? 'dp-split' : 'dp-stay') });
-    // with rides left over, the plan shows now and the advice on what to take off fills in a moment later
-    if (!V.left.length) fit(null);
-    else { const tap = lastTap; fit(null); dpLater(() => { lastTap = tap; fit(fullAdvice(V.segs.flatMap(s => s.steps), V.left, drop)); }); } }
+    // the plan shows now; which rides would still fit (or, with rides left over, the advice on what to take off) fills in a moment later
+    const tap = lastTap; fit(null, null);
+    dpLater(() => { lastTap = tap; fit(dpRoom([dl, dca], V.left, trial), fullAdvice(V.segs.flatMap(s => s.steps), V.left, drop)); }); }
   // week at a glance: cheap columns now, the (slower) hop plan for each day filled in one day at a time
   const token = weekToken;
   const tb = document.querySelector('#dp-week tbody'); tb.textContent = '';
@@ -523,31 +526,37 @@ function drawDay() {
   }
   { const trial = (qs) => { const P2 = planDay(ctx, withRides(ctx, pool, qs)); return !((X && P2.split) ? P2.split.left : P2.stay.plan.left).length; };
     const drop = (p, name) => { const P2 = planDay(ctx, pool.filter(r => r.name !== name)); return (X && P2.split) ? P2.split.left : P2.stay.plan.left; };
-    if (X) dpFitStatus(ctx, X.left, Math.max(X.evening.end, X.ret), P.win.t1, trial, fullAdvice(X.morning.steps.concat(X.evening.steps), X.left, drop), {
+    const fit = X ? (more, adv) => dpFitStatus(ctx, X.left, Math.max(X.evening.end, X.ret), P.win.t1, more, adv, {
         warn: flexWarn(X), text: glanceText(X.leave, X.done, pool.length, X.totalWait, X.morning.steps.concat(X.evening.steps), X.heat),
-        target: document.getElementById('dp-split') });
-    else dpFitStatus(ctx, S.plan.left, S.plan.end, P.win.t1, trial, fullAdvice(S.plan.steps, S.plan.left, drop), {
-        warn: flexWarn(S), text: glanceText(S.leave, S.done, pool.length, S.plan.totalWait, S.plan.steps, S.heat), target: document.getElementById('dp-stay') }); }
+        target: document.getElementById('dp-split') })
+      : (more, adv) => dpFitStatus(ctx, S.plan.left, S.plan.end, P.win.t1, more, adv, {
+        warn: flexWarn(S), text: glanceText(S.leave, S.done, pool.length, S.plan.totalWait, S.plan.steps, S.heat), target: document.getElementById('dp-stay') });
+    // the plan shows now; which rides would still fit (or what to take off) fills in a moment later
+    const tap = lastTap; fit(null, null);
+    dpLater(() => { lastTap = tap; fit(dpRoom(ctx, X ? X.left : S.plan.left, trial),
+      X ? fullAdvice(X.morning.steps.concat(X.evening.steps), X.left, drop) : fullAdvice(S.plan.steps, S.plan.left, drop)); }); }
   dayChart(document.getElementById('dp-chart'), ctx, pool, P);
   renderTake();
-  // week at a glance
+  // week at a glance: cheap columns now, each day's plan (7 more plans) filled in just after, so the day's own plan shows first
+  const token = weekToken;
   const tb = document.querySelector('#dp-week tbody'); tb.textContent = '';
   const base = new Date(Date.UTC(ctx.Y, ctx.M - 1, ctx.Dd)); base.setUTCDate(base.getUTCDate() - ctx.dow);
+  const pending = [];
   for (let i = 0; i < 7; i++) {
     const d = new Date(base); d.setUTCDate(base.getUTCDate() + i);
     const iso = `${d.getUTCFullYear()}-${pad2(d.getUTCMonth() + 1)}-${pad2(d.getUTCDate())}`;
-    const c2 = dayContext(iso, ctx.park, D); const pool2 = expandPool(c2.rides.filter(r => sel.has(r.name)), dpState.reps[ctx.park]); const P2 = planDay(c2, pool2);
+    const c2 = dayContext(iso, ctx.park, D); const pool2 = expandPool(c2.rides.filter(r => sel.has(r.name)), dpState.reps[ctx.park]);
     const tr = document.createElement('tr'); if (iso === ctx.iso) tr.className = 'cur';
     const cells = [d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' }), `${fmtClock(c2.open)}–${fmtClock(c2.close % 24)}`,
-      f0(d3.mean(pool2.length ? pool2 : c2.rides, r => expWait(c2, r, 14))) + ' min',
-      P2.split ? `${fmtClock(P2.split.arrive)} → ${fmtClock(P2.split.brk)}, back ${fmtClock(P2.split.ret)} → ${fmtClock(P2.split.leave % 24)}` :
-        `${fmtClock(P2.stay.arrive)} → ${fmtClock(P2.stay.leave % 24)}`,
-      c2.evs.map(e => e.name).join(', ')];
+      f0(d3.mean(pool2.length ? pool2 : c2.rides, r => expWait(c2, r, 14))) + ' min', 'Planning…', c2.evs.map(e => e.name).join(', ')];
     cells.forEach((v, j) => { const td = document.createElement('td'); td.textContent = v; if (j === 0 || j === 3 || j === 4) td.className = 'l';
         if (j === 4) td.className = 'l ev qt-hide-narrow'; tr.append(td); });
     tr.addEventListener('click', () => { dpState.date = iso; dpDate.value = iso; drawDay(); });
-    tb.append(tr);
+    tb.append(tr); pending.push({ c2, pool2, td: tr.children[3] });
   }
+  setTimeout(() => { if (token !== weekToken) return; pending.forEach(({ c2, pool2, td }) => { const P2 = planDay(c2, pool2);
+      td.textContent = P2.split ? `${fmtClock(P2.split.arrive)} → ${fmtClock(P2.split.brk)}, back ${fmtClock(P2.split.ret)} → ${fmtClock(P2.split.leave % 24)}` :
+        `${fmtClock(P2.stay.arrive)} → ${fmtClock(P2.stay.leave % 24)}`; }); }, 0);
 }
 
 

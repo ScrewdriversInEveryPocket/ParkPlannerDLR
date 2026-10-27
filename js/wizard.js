@@ -143,13 +143,15 @@ function wzRenderPlan(box, iso, opt, day, D) {
         stepList(steps, [['Morning', X.morning.steps],
             [`Break ${fmtClock(X.brk)}–${fmtClock(X.ret)} · ${eOut.min} min each way${eOut.g ? " via the hotel's own park entrance" : ''}`, []], ['Evening',
               X.evening.steps]]);
-        const more = wzMore(X.left, ctxs, taken, qs => { const P2 = planDay(ctx, withRides(ctx, pool, qs), cfg); return !(P2.split || P2.stay.plan).left.length; });
-        const adv = fullAdvice(X.morning.steps.concat(X.evening.steps), X.left, (p, name) => { const P2 = planDay(ctx, pool.filter(r => r.name !== name), cfg); return (P2.split || P2.stay.plan).left; });
-        note.textContent = wzSlack(X.left, X.leave, P.win.t1, freeCosts, more, adv, cfg);
+        // which rides would still fit, or what to take off, fills in a moment after the page shows (later, below)
+        const later = () => { const more = wzMore(X.left, ctxs, taken, qs => { const P2 = planDay(ctx, withRides(ctx, pool, qs), cfg); return !(P2.split || P2.stay.plan).left.length; });
+          const adv = fullAdvice(X.morning.steps.concat(X.evening.steps), X.left, (p, name) => { const P2 = planDay(ctx, pool.filter(r => r.name !== name), cfg); return (P2.split || P2.stay.plan).left; });
+          note.textContent = wzSlack(X.left, X.leave, P.win.t1, freeCosts, more, adv, cfg); return { more, adv }; };
+        note.textContent = wzSlack(X.left, X.leave, P.win.t1, freeCosts, null, null, cfg);
         wzDine(mk('p', 'qt-note'), X.morning.steps.concat(X.evening.steps), [park], box, day, D);
         if (flexText(X)) mk('p', 'qt-note').textContent = flexText(X);
         if (P.brkMoved) mk('p', 'qt-note').textContent = `No break fits around ${brkAtLbl(day.brkAt)} on this day, so the planner picked the best time for it.`;
-        return { left: X.left, slack: P.win.t1 - X.leave, freeCosts, more, adv, where: mealWhere(planSegs(P, park, cfg)), glance: { warn: flexWarn(X),
+        return { left: X.left, slack: P.win.t1 - X.leave, freeCosts, more: null, adv: null, later, where: mealWhere(planSegs(P, park, cfg)), glance: { warn: flexWarn(X),
             text: glanceText(X.leave, X.done, pool.length, X.totalWait, X.morning.steps.concat(X.evening.steps), X.heat), target: times } };
       } else {
         keyTimes(times, [['Arrive', fmtClock(S.arrive), `${arrSub(ctx, S.arrive, cfg)} · opens ${fmtClock(ctx.open)}`], ['Leave', fmtClock(S.leave % 24),
@@ -159,12 +161,13 @@ function wzRenderPlan(box, iso, opt, day, D) {
               '') : 'park hours too short for the break, so no break') : ''}`;
         ll.textContent = llText(S.llp);
         stepList(steps, [['', S.plan.steps]]);
-        const more = wzMore(S.plan.left, ctxs, taken, qs => !planDay(ctx, withRides(ctx, pool, qs), cfg).stay.plan.left.length);
-        const adv = fullAdvice(S.plan.steps, S.plan.left, (p, name) => planDay(ctx, pool.filter(r => r.name !== name), cfg).stay.plan.left);
-        note.textContent = wzSlack(S.plan.left, S.leave, P.win.t1, freeCosts, more, adv, cfg);
+        const later = () => { const more = wzMore(S.plan.left, ctxs, taken, qs => !planDay(ctx, withRides(ctx, pool, qs), cfg).stay.plan.left.length);
+          const adv = fullAdvice(S.plan.steps, S.plan.left, (p, name) => planDay(ctx, pool.filter(r => r.name !== name), cfg).stay.plan.left);
+          note.textContent = wzSlack(S.plan.left, S.leave, P.win.t1, freeCosts, more, adv, cfg); return { more, adv }; };
+        note.textContent = wzSlack(S.plan.left, S.leave, P.win.t1, freeCosts, null, null, cfg);
         wzDine(mk('p', 'qt-note'), S.plan.steps, [park], box, day, D);
         if (flexText(S)) mk('p', 'qt-note').textContent = flexText(S);
-        return { left: S.plan.left, slack: P.win.t1 - S.leave, freeCosts, more, adv, where: mealWhere(planSegs(P, park, cfg)), glance: { warn: flexWarn(S),
+        return { left: S.plan.left, slack: P.win.t1 - S.leave, freeCosts, more: null, adv: null, later, where: mealWhere(planSegs(P, park, cfg)), glance: { warn: flexWarn(S),
             text: glanceText(S.leave, S.done, pool.length, S.plan.totalWait, S.plan.steps, S.heat), target: times } };
       }
     } else {
@@ -185,18 +188,19 @@ function wzRenderPlan(box, iso, opt, day, D) {
           const Y = (day.brk > 0 && planHopper(iso, D, true, cfg)) || planHopper(iso, D, false, cfg); return !!Y && !Y.left.length; } finally {
           qs.forEach(q => day.rides[q.park].delete(q.r.name)); } };
       // spare time runs to the later close of the two parks (you can hop back), not the park you end in
-      const closeH = Math.max(...H.segs.map(s => s.ctx.close)), more = wzMore(H.left, ctxs, taken, hopTrial);
+      const closeH = Math.max(...H.segs.map(s => s.ctx.close));
       const hopDrop = (p, name) => { const had = day.rides[p].has(name); day.rides[p].delete(name); try {
           const Y = (day.brk > 0 && planHopper(iso, D, true, cfg)) || planHopper(iso, D, false, cfg); return Y ? Y.left : H.left; } finally {
           if (had) day.rides[p].add(name); } };
-      // with rides left over, the advice on what to take off fills in a moment after the page shows (later, below)
-      const advLater = () => { const a = fullAdvice(H.segs.flatMap(s => s.steps), H.left, hopDrop); note.textContent = wzSlack(H.left, H.leave, closeH, freeCosts, more, a, cfg); return a; };
-      note.textContent = wzSlack(H.left, H.leave, closeH, freeCosts, more, null, cfg);
+      // which rides would still fit, or with rides left over the advice on what to take off, fills in a moment after the page shows (later, below)
+      const later = () => { const more = wzMore(H.left, ctxs, taken, hopTrial), adv = fullAdvice(H.segs.flatMap(s => s.steps), H.left, hopDrop);
+        note.textContent = wzSlack(H.left, H.leave, closeH, freeCosts, more, adv, cfg); return { more, adv }; };
+      note.textContent = wzSlack(H.left, H.leave, closeH, freeCosts, null, null, cfg);
       wzDine(mk('p', 'qt-note'), H.flat, WZ_PARKS, box, day, D);
       if (flexText(H)) mk('p', 'qt-note').textContent = flexText(H);
       if (H.whyLeft) mk('p', 'qt-note').textContent = H.whyLeft;
       if (H.brkMoved) mk('p', 'qt-note').textContent = `No break fits around ${brkAtLbl(day.brkAt)} on this day, so the planner picked the best time for it.`;
-      return { left: H.left, slack: closeH - H.leave, freeCosts, more, adv: null, later: H.left.length ? advLater : null, where: mealWhere(planSegs(H)), glance: { warn: flexWarn(H), text: glanceText(H.leave, H.done, H.total, H.totalWait, H.flat), target: times } };
+      return { left: H.left, slack: closeH - H.leave, freeCosts, more: null, adv: null, later, where: mealWhere(planSegs(H)), glance: { warn: flexWarn(H), text: glanceText(H.leave, H.done, H.total, H.totalWait, H.flat), target: times } };
     }
   }
 }
@@ -405,8 +409,8 @@ function drawWalk(D) {
     const fitHint = 'Press and hold one under "On this day" to take it off, or move it to another day.', tap0 = lastTap;
     if (fit) fitStatus(chips, fit.left, fit.slack, fit.freeCosts, fitHint, fit.more, fit.adv, fit.glance);
     else lastTap = null;
-    // a Park Hopper day with rides left over: fill in the advice just after, unless the page is drawn again first
-    if (fit && fit.later) { const job = () => { lastTap = tap0; fitStatus(chips, fit.left, fit.slack, fit.freeCosts, fitHint, fit.more, fit.later(), fit.glance); };
+    // which rides would still fit (or what to take off) is filled in just after, so the day shows first, unless the page is drawn again first
+    if (fit && fit.later) { const job = () => { lastTap = tap0; const L = fit.later(); fitStatus(chips, fit.left, fit.slack, fit.freeCosts, fitHint, L.more, L.adv, fit.glance); };
       wz.laterJob = job; setTimeout(() => { if (wz.laterJob === job && chips.isConnected) { wz.laterJob = null; job(); } }, 0); }
     const nav = el('div', 'qt-controls');
     const back = el('button', 'qt-btn', k === 0 ? '← Rides' : `← Day ${k}`); back.type = 'button'; back.addEventListener('click', () => go(wz.step - 1));
