@@ -4,6 +4,7 @@ What changed in each version. The version is the one in `version.js`, shown at t
 
 | Version | Date | What changed |
 |---|---|---|
+| 1.202610.8 | 2026-10-27 | New ride check (update-data.ps1 step rides: Disney's attraction list against ride_profiles for new or gone rides, heights, single rider and Multi Pass) and event check (Disney's party nights against events). UPDATING.md has a cold-start guide, a table of what each Summary flag means and a browser runbook for every hand step. No change to plans. |
 | 1.202610.7 | 2026-10-27 | Scripts for the yearly data: update-data.ps1 -Only weather, -Only crowds and -Only typical-hours build and import the weather averages, crowd ratings and typical hours (each checked to rebuild the current files). fetch-weather.ps1 now downloads gusts too. The calendar step keeps past days so a full year of hours builds up. No change to plans. |
 | 1.202610.6 | 2026-10-27 | New scripts\update-data.ps1 runs every scripted data refresh in one go (Disney's hours, showtimes, restrooms; checks closures and restaurants), imports only what changed, bumps the version once and runs the tests. parse-shows.ps1 now also builds the park hours; fetch-shows.ps1 re-downloads days already saved. New bump-version.ps1. CLAUDE.md and UPDATING.md now start data work from a script table. No change to plans. |
 | 1.202610.5 | 2026-10-27 | Refreshed Disney's published park hours and showtimes from its calendar: now through Dec 8, 2026 (was Dec 5 for hours, Dec 6 for showtimes). |
