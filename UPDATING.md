@@ -1,6 +1,14 @@
 # Updating the data
 
-This guide covers refreshing the DLR Planner's bundled data. It assumes you know nothing about the project except these files. Read **How the data is stored** and **The routine** once. After that, each dataset has its own section below.
+This guide covers refreshing the DLR Planner's bundled data. It assumes you know nothing about the project except these files.
+
+**Starting cold (for example, "update the data" a year or two from now):**
+1. Read **Updating everything** below, top to bottom: the owner's scripts-first rule, the script table, the flag table and the browser runbook. That's all you need for a full update.
+2. Run `powershell -ExecutionPolicy Bypass -File .\scripts\update-data.ps1` on the owner's PC (with the yearly steps if they're due; see **The whole routine**).
+3. Act on its Summary flags, then do only the **Due by hand** datasets, using the browser runbook.
+4. Don't read the per-dataset sections further down until you're editing that dataset; they hold the column formats and checks.
+
+Read **How the data is stored** once if you're editing a data file. After that, each dataset has its own section below.
 
 The app's only network calls are the live weather forecast, live park hours and showtimes (ThemeParks.wiki) and US public holidays (Nager.Date), and each falls back to the bundled data when offline. Everything else is built in, so it only changes when someone follows this guide.
 
@@ -20,17 +28,22 @@ The app's only network calls are the live weather forecast, live park hours and 
 
 | Task | Run this (from the project folder) | What it changes |
 |---|---|---|
-| **Update everything that is scripted** (start here) | `powershell -ExecutionPolicy Bypass -File .\scripts\update-data.ps1` | Fetches, parses and imports Disney's hours, showtimes and restrooms if they changed; checks Disney's closures against `refurbs`; compares Disney's dining list with `dining`; bumps the version once, adds the CHANGELOG line, runs the tests, lists what's still due by hand. |
+| **Update everything that is scripted** (start here) | `powershell -ExecutionPolicy Bypass -File .\scripts\update-data.ps1` | Fetches, parses and imports Disney's hours, showtimes and restrooms if they changed; checks Disney's closures against `refurbs`, its party nights against `events`, its restaurant list against `dining` and its attraction list against `ride_profiles`; bumps the version once, adds the CHANGELOG line, runs the tests, lists what's still due by hand. |
 | Published park hours + showtimes | `.\scripts\update-data.ps1 -Only calendar` (it runs `_sources\shows\fetch-shows.ps1` then `parse-shows.ps1`) | `data/park_hours_published.js`, `data/disney_showtimes.js` |
 | Refurbishments (check only) | part of `-Only calendar` | Nothing: prints `REFURB TO ADD` / `REFURB TO CHECK` lines. You add those rows to `refurbs` (its `note` is our own wording). |
 | Restrooms | `.\scripts\update-data.ps1 -Only restrooms` (runs `_sources\restrooms\fetch-restrooms.ps1`, `parse-restrooms.ps1`) | `data/restrooms.js` |
 | Restaurants (check only) | `.\scripts\update-data.ps1 -Only dining` (runs `_sources\dining\fetch-dining.ps1`, `parse-dining.ps1`) | Nothing: prints `DINING TO ADD` / `DINING NOT ON DISNEY'S LIST`. Make those few changes to `dining` and the `food` rows of `park_places` by hand (see **dining**). |
+| Rides (check only) | `.\scripts\update-data.ps1 -Only rides` (runs `_sources\rides\check-rides.ps1`, one request to Disney's attraction list) | Nothing: prints `RIDE: NEW`, `GONE`, `HEIGHT differs`, `SINGLE RIDER differs`, `LIGHTNING LANE differs`. Seasonal overlays (Haunted Mansion Holiday, Hyperspace Mountain, ...) are matched to their ride by the `$alias` list in the script; attractions the planner leaves out on purpose are in its `$ignore` list. |
+| Events (check only) | part of `-Only calendar` | Nothing: prints `EVENT TO CHECK` when Disney's hours show a ticketed party night outside every `Ticketed nights` row of `events`. |
 | Re-parse without downloading again | add `-NoFetch` (and `-NoTest` to skip the tests) | as above |
 | Put an edited CSV back into a dataset | `.\scripts\export-dataset.ps1 <id>`, edit `_sources\edit\<id>.csv`, `.\scripts\import-dataset.ps1 <id> [-Until d] [-Review d]` | that dataset; backs it up; bumps the version |
 | Bump the version (any change at all) | `.\scripts\bump-version.ps1 -Note "What changed."` | `version.js` and a `CHANGELOG.md` line |
 | Run the tests | `.\scripts\test.ps1` (then `-Update` if plan changes are expected) | nothing (or `tests/golden/plans.json`) |
 | OpenStreetMap extract | `.\scripts\fetch-osm.ps1` | saves `_sources\osm\` only; matching is a hand step (see **park_places**) |
-| Weather history | `.\scripts\fetch-weather.ps1` | saves `_sources\weather\` only. The averages have **no script yet**: when they're next due (review 2028-10-25), first write `_sources\weather\build-weather.ps1` that rebuilds the current `weather_*` and `sun_by_week` files from the 2016-2025 download exactly (that proves the definitions), then run it on the new years. |
+| Weather and sun (every two years) | `.\scripts\update-data.ps1 -Only weather` (runs `scripts\fetch-weather.ps1`, then `_sources\weather\build-weather.ps1`) | `weather_by_week`, `weather_by_month`, `weather_by_hour`, `sun_by_week`, and the year range in their headers. `build-weather.ps1 -Check` proves the definitions against the current files: all four rebuild exactly except two `weather_by_week` cells that sit on an exact .5 tie. |
+| Crowd ratings (once a year) | First append the new months to `_sources\crowds\queue-times_crowd_by_date_*.csv` (by hand, see **Crowds and waits**), then `.\scripts\update-data.ps1 -Only crowds` (runs `_sources\crowds\build-crowds.ps1`) | `crowd_by_week`, `crowd_by_weekday`, `crowd_by_month`. Never average by hand; `build-crowds.ps1 -Check` rebuilds the current files exactly. |
+| Typical hours (each January) | `.\scripts\update-data.ps1 -Only typical-hours` (runs `_sources\park_hours\build-typical-hours.ps1 -Year <last year>`) | `park_hours_2025` (the id stays) and `hours_by_week`, with the year in their headers. It needs every day of that year saved; the calendar step keeps past days in `park_hours_published` for this, so run the calendar step at least every five weeks. 2026 can't be built (Jan to Oct 23 was never saved); 2027 is the first full year, in January 2028. |
+| Several steps at once | `.\scripts\update-data.ps1 -Only calendar,weather` | one version bump and one test run for all of them |
 
 Every script prints what it did. Show the owner the **Summary** block from `update-data.ps1`, not the whole log.
 
@@ -42,16 +55,17 @@ These have no machine-readable source we may use, so they stay hand steps. `upda
 |---|---|
 | `refurbs` | Disney's calendar only lists some closures (the script checks those); the rest are announcements. Notes are our own words. |
 | `events`, `holidays` | Announcements and school district calendars, once or twice a year. |
-| `ticket_tiers`, `multi_day_prices` | Disney's price calendar. If it's due, look for the feed behind Disney's ticket calendar first and script it (fetch + parse, like `_sources\shows`), rather than reading prices off the page. |
+| `ticket_tiers`, `multi_day_prices` | Disney's ticket pages are a JavaScript app with no feed found yet (checked Oct 27, 2026). When it's next due (review 2027-04-01), look once for the feed behind Disney's 1-day ticket calendar (the browser's network tab while the calendar loads, run by the owner if needed). If there is one, script it (fetch + parse, like `_sources\shows`) before refreshing. |
 | `ride_profiles`, `lightning_lane`, `lands`, `gates`, `hotels`, `security_waits`, `show_estimates` | Only change when the parks change; our own judgement goes into them. |
-| `crowd_*`, `wait_by_date`, `waits_by_hour`, `ride_closures_by_month`, `closures_by_week` | Queue-Times and Thrill Data. Queue-Times' Cloudflare check is off-limits, so these are read one page at a time, at a human pace, once a year. |
-| `park_hours_2025`, `hours_by_week` | Once a year, from a full year of published hours. When it's due, write a script that builds it from the saved calendar files. |
+| Queue-Times collection: the daily crowd file, `waits_by_hour`, `ride_closures_by_month`, `closures_by_week` | Queue-Times' Cloudflare check is off-limits and its terms rule out bulk scraping, so the pages are read one at a time, at a human pace, once a year. The crowd averages after that are scripted (`-Only crowds`). |
+| `wait_by_date` | Thrill Data answers scripts with 403 (a bot check, checked Oct 27, 2026), so it's read in a browser, once a year. Don't script around it. |
+| `park_places` matching, `dining` additions | `fetch-osm.ps1` and `-Only dining` do the downloads and show what changed; picking doors and lands needs judgement. |
 
 ### The whole routine
 
-1. Run `.\scripts\update-data.ps1`. If it reports a block, stop and hand the owner the command (see above).
-2. If it printed `REFURB TO ADD`, `REFURB TO CHECK` or `DINING ...` lines, make those small edits with `export-dataset.ps1` / `import-dataset.ps1 -NoBump` (or a direct edit of the CSV text), then add them to the CHANGELOG line it wrote.
-3. For each dataset under **Due by hand**, follow its section below. If a source hasn't published anything new, leave the dataset alone and set `review` to when it's worth looking again (for example, Disney may not have announced next year's events yet).
+1. Run `.\scripts\update-data.ps1`. If it reports a block, stop and hand the owner the command (see above). If it's a year or more since the last full update, add the yearly steps in the same run: `-Only calendar,restrooms,dining,rides,weather,crowds,typical-hours` (weather only every two years; crowds only after step 4 of the browser runbook; typical-hours only in January).
+2. Act on every flag line in its **Summary** (table below). Make those small edits with `export-dataset.ps1` / `import-dataset.ps1 -NoBump` (or a direct edit of the CSV text), then add them to the CHANGELOG line it wrote.
+3. For each dataset under **Due by hand**, follow the **Browser runbook** below, then its own section further down. If a source hasn't published anything new, leave the dataset alone and set `review` to when it's worth looking again (for example, Disney may not have announced next year's events yet).
 4. If a source is blocked or needs a login, stop for that dataset and say so. Never get around a block, and never fill gaps with guesses dressed up as data. A plan that says "typical hours" is better than one built on made-up hours.
 5. Hand edits need **The routine** below (backup, one version bump in all, tests). `update-data.ps1` already did that for what it imported; don't bump again for the same update if you're editing in the same session, just add to its CHANGELOG line.
 6. Finish with a short summary for the owner covering:
@@ -61,6 +75,41 @@ These have no machine-readable source we may use, so they stay hand steps. `upda
    - anything that looked odd, such as a big jump in averages.
 
 Don't commit or push; leave that to the owner.
+
+### What each flag in the Summary means, and what to do
+
+| Flag | Means | Do this |
+|---|---|---|
+| `... NOT imported ...` | The download was empty, shorter than the current data, or much smaller (a block or a changed page). Nothing was changed. | Rerun once. If it repeats, look at the newest raw file: if Disney changed the format, fix the parse script and run `update-data.ps1 -NoFetch`. If it's a block, hand the owner the command. |
+| `REFURB TO ADD` | Disney's calendar lists a ride in `ride_profiles` as closed for refurbishment, and `refurbs` has no row for it. | Add a `refurbs` row: `ride` (exact `ride_profiles` name), `park`, `start`, `end` as printed. The calendar only reaches ~6 weeks ahead, so if the end date is the last calendar date, check Disney's news or [Disney Tourist Blog's refurbishment calendar](https://www.disneytouristblog.com/disneyland-refurbishment-calendar) for the real reopening; blank `end` if none is announced. `note` is our wording, e.g. "Closed for refurbishment; reopens Jan 9." |
+| `REFURB TO CHECK` | `refurbs` has the ride, but the dates don't cover what Disney shows. | Widen the row's dates to Disney's (or confirm the reopening from Disney's news), and fix the note's "reopens" date. |
+| `closed (not a ride ..., no action)` | A restaurant, trail or play area is closed. | Nothing. |
+| `EVENT TO CHECK` | Disney's hours show a ticketed party night (e.g. Oogie Boogie Bash) outside every `Ticketed nights (early close)` row of `events`. | Widen or add the `events` row (`start`/`end` as `MM-DD`, plus `start_week`/`end_week`), and say "announced" in its `notes`. Set `until` to the last announced date. |
+| `DINING TO ADD` | Disney lists a place in a park that `dining` lacks. | Add the row (see **dining**: land names, kind, meals) and its `food` row in `park_places` from the lat/lon in `_sources\dining\disney_dining.csv`. |
+| `DINING NOT ON DISNEY'S LIST` | `dining` has a place Disney no longer lists. | Check its Disney page (the `url` column). Closed for good: remove its `dining` and `park_places` rows. Renamed: rename it in both. |
+| `RIDE: NEW on Disney's list` | An attraction that is neither in `ride_profiles` nor in the script's `$ignore` list. | A real new ride: add it (see **ride_profiles, New ride**). A show, walk-through or play area: add its normalised name to `$ignore` in `_sources\rides\check-rides.ps1` with the date. An overlay or new name of a ride we have: add it to `$alias`. |
+| `RIDE: GONE from Disney's list` | A `ride_profiles` ride matches nothing on Disney's list. | Renamed (most likely): add Disney's new name to `$alias`. Closed for good: remove it everywhere (**ride_profiles, Closed for good**). |
+| `RIDE: HEIGHT differs` | Disney's minimum height isn't `min_height_in`. | Use Disney's number, unless the row's comment in **ride_profiles** explains a deliberate difference (the lowest height that rides with an adult). |
+| `RIDE: SINGLE RIDER differs` | Disney's single rider tag doesn't match `single_rider`. | Change `single_rider` to match Disney (`Yes` or blank). |
+| `RIDE: LIGHTNING LANE differs` | Disney's Multi Pass tag doesn't match `lightning_lane`. | Check Disney's Lightning Lane page and fix the column (`Multi Pass`, `Single Pass` or blank). Disney's feed doesn't tag Single Pass rides, so those are never flagged. |
+| `Due by hand: <id> (...)` | A dataset with no script has passed its `review` date or ends within 45 days. | The **Browser runbook** below. |
+
+Ride, event and refurb edits change plans, so after them run `.\scripts\test.ps1`, read the differences, and save them with `-Update`.
+
+### Browser runbook (only for what no script can fetch)
+
+Links and district names here were right on Oct 27, 2026; if one has moved, find it from the site's home page and fix the link here. Use a browser (Claude's built-in browser, or the owner's) one page at a time. For each page: read it, **save what you read** into the file named below (so the next update starts from it, and a script can redo the averaging), then edit the dataset with `export-dataset.ps1` / `import-dataset.ps1 -NoBump`. If a page puts up a bot check, a login or a CAPTCHA, stop and tell the owner; never get around it. If the same pages have to be read every year and a page could be saved whole instead of read, write a parse script for the saved page (in that dataset's `_sources` folder) and use it from then on.
+
+1. **Ticket prices** (`ticket_tiers`, by its `review` date; `multi_day_prices` each October).
+   - First, look for a feed: open Disney's 1-day ticket calendar from [the ticket prices page](https://disneyland.disney.go.com/faq/tickets/ticket-prices/) and watch the browser's network requests while the calendar loads (the built-in browser's `read_network_requests`). If a JSON request returns the dated prices, write `_sources\tickets\fetch-tickets.ps1` and `parse-tickets.ps1` modelled on `_sources\shows`, add them to `update-data.ps1`, and stop doing this by hand.
+   - Otherwise read the calendar month by month: for each date, the 1-day, 1-park adult price. `tier` is 1 to 7, cheapest to dearest, by the distinct prices Disney uses (keep the current file's price-to-tier pairs; a new price gets a new tier and every tier is renumbered). Save the month pages' text in `_sources\tickets\raw\`. Set `until` to the last priced date.
+   - Multi-day: the per-person price for 2, 3, 4 and 5 day 1-park tickets from the same ticket pages.
+2. **Events** (`events`, when `review` passes or Disney announces a season). Disney's [events and seasonal offerings](https://disneyland.disney.go.com/events-tours/) pages and the Disney Parks Blog give the dates; the blogs named in **events** give typical windows. Write `notes` that say "announced" or "typical".
+3. **Holidays and school breaks** (`holidays`, each August). Federal holidays come from the app's own rules. For school breaks, the round-ups on ActivityHero and MomsLA (the current source), checked against a few large Orange County and Los Angeles districts' own "school year calendar" pages. Use the common winter, spring and Thanksgiving breaks. Save the PDFs or page text in `_sources\holidays\raw\`.
+4. **Crowd ratings** (once a year, after the year ends): on `queue-times.com/parks/16/calendar/YYYY/MM` (Disneyland) and `/parks/17/...` (California Adventure), read each new month's daily crowd percentage and append rows `date,park,crowd_pct` to `_sources\crowds\queue-times_crowd_by_date_*.csv` (rename the file's end year). One page at a time, at a human pace, about 24 pages a year. Then `.\scripts\update-data.ps1 -Only crowds`.
+5. **Hourly waits and closures** (`waits_by_hour`, `ride_closures_by_month`, `closures_by_week`; once a year): Queue-Times' public per-ride statistics, from [parks/16/stats](https://queue-times.com/en-US/parks/16/stats) and park 17. Save each ride's page text to `_sources\waits\raw\<park>-<ride>-<date>.txt`. The first time, write `_sources\waits\build-waits.ps1` that rebuilds the current three files from what the pages show (prove it with `-Check`, like `build-crowds.ps1`), then run it on the new pages. Day-level history is behind a login: only use what's public.
+6. **Average wait by date** (`wait_by_date`, once a year): Thrill Data's by-date wait history for the Disneyland Resort, read in a browser (it answers scripts with 403, so no fetch script). Save the page text to `_sources\waits\raw\thrill-data-<date>.txt`; the value is the mean posted wait across all rides for each calendar date, averaged over 2023 onwards.
+7. **When the parks change** (a ride, land, restaurant or entrance opens, closes or moves): `ride_profiles`, `park_places` (run `.\scripts\fetch-osm.ps1` first), `lands`, `gates`, `hotels`, `lightning_lane`, `show_estimates`. These are judgement calls (thrill rating, which door is the entrance); follow each section below.
 
 `_sources` is uploaded with the app, so a fresh download of the project has the files behind each dataset, such as the daily crowd history and the parsed CSVs. `_BACKUP` stays local, and so do the `raw` folders under `_sources` and `_sources\shows\js`: they're Disney's own pages, feeds and website code. The fetch scripts can download them again.
 
@@ -412,9 +461,9 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
   - `park_hours_2025` holds the hours for every day of a full year. Dates Disney hasn't published borrow the same week and weekday from it.
   - `hours_by_week` is the average hours open per week, worked out from it.
 - **How:**
-  1. Once a full calendar year of official hours is known (e.g. all of 2026, in January 2027), replace the rows with that year and recompute `hours_by_week`.
-  2. Keep the file name and id `park_hours_2025`; the code looks for that id.
-  3. Update `title`, `about` and `source` to say which year it now holds.
+- **How: scripted. Never by hand.** In January, run `.\scripts\update-data.ps1 -Only typical-hours`. `_sources\park_hours\build-typical-hours.ps1` takes last year's days from `park_hours_published` (the calendar step keeps past days) and from any saved `_sources\shows\raw\calendar-<date>.json`, and writes both CSVs; `update-data.ps1` imports them and changes the year in `about` and `source`. The id and file name stay `park_hours_2025` (the code looks for that id).
+  - If any day of the year is missing, nothing is written and it says which. Never fill gaps by hand. 2026 can't be built (its first ten months were never saved); keep the current 2025 file until 2027 is complete.
+  - `build-typical-hours.ps1 -Check` rebuilds `hours_by_week` from the current `park_hours_2025` exactly (mean of close minus open by week, rounded half to even).
 
 ### Crowds and waits: `crowd_by_week`, `crowd_by_weekday`, `crowd_by_month`, `wait_by_date`, `waits_by_hour`, `ride_closures_by_month`, `closures_by_week`
 
@@ -425,7 +474,8 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
   1. Remove each year's average.
   2. Put the result back on the 2023-onward scale.
   3. Count 2023-onward days twice, then average by week, weekday and month.
-- **Raw data:** the daily file is kept in `_sources`. Append new months one page at a time, at a human pace. If you hit a bot check, stop. Don't bypass it.
+- **Raw data:** the daily file is kept in `_sources\crowds\`. Append new months one page at a time, at a human pace. If you hit a bot check, stop. Don't bypass it.
+- **Averages: scripted. Never by hand.** After appending, run `.\scripts\update-data.ps1 -Only crowds` (`_sources\crowds\build-crowds.ps1` does the method above and rebuilds the current three files exactly with `-Check`). Rename the daily file to its new end year if you like; the script reads the newest `queue-times_crowd_by_date_*.csv`.
 
 **Average wait by date**
 
@@ -447,14 +497,14 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
 
 ### Weather and sun: `weather_by_week`, `weather_by_month`, `weather_by_hour`, `sun_by_week`
 
-- **Source:** the [Open-Meteo historical archive](https://open-meteo.com/en/docs/historical-weather-api) for Anaheim (33.8121, -117.919), ERA5, over the ten most recent full years. Run `fetch-weather.ps1`.
-- **Method:**
-  - Average by week, month, and week × hour.
-  - `rain_chance_pct` is the share of days with at least 0.04 in of rain.
-  - `hot_day_pct` is days with a high of 90°F or more.
-  - `chilly_night_pct` is nights below 45°F.
-  - Keep the other columns' definitions as they are, and compare the new values against the old ones.
-  - `sun_by_week` holds sunrise and sunset as decimal hours, from the same download's daily sunrise and sunset.
+- **Source:** the [Open-Meteo historical archive](https://open-meteo.com/en/docs/historical-weather-api) for Anaheim (33.8121, -117.919), ERA5, over the ten most recent full years.
+- **How: scripted. Never by hand.** `.\scripts\update-data.ps1 -Only weather` downloads it (`scripts\fetch-weather.ps1`, into `_sources\weather\`), builds all four CSVs (`_sources\weather\build-weather.ps1`), imports the ones that changed and sets the year range in their headers. Every column's definition is in the header of `build-weather.ps1`; in short:
+  - average by week, month, and week × hour (hours 7 to 23);
+  - `rain_chance_pct` is days with at least 0.04 in of rain, `heavy_rain_chance_pct` ("Soaking") at least 0.25 in;
+  - `hot_day_pct` is days with a high of 90°F or more, `chilly_night_pct` nights below 45°F, `windy_day_pct` days with gusts of 30 mph or more (the download must include `wind_gusts_10m_max`);
+  - the hourly `rain_chance_pct` is hours with at least 0.01 in;
+  - `sun_by_week` holds sunrise and sunset as decimal hours, from the last year of the download.
+- **Check:** `build-weather.ps1 -Check` compares with the current files. If Open-Meteo renames a field, fix the script, not the data.
 - **How often:** averages barely change, so every two years is plenty.
 
 ---

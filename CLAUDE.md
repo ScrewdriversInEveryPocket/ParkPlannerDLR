@@ -66,11 +66,15 @@ The scripts load in this order, and they share one set of top-level names (every
 
 | To do this | Run (from the project folder, `powershell -ExecutionPolicy Bypass -File ...`) |
 |---|---|
-| "Update the data" / "update all the data sources" / anything about hours, showtimes, restrooms, restaurants or refurbishments | `.\scripts\update-data.ps1` (or `-Only calendar`, `-Only restrooms`, `-Only dining`; `-NoFetch` re-parses, `-NoTest` skips tests). It fetches, parses, imports what changed, checks closures and restaurants, bumps the version once with a CHANGELOG line, runs the tests, and lists what's due by hand. Report its **Summary** block. |
+| "Update the data" / "update all the data sources" / anything about hours, showtimes, restrooms, restaurants, rides, events or refurbishments | `.\scripts\update-data.ps1` (or `-Only calendar`, `-Only restrooms`, `-Only dining`, `-Only rides`; `-NoFetch` re-parses, `-NoTest` skips tests). It fetches, parses, imports what changed, checks closures, party nights, restaurants and rides against Disney's own feeds, bumps the version once with a CHANGELOG line, runs the tests, and lists what's due by hand. Report its **Summary** block. |
 | Change a dataset by hand (only the ones with no script) | `.\scripts\export-dataset.ps1 <id>`, edit `_sources\edit\<id>.csv`, `.\scripts\import-dataset.ps1 <id> [-Until d] [-Review d]` |
 | Bump the version for any change | `.\scripts\bump-version.ps1 -Note "What changed."` (writes `version.js` and the CHANGELOG line) |
 | Test | `.\scripts\test.ps1`, then `-Update` if the plan changes are expected |
-| OpenStreetMap / weather downloads | `.\scripts\fetch-osm.ps1`, `.\scripts\fetch-weather.ps1` (download only; see UPDATING.md) |
+| Yearly: weather, crowd averages, typical hours | `.\scripts\update-data.ps1 -Only weather` (every two years), `-Only crowds` (after the daily Queue-Times file is appended by hand), `-Only typical-hours` (each January; refuses until a full year is saved) |
+| OpenStreetMap download | `.\scripts\fetch-osm.ps1` (download only; matching is a hand step, see UPDATING.md) |
+| Datasets that can't be scripted, and why | UPDATING.md, **Datasets with no script**: Queue-Times collection (its rules), Thrill Data `wait_by_date` (403 to scripts), ticket prices (no feed found yet), and the hand-judged files (refurb notes, events, holidays, rides, lands, gates, hotels). |
+
+**Starting cold** (e.g. "update the data" a year or two from now): read UPDATING.md's **Updating everything** section only (scripts-first rule, script table, the table of what each Summary flag means, and the **Browser runbook** for the few datasets no script can fetch), run `update-data.ps1` with the yearly steps that are due, act on each flag, then do only the datasets it lists as **Due by hand**.
 
 Then follow **[UPDATING.md](UPDATING.md)**: its top section, **Updating everything**, has the full script table, the datasets that have no script and why, and the routine. Each dataset has its own section with its source, format and checks. The **About the data** tab in the app, and the end of `update-data.ps1`'s output, show which datasets are ending soon or due.
 

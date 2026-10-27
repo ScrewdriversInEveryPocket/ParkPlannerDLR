@@ -17,6 +17,19 @@
                data\dining.js uses the app's own lands and kinds, so this prints the restaurants Disney
                lists that dining.js lacks, and the reverse, for the hand step in UPDATING.md (dining).
 
+    (calendar also) compares Disney's ticketed party nights with data\events.js: EVENT TO CHECK lines.
+    rides      _sources\rides\check-rides.ps1 (one request): Disney's attraction list against ride_profiles.
+               Report only: RIDE: NEW / GONE / HEIGHT / SINGLE RIDER / LIGHTNING LANE lines.
+  What to do with every flag line is the table "What each flag in the Summary means" in UPDATING.md.
+
+  Yearly steps, only when named with -Only (several at once: -Only calendar,weather):
+    weather        scripts\fetch-weather.ps1 then _sources\weather\build-weather.ps1; imports weather_by_week, _month,
+                   _hour and sun_by_week if changed, sets the year range in their headers; review = two years out.
+    crowds         _sources\crowds\build-crowds.ps1 on the hand-collected daily Queue-Times file; imports
+                   crowd_by_week, _weekday, _month if changed. (Appending the daily file stays by hand: Queue-Times rules.)
+    typical-hours  _sources\park_hours\build-typical-hours.ps1 -Year <last year>; imports park_hours_2025 and
+                   hours_by_week, sets the year. Refuses unless every day of that year is saved.
+
   Safety: a new CSV that would cover fewer dates (hours, showtimes) or under 80% of the rows (restrooms)
   than the current file is NOT imported, since that usually means a blocked or partial download.
   If anything was imported: backups go to _BACKUP\<date>-before-<id>\, version.js is bumped once
@@ -35,9 +48,13 @@
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File .\scripts\update-data.ps1 -NoFetch -NoTest   # re-parse what's already downloaded
 #>
-param([ValidateSet('calendar', 'restrooms', 'dining')][string[]]$Only = @('calendar', 'restrooms', 'dining'),
+param([string[]]$Only = @('calendar', 'restrooms', 'dining', 'rides'),
       [switch]$NoFetch, [switch]$NoTest)
 $ErrorActionPreference = 'Stop'
+# -File passes "a,b" as one string, so split it here
+$Only = @($Only | ForEach-Object { $_ -split ',' } | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+$bad = $Only | Where-Object { $_ -notin 'calendar', 'restrooms', 'dining', 'rides', 'weather', 'crowds', 'typical-hours' }
+if ($bad) { throw "Unknown -Only step: $bad. Steps: calendar, restrooms, dining, rides (the default), weather, crowds, typical-hours." }
 $root = Split-Path $PSScriptRoot -Parent
 $src = Join-Path $root '_sources'
 $utf8 = New-Object System.Text.UTF8Encoding($false)
@@ -104,6 +121,18 @@ if ($Only -contains 'calendar') {
   }
 }
 
+if ($Only -contains 'calendar') {
+  # Ticketed party nights in Disney's hours against events.js (the planner treats those windows as early closes)
+  $events = @(DataCsv 'events' | ConvertFrom-Csv | Where-Object kind -like 'Ticketed*')
+  $party = ReadCsv (Join-Path $src 'park_hours\park_hours_published.csv') | ConvertFrom-Csv | Where-Object note
+  $loose = $party | Where-Object { $r = $_; $md = $r.date.Substring(5)
+    -not ($events | Where-Object { $_.park -in $r.park, 'Both' -and $(if ($_.start -le $_.end) { $md -ge $_.start -and $md -le $_.end } else { $md -ge $_.start -or $md -le $_.end }) }) }
+  foreach ($g in $loose | Group-Object park, note) {
+    $ds = @($g.Group.date | Sort-Object); $nm = $g.Group[0].note -replace ' \(closes.*', ''; $pk = $g.Group[0].park
+    $summary += "  EVENT TO CHECK in data\events.js: $pk has '$nm' on $($ds.Count) nights ($($ds[0]) to $($ds[-1])) outside every Ticketed nights row"
+  }
+}
+
 # ---------- restrooms ----------
 if ($Only -contains 'restrooms') {
   Write-Host "`n=== Restrooms"
@@ -135,10 +164,59 @@ if ($Only -contains 'dining') {
   foreach ($g in $gone) { $summary += "  DINING NOT ON DISNEY'S LIST (closed or renamed? check): $g" }
 }
 
+# ---------- rides (report only) ----------
+if ($Only -contains 'rides') {
+  Write-Host "`n=== Rides (Disney's attraction list against ride_profiles; report only)"
+  $a = @(); if ($NoFetch) { $a += '-NoFetch' }
+  $out = @(& $ps (Join-Path $src 'rides\check-rides.ps1') $a)
+  $out | Select-Object -First 1 | Write-Host
+  $flags = @($out | Select-Object -Skip 1)
+  if ($flags) { $summary += $flags | ForEach-Object { "  RIDE: $_" } } else { $summary += 'rides: Disney''s list matches ride_profiles (names, heights, single rider, Multi Pass).' }
+}
+
+# ---------- yearly builds (only with -Only): weather, crowds, typical hours ----------
+# import each built CSV if it changed; $years rewrites the "2016-2025"-style range (or a single year) in title/about/source
+function ImportBuilt($ids, $dir, $review, $what, $years) {
+  $did = @()
+  foreach ($id in $ids) {
+    $f = Join-Path $dir "$id.csv"
+    if (-not (Test-Path $f)) { "$id : NOT imported, the build wrote no CSV (see its message above)."; continue }
+    if ((ReadCsv $f) -eq (DataCsv $id)) { continue }
+    Import $id $f '' $review
+    if ($years) {
+      $p = DataFile $id; $js = [IO.File]::ReadAllText($p, $utf8)
+      $yy = if ($id -eq 'sun_by_week') { $years.Substring($years.Length - 4) } else { $years }   # sun uses one year
+      $js = [regex]::Replace($js, '(?m)^(\s*(title|about|source)\s*:\s*".*?)\b(20\d\d(-20\d\d)?)\b', { param($m) $m.Groups[1].Value + $yy })
+      [IO.File]::WriteAllText($p, $js, $utf8)
+    }
+    $did += $id
+  }
+  if ($did) { $script:changed += $did; $script:notes += $what; "$what : updated ($($did -join ', '))." } else { "$what : no change." }
+}
+if ($Only -contains 'weather') {
+  Write-Host "`n=== Weather (Open-Meteo, ten full years)"
+  if (-not $NoFetch) { & $ps (Join-Path $PSScriptRoot 'fetch-weather.ps1') @() | Write-Host }
+  & $ps (Join-Path $src 'weather\build-weather.ps1') @() | Write-Host
+  $last = (Get-Date).Year - 1
+  $summary += ImportBuilt @('weather_by_week', 'weather_by_month', 'weather_by_hour', 'sun_by_week') (Join-Path $src 'weather') $today.AddYears(2).ToString('yyyy-MM-dd') "weather averages $($last - 9)-$last" "$($last - 9)-$last"
+}
+if ($Only -contains 'crowds') {
+  Write-Host "`n=== Crowd ratings (from the hand-collected daily Queue-Times file)"
+  & $ps (Join-Path $src 'crowds\build-crowds.ps1') @() | Write-Host
+  $summary += ImportBuilt @('crowd_by_week', 'crowd_by_weekday', 'crowd_by_month') (Join-Path $src 'crowds') $today.AddYears(1).ToString('yyyy-MM-dd') 'crowd ratings' ''
+}
+if ($Only -contains 'typical-hours') {
+  $y = (Get-Date).Year - 1
+  Write-Host "`n=== Typical hours ($y)"
+  & $ps (Join-Path $src 'park_hours\build-typical-hours.ps1') @('-Year', $y) | Write-Host
+  if ($LASTEXITCODE) { $summary += "typical hours: NOT built, $y isn't complete in the saved hours (see above)." }
+  else { $summary += ImportBuilt @('park_hours_2025', 'hours_by_week') (Join-Path $src 'park_hours') ((Get-Date).AddYears(1).ToString('yyyy') + '-02-01') "typical hours from $y" "$y" }
+}
+
 # ---------- version, changelog, tests ----------
 $test = 'not run (nothing changed)'
 if ($changed) {
-  $note = 'Refreshed from Disney''s site: ' + ($notes -join '; ') + '.'
+  $note = 'Refreshed data: ' + ($notes -join '; ') + '.'
   $v = & $ps (Join-Path $PSScriptRoot 'bump-version.ps1') @('-Note', $note)
   $summary += "version.js is now $v; CHANGELOG line added: $note"
   if (-not $NoTest) {
