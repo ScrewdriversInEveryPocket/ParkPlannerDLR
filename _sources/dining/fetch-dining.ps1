@@ -2,7 +2,7 @@
 # dining location inside Disneyland park or Disney California Adventure. About 1 request a second.
 # Skips files already downloaded, so it can be re-run after a failure. Stops on 401/403/429.
 param([string]$Out = $PSScriptRoot, [string]$Date = (Get-Date).ToString('yyyy-MM-dd'),
-      [string[]]$Extra = @('ariels-grotto'))
+      [string[]]$Extra = @())
 $ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36'
 $raw = Join-Path $Out 'raw'; New-Item -ItemType Directory -Force (Join-Path $raw 'detail') | Out-Null
 $base = 'https://disneyland.disney.go.com/finder/api/v1/explorer-service'

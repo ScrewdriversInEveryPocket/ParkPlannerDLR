@@ -17,7 +17,7 @@ The Disneyland Resort Planning Tool by ScrewdriversInEveryPocket ("DLR Planner" 
 | `check.html` | Quick check: every dataset, then 12 sample days in the real app. |
 | `tests/` | The full test run (`tests/run.html`) and the expected plans (`tests/golden/plans.json`). See `tests/README.md`. |
 | `CHANGELOG.md` | One line per version. |
-| `scripts/*.ps1` | Windows PowerShell helpers: `test.ps1` runs all the tests, `serve.ps1` is a local web server, plus export or import a dataset CSV and download the OSM and weather sources. |
+| `scripts/*.ps1` | Windows PowerShell helpers: `update-data.ps1` refreshes every scripted dataset in one go, `bump-version.ps1` raises the version and adds the CHANGELOG line, `test.ps1` runs all the tests, `serve.ps1` is a local web server, plus export or import a dataset CSV and download the OSM and weather sources. Each has a header explaining it. |
 | `vendor/` | d3 and jsPDF, served locally. |
 | `icons/`, `manifest.webmanifest` | App icons and install manifest. |
 | `_BACKUP/` | Local only, gitignored: backups. |
@@ -58,7 +58,21 @@ The scripts load in this order, and they share one set of top-level names (every
 
 ## Updating data
 
-Follow **[UPDATING.md](UPDATING.md)**. If you're asked to "update all the data" or "update the data sources", start at its **Updating everything** section. It covers the file format, the routine, and a section for every dataset with its source, how to refresh it, and what to check. The **About the data** tab in the app shows which datasets are ending soon or due for a refresh.
+**Scripts first, always.** The owner's rules, which override any habit of looking data up yourself:
+
+1. **If a script exists for a refresh, run it. Never do a scripted refresh by hand**: don't browse Disney's site, don't type hours, showtimes or restrooms into a CSV, don't hand-edit `data/park_hours_published.js`, `data/disney_showtimes.js` or `data/restrooms.js`.
+2. **If a script fails, fix it or write a new one, then run it.** Never fall back to searching the web and entering data by hand; that burns tokens and makes mistakes. A dataset with no script gets one (PowerShell only) the first time it's due.
+3. **Never get around a block** (bot check, 401, 429, a 403 on the first request). Stop and give the owner a one-line command to run on their PC. Disney's site can't be reached from a cloud sandbox.
+
+| To do this | Run (from the project folder, `powershell -ExecutionPolicy Bypass -File ...`) |
+|---|---|
+| "Update the data" / "update all the data sources" / anything about hours, showtimes, restrooms, restaurants or refurbishments | `.\scripts\update-data.ps1` (or `-Only calendar`, `-Only restrooms`, `-Only dining`; `-NoFetch` re-parses, `-NoTest` skips tests). It fetches, parses, imports what changed, checks closures and restaurants, bumps the version once with a CHANGELOG line, runs the tests, and lists what's due by hand. Report its **Summary** block. |
+| Change a dataset by hand (only the ones with no script) | `.\scripts\export-dataset.ps1 <id>`, edit `_sources\edit\<id>.csv`, `.\scripts\import-dataset.ps1 <id> [-Until d] [-Review d]` |
+| Bump the version for any change | `.\scripts\bump-version.ps1 -Note "What changed."` (writes `version.js` and the CHANGELOG line) |
+| Test | `.\scripts\test.ps1`, then `-Update` if the plan changes are expected |
+| OpenStreetMap / weather downloads | `.\scripts\fetch-osm.ps1`, `.\scripts\fetch-weather.ps1` (download only; see UPDATING.md) |
+
+Then follow **[UPDATING.md](UPDATING.md)**: its top section, **Updating everything**, has the full script table, the datasets that have no script and why, and the routine. Each dataset has its own section with its source, format and checks. The **About the data** tab in the app, and the end of `update-data.ps1`'s output, show which datasets are ending soon or due.
 
 ## Rules
 
@@ -71,7 +85,7 @@ Follow **[UPDATING.md](UPDATING.md)**. If you're asked to "update all the data" 
 - **Back up before editing.** Copy files to `_BACKUP/<date>-<change>/` first.
 - **Never commit or push without the owner's go-ahead.**
 - **Every change:**
-  - bump the version in `version.js` (`1.YYYYMM.N`: next N this month, or 1 in a new month) and add a line to `CHANGELOG.md`;
+  - bump the version in `version.js` (`1.YYYYMM.N`: next N this month, or 1 in a new month) and add a line to `CHANGELOG.md`: `.\scripts\bump-version.ps1 -Note "..."` does both (once per update; `update-data.ps1` already does it for a refresh);
   - run the tests: `powershell -ExecutionPolicy Bypass -File .\scripts\test.ps1` (about two minutes; see `tests/README.md`);
   - if plans changed on purpose, read the listed differences, then save them with `test.ps1 -Update`;
   - plan a day in each park.

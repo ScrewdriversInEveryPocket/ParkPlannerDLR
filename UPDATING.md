@@ -8,16 +8,52 @@ The app's only network calls are the live weather forecast, live park hours and 
 
 ## Updating everything ("update all the data sources")
 
-If you were asked to update all the data, work through this list in order. It goes from the data that expires soonest to the data that barely changes:
+### Scripts first: the owner's rule (read this before touching any data)
 
-1. Open the app's **About the data** tab, or `check.html`. It shows which datasets have ended, are ending soon or are due for a refresh. Do those first, but go through the whole list.
-2. For each dataset in **What to refresh, and when** below, follow its section:
-   - get the new data from the named source;
-   - update the CSV and the header dates;
-   - save the raw download under `_sources`.
-3. If a source hasn't published anything new, leave that dataset alone. For example, Disney may not have announced next year's events yet. Still check it, and set `review` to a date when it's worth looking again.
+**If a script exists for a refresh, use it. Never redo a scripted refresh by hand.** Don't open Disney's pages in a browser, don't copy hours or showtimes into a CSV yourself, don't edit `data/park_hours_published.js`, `data/disney_showtimes.js` or `data/restrooms.js` directly. The scripts are faster, cost far fewer tokens, and make the same file every time.
+
+**If a script fails, fix it or write a new script, then run the script.** The fallback is never Claude searching the web for the data and typing it in. Look at what the source returns now (Disney may have renamed a field or moved a feed), change the parser, and run it again. A dataset with no script yet gets one the first time it is due: write it in PowerShell (no Python or Node on the owner's PC), put it in that dataset's `_sources\<folder>\`, add it to the table below and to `scripts\update-data.ps1` if it can run unattended.
+
+**Blocks are the one exception.** If a source answers with a bot check, 401, 403 (on the first request) or 429, stop. Never get around it. Give the owner the one-line command to run on their PC, for example `powershell -ExecutionPolicy Bypass -File .\scripts\update-data.ps1 -Only calendar`, and say what it will do. Disney's site can't be reached from a cloud sandbox at all, so a cloud session always hands Disney refreshes to the owner this way.
+
+### Which script does what
+
+| Task | Run this (from the project folder) | What it changes |
+|---|---|---|
+| **Update everything that is scripted** (start here) | `powershell -ExecutionPolicy Bypass -File .\scripts\update-data.ps1` | Fetches, parses and imports Disney's hours, showtimes and restrooms if they changed; checks Disney's closures against `refurbs`; compares Disney's dining list with `dining`; bumps the version once, adds the CHANGELOG line, runs the tests, lists what's still due by hand. |
+| Published park hours + showtimes | `.\scripts\update-data.ps1 -Only calendar` (it runs `_sources\shows\fetch-shows.ps1` then `parse-shows.ps1`) | `data/park_hours_published.js`, `data/disney_showtimes.js` |
+| Refurbishments (check only) | part of `-Only calendar` | Nothing: prints `REFURB TO ADD` / `REFURB TO CHECK` lines. You add those rows to `refurbs` (its `note` is our own wording). |
+| Restrooms | `.\scripts\update-data.ps1 -Only restrooms` (runs `_sources\restrooms\fetch-restrooms.ps1`, `parse-restrooms.ps1`) | `data/restrooms.js` |
+| Restaurants (check only) | `.\scripts\update-data.ps1 -Only dining` (runs `_sources\dining\fetch-dining.ps1`, `parse-dining.ps1`) | Nothing: prints `DINING TO ADD` / `DINING NOT ON DISNEY'S LIST`. Make those few changes to `dining` and the `food` rows of `park_places` by hand (see **dining**). |
+| Re-parse without downloading again | add `-NoFetch` (and `-NoTest` to skip the tests) | as above |
+| Put an edited CSV back into a dataset | `.\scripts\export-dataset.ps1 <id>`, edit `_sources\edit\<id>.csv`, `.\scripts\import-dataset.ps1 <id> [-Until d] [-Review d]` | that dataset; backs it up; bumps the version |
+| Bump the version (any change at all) | `.\scripts\bump-version.ps1 -Note "What changed."` | `version.js` and a `CHANGELOG.md` line |
+| Run the tests | `.\scripts\test.ps1` (then `-Update` if plan changes are expected) | nothing (or `tests/golden/plans.json`) |
+| OpenStreetMap extract | `.\scripts\fetch-osm.ps1` | saves `_sources\osm\` only; matching is a hand step (see **park_places**) |
+| Weather history | `.\scripts\fetch-weather.ps1` | saves `_sources\weather\` only. The averages have **no script yet**: when they're next due (review 2028-10-25), first write `_sources\weather\build-weather.ps1` that rebuilds the current `weather_*` and `sun_by_week` files from the 2016-2025 download exactly (that proves the definitions), then run it on the new years. |
+
+Every script prints what it did. Show the owner the **Summary** block from `update-data.ps1`, not the whole log.
+
+### Datasets with no script (by hand, from the named source)
+
+These have no machine-readable source we may use, so they stay hand steps. `update-data.ps1` lists any that are due:
+
+| Dataset | Why there's no script |
+|---|---|
+| `refurbs` | Disney's calendar only lists some closures (the script checks those); the rest are announcements. Notes are our own words. |
+| `events`, `holidays` | Announcements and school district calendars, once or twice a year. |
+| `ticket_tiers`, `multi_day_prices` | Disney's price calendar. If it's due, look for the feed behind Disney's ticket calendar first and script it (fetch + parse, like `_sources\shows`), rather than reading prices off the page. |
+| `ride_profiles`, `lightning_lane`, `lands`, `gates`, `hotels`, `security_waits`, `show_estimates` | Only change when the parks change; our own judgement goes into them. |
+| `crowd_*`, `wait_by_date`, `waits_by_hour`, `ride_closures_by_month`, `closures_by_week` | Queue-Times and Thrill Data. Queue-Times' Cloudflare check is off-limits, so these are read one page at a time, at a human pace, once a year. |
+| `park_hours_2025`, `hours_by_week` | Once a year, from a full year of published hours. When it's due, write a script that builds it from the saved calendar files. |
+
+### The whole routine
+
+1. Run `.\scripts\update-data.ps1`. If it reports a block, stop and hand the owner the command (see above).
+2. If it printed `REFURB TO ADD`, `REFURB TO CHECK` or `DINING ...` lines, make those small edits with `export-dataset.ps1` / `import-dataset.ps1 -NoBump` (or a direct edit of the CSV text), then add them to the CHANGELOG line it wrote.
+3. For each dataset under **Due by hand**, follow its section below. If a source hasn't published anything new, leave the dataset alone and set `review` to when it's worth looking again (for example, Disney may not have announced next year's events yet).
 4. If a source is blocked or needs a login, stop for that dataset and say so. Never get around a block, and never fill gaps with guesses dressed up as data. A plan that says "typical hours" is better than one built on made-up hours.
-5. Follow **The routine** below for backups, the version bump and `check.html`.
+5. Hand edits need **The routine** below (backup, one version bump in all, tests). `update-data.ps1` already did that for what it imported; don't bump again for the same update if you're editing in the same session, just add to its CHANGELOG line.
 6. Finish with a short summary for the owner covering:
    - what was updated, and the new "covers to" dates;
    - what had nothing new;
@@ -117,12 +153,14 @@ powershell -ExecutionPolicy Bypass -File .\scripts\export-dataset.ps1 park_hours
 powershell -ExecutionPolicy Bypass -File .\scripts\import-dataset.ps1 park_hours_published -Until 2027-01-31 -Review 2026-12-20
 ```
 
+- **`update-data.ps1 [-Only calendar,restrooms,dining] [-NoFetch] [-NoTest]`**: the one entry point for every scripted refresh (see **Which script does what** at the top).
+- **`bump-version.ps1 [-Note "text"]`**: raises `version.js` by one and adds the CHANGELOG line.
 - **`export-dataset.ps1 <id>`** writes the CSV to `_sources\edit\<id>.csv`.
-- **`import-dataset.ps1 <id> [-Csv file] [-Pulled date] [-Until date] [-Review date]`**:
+- **`import-dataset.ps1 <id> [-Csv file] [-Pulled date] [-Until date] [-Review date] [-NoBump]`**:
   - checks the header line matches;
   - backs up the old file to `_BACKUP`;
   - writes the new CSV and dates;
-  - bumps `version.js`.
+  - bumps `version.js` (not with `-NoBump`; then add the CHANGELOG line yourself or use `bump-version.ps1 -Note`).
 
   `-Pulled` defaults to today.
 - **`test.ps1 [-Update] [-Show]`** runs every test and prints the result (see `tests/README.md`).
@@ -175,17 +213,20 @@ The **About the data** tab shows which of these are ending soon or due right now
   - `park`;
   - `open` and `close` as decimal hours (8 am = `8.0`, 10:30 pm = `22.5`, midnight = `24.0`, 1 am = `25.0`);
   - `note` for special nights, e.g. `Oogie Boogie Bash (party ticket required)`, which the app shows on early closes.
-- **How:**
-  1. For each new date, add two rows, one per park, with the general-admission hours. Early-entry hours are not included.
-  2. Drop past dates if you like; they're harmless.
-  3. Set `until` to the last date added, and `review` to about two weeks before that.
+- **How: scripted. Never by hand.** Run `.\scripts\update-data.ps1 -Only calendar`. It downloads Disney's day calendar feed for the next 42 days (`_sources\shows\fetch-shows.ps1`, into `_sources\shows\raw\calendar-<date>.json`), and `_sources\shows\parse-shows.ps1` writes `_sources\park_hours\park_hours_published.csv`:
+  - two rows a date, Disneyland first then California Adventure, general-admission (`Operating`) hours only; early entry is left out;
+  - a ticketed party night (Disney's `specialTicketedEvent`) gets the note `<party name> (closes to day guests at 6 pm)`;
+  - rows already in the file from before the first downloaded date are kept (past days are harmless);
+  - `until` becomes the last date, `review` 14 days before it.
+
+  The run ends with one `FAILED: (403) Forbidden` line: that's Disney refusing the first unpublished date, which is normal. If the parse breaks (Disney renamed a field), fix `parse-shows.ps1` and run it again with `-NoFetch`.
 - **Check:** pick a newly added date in Plan a day. The info line should say "published hours" and match Disney.
 
 ### `disney_showtimes`: Disney's showtimes
 
 - **Source:** Disney's own site, the same calendar as the hours ([disneyland.disney.go.com/calendars/day/](https://disneyland.disney.go.com/calendars/day/)). Disney publishes about six weeks ahead. Refresh it together with `park_hours_published`.
 - **Columns:** `date`; `park`; `name` (Disney's show name); `times` (24-hour times split by `;`, e.g. `17:30;20:00`); `location`.
-- **How:** collect fireworks, Fantasmic!, World of Color, parades and stage shows that run at set times (not character meets or roaming acts). Keep raw downloads in `_sources\shows`. Set `until` to the last date collected. Dates inside the range with no rows for a park show no Tonight note for that park.
+- **How: scripted, with the hours. Never by hand.** `.\scripts\update-data.ps1 -Only calendar` (see `park_hours_published`). `parse-shows.ps1` keeps Disney's `parades`, `nighttimeSpectacularFirework`, `shows` and `event` groups, leaves out ticketed-party shows, and puts character meets and roaming acts in `_sources\shows\disney_atmosphere_times.csv` (reference only, not in the app). Dates inside the range with no rows for a park show no Tonight note for that park.
 - **Check:** pick a covered date in Plan a day. The Tonight note under the plan should match Disney's times and say "Showtimes from Disney's calendar".
 
 ### `show_estimates`: typical nighttime shows (our estimate)
@@ -302,8 +343,8 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
   - Quick service, table service, snacks and lounges are offered as nearby alternatives. Events, festival booths and members-only places aren't suggested.
   - The **Sit-down meals** picks are the `table service` places that serve lunch or dinner, plus lounges with a walk-up list. `reservations` of `accepted` or `recommended` (and a note that isn't "only for breakfast") gives the 60-day booking reminder; `walkup` = `yes` adds the walk-up list fallback; `mobile_order` = `yes` adds the mobile order tip on quick-service meals.
 - **How:**
-  1. On the PC: `.\_sources\dining\fetch-dining.ps1` and then `.\_sources\dining\parse-dining.ps1` (both default to today; see the README there). That writes `disney_dining.csv` (with Disney's map pins) and `disney_dining_hours.csv` (a week of hours).
-  2. Turn the CSV into `data/dining.js` with the app's land names (San Fransokyo Square is `Pacific Wharf`, the Performance Corridor wine terraces are `Pacific Wharf`; a place with no land gets the land of the nearest ride), and replace the `food` rows in `park_places` with Disney's pins (`osm` = `disney:<id>`). Carts listed for both parks go in the park where the pin is.
+  1. Run `.\scripts\update-data.ps1 -Only dining`. It runs `fetch-dining.ps1` and `parse-dining.ps1`, which write `_sources\dining\disney_dining.csv` (with Disney's map pins) and `disney_dining_hours.csv` (a week of hours), then prints only the differences from `data/dining.js` by name (`DINING TO ADD`, `DINING NOT ON DISNEY'S LIST`). Festival booths, dining events, Magic Key and party-only places are left out of that list on purpose. Work from those lines only; don't rebuild the file.
+  2. For each difference, add or remove that row in `data/dining.js`, using the app's land names (San Fransokyo Square is `Pacific Wharf`, the Performance Corridor wine terraces are `Pacific Wharf`; a place with no land gets the land of the nearest ride), and add or remove its `food` row in `park_places` from Disney's pin (lat/lon in `disney_dining.csv`) (`osm` = `disney:<id>`). Carts listed for both parks go in the park where the pin is.
   3. Don't add Downtown Disney or hotel restaurants: meals are always inside the parks.
 - **Check:** `check.html` shows no restaurants without a map point.
 
@@ -352,9 +393,7 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
 - **Source:** Disney's restroom map page, [disneyland.disney.go.com/guest-services/restrooms/](https://disneyland.disney.go.com/guest-services/restrooms/). The page carries every restroom's map point in its `guestServicesData` block. (The guest-services list feed only has one sample per park.) Disney's site can't be reached from a cloud sandbox, so run it on a PC.
 - **Columns:** `park`, `name`, `lat`/`lon`, `companion` (`yes` for a companion restroom; most share a point with the main one), `island` (`yes` on Tom Sawyer Island: never suggested, since it needs the raft), `disney_id`.
 - **How plans use it** (`annotateRestrooms` in `js/restrooms.js`): a step gets 🚻 when a restroom is within 2 minutes' walk at the group's pace (3 before a 30+ minute line or the walk out), only before such a line, before leaving for a break or a hop, or when the last 🚻 was 90 minutes ago.
-- **Refresh:**
-  1. On the PC: `.\_sources\restrooms\fetch-restrooms.ps1` and then `.\_sources\restrooms\parse-restrooms.ps1`. That saves the page to `raw\` and writes `restrooms.csv`.
-  2. Paste the CSV into `data/restrooms.js` and update `pulled` and `review`.
+- **Refresh: scripted. Never by hand.** `.\scripts\update-data.ps1 -Only restrooms` saves the page to `_sources\restrooms\raw\`, writes `restrooms.csv` and imports it into `data/restrooms.js` if it changed (`review` a year out). It won't import a list under 80% of the current size; if that happens Disney changed the page, so fix `parse-restrooms.ps1`.
 
 ### `security_waits`: security and tap-in lines
 

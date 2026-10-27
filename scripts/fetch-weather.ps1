@@ -15,7 +15,7 @@ $root = Split-Path $PSScriptRoot -Parent
 $dir = Join-Path (Join-Path $root '_sources') 'weather'
 if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir | Out-Null }
 $last = (Get-Date).Year - 1; $first = $last - $Years + 1
-$daily = 'temperature_2m_max,temperature_2m_min,apparent_temperature_max,precipitation_sum,precipitation_hours,wind_speed_10m_max,daylight_duration,sunrise,sunset'
+$daily = 'temperature_2m_max,temperature_2m_min,apparent_temperature_max,precipitation_sum,precipitation_hours,wind_speed_10m_max,wind_gusts_10m_max,daylight_duration,sunrise,sunset'
 $hourly = 'temperature_2m,apparent_temperature,relative_humidity_2m,precipitation'
 $url = "https://archive-api.open-meteo.com/v1/archive?latitude=33.8121&longitude=-117.919&start_date=$first-01-01&end_date=$last-12-31&daily=$daily&hourly=$hourly&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FLos_Angeles"
 $out = Join-Path $dir "open-meteo-anaheim-$first-$last.json"

@@ -7,9 +7,9 @@ PDP_DATASET({
   source: "Disney's official park calendar",
   url: "https://disneyland.disney.go.com/calendars/day/",
   license: "",
-  pulled: "2026-10-24",
-  until: "2026-12-05",
-  review: "2026-11-20",
+  pulled: "2026-10-27",
+  until: "2026-12-08",
+  review: "2026-11-24",
   refresh: "Every few weeks, as Disney publishes more dates",
   day_note: "Hours for this date are typical for the time of year. Disney had published hours through {until}; check its calendar closer to your trip.",
   columns: { date: "date!", weekday: "dow!", week: "week!", park: "park!", open: "hour!", close: "hour!", note: "text" }
@@ -57,6 +57,9 @@ PDP_DATASET({
 2026-12-03,Thu,49,Disneyland,8.0,23.0,
 2026-12-04,Fri,49,Disneyland,8.0,24.0,
 2026-12-05,Sat,49,Disneyland,8.0,24.0,
+2026-12-06,Sun,49,Disneyland,8.0,24.0,
+2026-12-07,Mon,49,Disneyland,8.0,24.0,
+2026-12-08,Tue,49,Disneyland,8.0,24.0,
 2026-10-24,Sat,43,California Adventure,8.0,22.0,
 2026-10-25,Sun,43,California Adventure,8.0,18.0,Oogie Boogie Bash – A Disney Halloween Party (closes to day guests at 6 pm)
 2026-10-26,Mon,43,California Adventure,8.0,21.0,
@@ -100,4 +103,7 @@ PDP_DATASET({
 2026-12-03,Thu,49,California Adventure,8.0,22.0,
 2026-12-04,Fri,49,California Adventure,8.0,22.0,
 2026-12-05,Sat,49,California Adventure,8.0,22.0,
+2026-12-06,Sun,49,California Adventure,8.0,22.0,
+2026-12-07,Mon,49,California Adventure,8.0,22.0,
+2026-12-08,Tue,49,California Adventure,8.0,21.0,
 `);
