@@ -226,7 +226,8 @@
       const st = w.eval('dpState'), by = w.eval('DINE_BY_KEY');
       const dl = w.eval('DINE_PICKS')['Disneyland'].filter(x => x.serves.length === 2), dca = w.eval('DINE_PICKS')['California Adventure'].filter(x => x.serves.length === 2);
       const one = Object.values(by).find(x => x.park === 'California Adventure' && x.serves.length === 1 && x.serves[0] === 'dinner' && w.eval('DINE_PICKS')[x.park].some(y => y.key === x.key));
-      const tapOf = (k) => { const c = doc.querySelector(`#dp-rides .qt-chip.dine[data-key="${k}"]`); c.click(); return w.eval('JSON.stringify(dpState.dine)'); };
+      // untagged taps (the plain rule), straight on dineTap; the chip click with its "Good for" tag is checked below
+      const tapOf = (k) => { w.__k = k; w.eval('dineTap(dpState.dine, DINE_BY_KEY[window.__k])'); return w.eval('JSON.stringify(dpState.dine)'); };
       const S = (l, d) => JSON.stringify({ lunch: l ? l.key : null, dinner: d ? d.key : null });
       const [A, B] = [dca[0], dl[0]], bad = [];
       const run = (label, steps) => steps.forEach(([k, want], i) => { const got = tapOf(k.key); if (got !== want) bad.push(`${label}, tap ${i + 1} on ${k.name}: ${got}, wanted ${want}`); });
@@ -234,6 +235,7 @@
       w.drawDay(); w.dpFlush();
       // hopper: DCA lunch + DL dinner, then DL lunch + DCA dinner, then replacement and the switch freeing its old slot
       run('hopper DCA lunch, DL dinner', [[A, S(A, null)], [B, S(A, B)]]);
+      w.drawDay(); w.dpFlush();
       check(S2, 'DCA lunch and DL dinner both stay picked and the plan draws', doc.querySelectorAll('#dp-rides .qt-chip.dine[aria-pressed="true"]').length === 2 && !!w.eval('dpLast.P'),
         'dine ' + w.eval('JSON.stringify(dpState.dine)'));
       w.drawDay(); w.dpFlush(); st.dine = { lunch: null, dinner: null }; w.drawDay(); w.dpFlush();
@@ -259,6 +261,39 @@
       Object.assign(st, { park: 'Hopper', dine: { lunch: null, dinner: null } });
       check(S2, 'restaurant chips: tap rule, any pair reachable in either order, one-meal places, one-park day', !bad.length, bad.join('; '));
     } catch (err) { check(S2, 'restaurant tap', false, 'crashed: ' + (err && err.stack || err)); }
+    // restaurant tap with "Good for" tags (dineTap's third argument): tagged meal if free, else the other, else replaces the tagged holder
+    try {
+      const picks = w.eval('DINE_PICKS'), two = [].concat(picks['Disneyland'], picks['California Adventure']).filter(x => x.serves.length === 2);
+      const oneM = [].concat(picks['Disneyland'], picks['California Adventure']).find(x => x.serves.length === 1);
+      const [X, Y, Z] = two, bad = [], d = { lunch: null, dinner: null };
+      const T = (dine, r, tags) => { w.__d = dine; w.__r = r; w.__t = tags; w.eval('dineTap(window.__d, window.__r, window.__t)'); return JSON.stringify(dine); };
+      const exp = (label, got, l, dn) => { const want = JSON.stringify({ lunch: l ? l.key : null, dinner: dn ? dn.key : null }); if (got !== want) bad.push(`${label}: ${got}, wanted ${want}`); };
+      let e = { lunch: null, dinner: null };
+      exp('tagged dinner, both free', T(e, X, ['dinner']), null, X);
+      e = { lunch: null, dinner: null }; exp('tagged lunch, free', T(e, X, ['lunch']), X, null);
+      e = { lunch: Y.key, dinner: null }; exp('tagged lunch held by another -> dinner', T(e, X, ['lunch']), Y, X);
+      e = { lunch: Y.key, dinner: Z.key }; exp('both full: replaces the tagged holder', T(e, X, ['lunch']), X, Z);
+      e = { lunch: null, dinner: null }; T(e, X, ['dinner']); exp('second tap switches', T(e, X, ['dinner']), X, null);
+      e = { lunch: Y.key, dinner: null }; T(e, X, ['dinner']); exp('second tap drops the holder', T(e, X, ['dinner']), X, null);
+      e = { lunch: null, dinner: null }; T(e, X, ['dinner']); T(e, X, ['dinner']); exp('third tap removes', T(e, X, ['dinner']), null, null);
+      e = { lunch: null, dinner: null }; exp('tagged both: lunch first', T(e, X, ['lunch', 'dinner']), X, null);
+      e = { lunch: null, dinner: null }; exp('untagged: lunch if free', T(e, X), X, null);
+      e = { lunch: Y.key, dinner: null }; exp('untagged: else dinner', T(e, X, []), Y, X);
+      if (oneM) { e = { lunch: null, dinner: null }; const got = T(e, oneM, [oneM.serves[0] === 'lunch' ? 'dinner' : 'lunch']);
+        if (got !== JSON.stringify(oneM.serves[0] === 'lunch' ? { lunch: oneM.key, dinner: null } : { lunch: null, dinner: oneM.key })) bad.push('one-meal restaurant goes to its meal: ' + got); }
+      e = { lunch: null, dinner: null }; T(e, X, ['dinner']); exp('any pair: X dinner then Y lunch', T(e, Y, ['lunch']), Y, X);
+      e = { lunch: null, dinner: null }; T(e, X, ['lunch']); exp('any pair: X lunch then Y dinner', T(e, Y, ['lunch']), X, Y);
+      // a real click on a tagged chip goes to its tagged meal
+      Object.assign(w.eval('dpState'), JSON.parse(JSON.stringify(base)), { date: addDays(TODAY, 10), park: 'Hopper', dine: { lunch: null, dinner: null } });
+      w.drawDay(); w.dpFlush();
+      const gc = doc.querySelector('#dp-rides .qt-chip.dine.good');
+      if (gc) { const tag = (gc.querySelector('.dgood') || {}).textContent || '', key = gc.dataset.key, r = w.eval('DINE_BY_KEY')[key];
+        gc.click(); const got = w.eval('dpState.dine'), m = /lunch/.test(tag.split(' Good for')[1] || '') ? 'lunch' : 'dinner';
+        if (r.serves.length === 2 && got[m] !== key) bad.push(`click on a chip tagged for ${m}: ${JSON.stringify(got)}`); }
+      else bad.push('no chip tagged Good for after the plan');
+      w.eval('dpState').dine = { lunch: null, dinner: null };
+      check(S2, 'restaurant chip tags: tagged meal first, other meal if taken, replace when both full, second tap switches, third removes', !bad.length, bad.join('; '));
+    } catch (err) { check(S2, 'restaurant tap tags', false, 'crashed: ' + (err && err.stack || err)); }
     // chosen meal times: lunch around 1 pm and dinner around 6 pm start within half an hour of it, or the plan says why not
     try {
       const st = w.eval('dpState'), bad = [];

@@ -192,7 +192,7 @@ Repeats are spaced at least an hour apart unless you tick **Allow repeat rides b
 
 Under the rides, on Plan a day and on each wizard day page, **Sit-down meals (optional)** lists the table-service restaurants and lounges in that day's park(s), with price, how booking works and what they serve.
 
-A line above them says where your plan has you at each meal, such as "Lunch: you're in California Adventure · Dinner: you're in Disneyland" (on a one-park day, "Lunch and dinner: you're in Disneyland"). The one or two places closest to where you'll be at each meal are marked **✓ Good for lunch** or **✓ Good for dinner**. That is only a hint about where you will be: it never limits what you can pick, and any restaurant can be picked for any meal it serves. Hover over the chip to see the walk.
+A line above them says where your plan has you at each meal, such as "Lunch: you're in California Adventure · Dinner: you're in Disneyland" (on a one-park day, "Lunch and dinner: you're in Disneyland"). The one or two places closest to where you'll be at each meal are marked **✓ Good for lunch** or **✓ Good for dinner**. Tapping a marked place picks it for that meal (or the other meal if another place already has the marked one; with both meals full it replaces the marked meal's pick); a second tap switches meal and a third removes it. The mark never limits what you can pick, and any restaurant can be picked for any meal it serves. Hover over the chip to see the walk.
 
 | Do this | What happens |
 |---|---|

@@ -110,7 +110,7 @@ const hourLbl = (h) => { const H = Math.floor(h), m = Math.round((h - H) * 60), 
   return H === 12 && !m ? 'noon' : H >= 12 ? `${H > 12 ? H - 12 : 12}${mm} pm` : `${H}${mm} am`; };
 const mealAtLbl = (v) => v == null || v === 'auto' ? 'whenever fits' : 'around ' + hourLbl(Number(v));
 const nextLap = (on, n, max) => !on ? 1 : n < max ? n + 1 : 0;
-// sit-down and walk-up restaurants as chips: tap to pick one for lunch (or dinner when lunch is taken), tap again for its other meal,
+// sit-down and walk-up restaurants as chips: tap to pick one for the meal it is marked "Good for" (else lunch, or dinner when lunch is taken), tap again for its other meal,
 // a third time to take it off (see dineTap in js/meals.js); press and hold takes it off at once. Any restaurant that serves a meal can be
 // picked for it, wherever you are at that meal.
 // dine is { lunch, dinner } holding 'park|name'; one place per meal per day.
@@ -135,12 +135,12 @@ function dineChips(box, parks, dine, onChange, mt) {
   const any = parks.some(p => (DINE_PICKS[p] || []).length); if (!any) return;
   const g = document.createElement('span'); g.className = 'g wzh'; g.textContent = 'Sit-down meals (optional)'; box.append(g);
   const hint = document.createElement('span'); hint.className = 'g qt-dinehint';
-    hint.textContent = 'Tap a restaurant for lunch (or dinner if lunch is taken), tap again for the other meal, tap a third time or press and hold ' +
+    hint.textContent = 'Tap a restaurant to pick it for the meal it is marked “Good for” (or the other meal if that one is taken), tap again for the other meal, tap a third time or press and hold ' +
       'to take it off. Pick any restaurant for any meal it serves: on a Park Hopper day the plan hops to it. Other meals are planned at the nearest quick-service place.';
     box.append(hint);
   const whereLine = document.createElement('span'); whereLine.className = 'g qt-dinehint qt-dinewhere'; whereLine.hidden = true; box.append(whereLine);
   let where = null;
-  const chipsOf = {};
+  const chipsOf = {}, TAGS = new WeakMap();   // TAGS: chip -> the meals it is marked "Good for", lunch first (set by dineAt, read by dineTap)
   parks.forEach(p => (DINE_PICKS[p] || []).forEach(r => {
     const st = dine.lunch === r.key ? 'lunch' : dine.dinner === r.key ? 'dinner' : null;
     const b = document.createElement('button'); b.type = 'button'; b.className = 'qt-chip dine'; b.dataset.key = r.key; b.setAttribute('aria-pressed', st ? 'true' : 'false');
@@ -154,11 +154,12 @@ function dineChips(box, parks, dine, onChange, mt) {
       c.setAttribute('aria-pressed', st ? 'true' : 'false');
       c.firstChild.nodeValue = rr.name + (parks.length > 1 ? ` (${rr.park === 'Disneyland' ? 'DL' : 'DCA'})` : '') + (st ? ` · ${st === 'lunch' ? 'Lunch' : 'Dinner'}` : '');
       c.classList.remove('miss'); c.querySelectorAll('.dmiss').forEach(x => x.remove()); });
-    cycleTap(b, () => { dineTap(dine, r); show(); onChange(); }, () => { ['lunch', 'dinner'].forEach(m => { if (dine[m] === r.key) dine[m] = null; }); show(); onChange(); });
+    cycleTap(b, () => { dineTap(dine, r, TAGS.get(b)); show(); onChange(); }, () => { ['lunch', 'dinner'].forEach(m => { if (dine[m] === r.key) dine[m] = null; }); show(); onChange(); });
     chipsOf[r.key] = b; box.append(b);
   }));
   return (w) => {
     where = w && w.lunch && w.dinner ? w : null;
+    Object.values(chipsOf).forEach(c => { TAGS.delete(c); c.classList.remove('good'); c.querySelectorAll('.dgood').forEach(x => x.remove()); });
     whereLine.hidden = !where; if (!where) return;
     const L = where.lunch.park, Dn = where.dinner.park;
     whereLine.textContent = L === Dn ? `Lunch and dinner: you’re in ${L}.` : `Lunch: you’re in ${L} · Dinner: you’re in ${Dn}.`;
@@ -171,6 +172,7 @@ function dineChips(box, parks, dine, onChange, mt) {
       }).filter(x => isFinite(x.min)).sort((a, b) => a.min - b.min).slice(0, 2).forEach(x => {
         const b = chipsOf[x.r.key]; if (!b) return;
         const tag = document.createElement('span'); tag.className = 'dgood'; tag.textContent = ` ✓ Good for ${m}`;
+        TAGS.set(b, (TAGS.get(b) || []).concat(m));
         b.classList.add('good'); b.insertBefore(tag, b.querySelector('.ri'));
         b.title = (b.title ? b.title + ' ' : '') + `Good for ${m} (a hint only; you can pick it for any meal it serves): about ${fmtDur(x.min)}’s walk from where your plan has you at ${m} time.`;
       });

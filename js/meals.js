@@ -58,13 +58,19 @@ const dinePicked = (park, kind, S = dpState) => { const k = S.dine && S.dine[kin
 // serving one meal goes to that meal. Second tap: the other meal, replacing whatever is there (its old slot is free again). Third tap, or
 // a tap on a one-meal pick: off. Two picks are reachable in either order. The tap count is kept per day (dine object) and restaurant;
 // a pick loaded from a saved plan counts as tapped once.
+// tags (optional): the meals the chip is marked "Good for" (see dineChips; lunch first). The first tap then goes to the tagged meal the
+// restaurant serves if it's free; if another restaurant holds it, to the other meal if that is free and served; with both full, it
+// replaces the tagged meal's holder. No tag (or a tagged meal it doesn't serve): lunch if free, else dinner.
 const DINE_TAPS = new WeakMap();
-function dineTap(dine, r) {
+function dineTap(dine, r, tags) {
   let n = DINE_TAPS.get(dine); if (!n) DINE_TAPS.set(dine, n = {});
   const st = dine.lunch === r.key ? 'lunch' : dine.dinner === r.key ? 'dinner' : null;
   const put = (m) => { ['lunch', 'dinner'].forEach(k => { if (dine[k] === r.key) dine[k] = null; }); if (m) dine[m] = r.key; };
   if (!st) {
-    const m = r.serves.includes('lunch') && !dine.lunch ? 'lunch' : r.serves.includes('dinner') ? 'dinner' : r.serves[0];
+    const t = (tags || []).find(x => r.serves.includes(x)), o = t === 'lunch' ? 'dinner' : 'lunch';
+    const m = r.serves.length === 1 ? r.serves[0]
+      : t ? (!dine[t] ? t : r.serves.includes(o) && !dine[o] ? o : t)
+      : r.serves.includes('lunch') && !dine.lunch ? 'lunch' : r.serves.includes('dinner') ? 'dinner' : r.serves[0];
     n[r.key] = 1; put(m); return m;
   }
   const other = st === 'lunch' ? 'dinner' : 'lunch';

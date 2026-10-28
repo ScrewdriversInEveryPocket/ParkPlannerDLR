@@ -24,7 +24,7 @@ The hidden frame loads the app with `?nobusy`, which turns off the "Working out 
    - a day in the park from 11:30 to 2 includes lunch;
    - the day PDF is made (once per park).
 
-   More checks: restaurant chip taps (lunch if free else dinner, switch, off, one-meal places, any pair in either order); a restaurant picked in the other park comes off a one-park day, with a note; lunch around 1 pm and dinner around 6 pm are kept (or the plan says why not); a ride closed for refurbishment has a greyed-out chip; and no plan leaves after close, more than 2 hours past a set finish (unless that's to fit a picked or timed meal), or with under an hour at the hotel when a break is shortened.
+   More checks: restaurant chip taps (tagged meal if free else the other, replace when both full; untagged: lunch if free else dinner; switch, off, one-meal places, any pair in either order); a restaurant picked in the other park comes off a one-park day, with a note; lunch around 1 pm and dinner around 6 pm are kept (or the plan says why not); a ride closed for refurbishment has a greyed-out chip; and no plan leaves after close, more than 2 hours past a set finish (unless that's to fit a picked or timed meal), or with under an hour at the hotel when a break is shortened.
 3. **Trip wizard:** a 3-day Park Hopper trip with a break day, through every step, then the trip PDF.
 4. **Expected plans:** 101 of the plans (10 and 130 days out, including the `hop-*` groups, plus `three-rides` 300 days out, a summer day, for the heat) are compared line by line with `tests/golden/plans.json`. Any difference is listed.
 

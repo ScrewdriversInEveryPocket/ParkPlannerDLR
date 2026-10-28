@@ -4,6 +4,7 @@ What changed in each version. The version is the one in `version.js`, shown at t
 
 | Version | Date | What changed |
 |---|---|---|
+| 1.202610.21 | 2026-10-27 | Restaurant chip taps go to the meal the chip is marked Good for, falling back to the other meal if taken. |
 | 1.202610.20 | 2026-10-27 | Durations now read as hours and minutes (1 h 24 min, 2 h, 45 min) everywhere, not decimal hours or long minute counts; one shared fmtDur helper. |
 | 1.202610.19 | 2026-10-27 | Faster to use: the slow extras on a plan (which rides would still fit, what to take off) now run in small slices after taps pause, and a tap cuts them short, so the page no longer freezes for up to 2 s after a Park Hopper plan; Lightning Lane picks are worked out once per park per search. Plans are unchanged. |
 | 1.202610.18 | 2026-10-27 | Restaurant chips: tap picks lunch (or dinner if lunch is taken), tap again for the other meal, a third time to take it off, so any two restaurants can be picked in either order; Good for lunch/dinner is only a hint and never limits a pick. |
