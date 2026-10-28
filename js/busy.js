@@ -2,7 +2,8 @@
 // in place for the first draw. It changes no planning: it only decides WHEN drawDay, drawTrip and drawWalk run after a tap.
 // A tap on a quick plan (a single park, about 50 ms) runs as before. When the plan is slow (a Park Hopper day, or whatever the last
 // run of that draw took) the tap's redraws wait for the taps to stop (BUSY_WAIT ms), so several quick taps, e.g. a ride from 1x to
-// 3x, plan once; the page then paints a full-screen spinner and only then plans, and the spinner swallows taps until the plan is on screen.
+// 3x, plan once; the page then paints a full-screen spinner and only then plans, and the spinner swallows taps until the plan is on screen (the slow extras
+// come after, in slices that a tap cuts short).
 const BUSY_WAIT = 200;   // ms of no taps before a slow plan starts
 const BUSY_SLOW = 120;   // ms: a draw that last took this long counts as slow
 const BUSY = { inTap: false, running: false, busy: false, pending: new Map(), timer: null, cost: {}, off: /[?&]nobusy\b/.test(location.search) };
@@ -56,9 +57,9 @@ function busyRun() {
       if (name === 'drawTrip') walked = true;
     });
   } finally { BUSY.running = false; }
-  // the slow extras (fit advice) run on a timer right after the plan paints: keep the spinner up until they are done
+  // the slow extras (fit advice) run in slices once taps pause (laterRun in js/plan-day.js), and a tap stops them, so the spinner
+  // comes down as soon as the plan is on screen
   setTimeout(() => setTimeout(() => {
-    dpFlush(); if (wz.laterJob) { const j = wz.laterJob; wz.laterJob = null; j(); }
     BUSY.busy = false; document.documentElement.classList.remove('is-busy'); busyOverlay().hidden = true;
   }, 0), 0);
 }

@@ -105,7 +105,7 @@ On a phone it opens the share sheet so you can save or email it. On a computer i
 ---
 
 ## Plan a day: plan one visit
-On a slow plan (mostly Park Hopper days) a tap shows a spinner, "Working out your plan…", while the plan is made; the tapped chip changes at once, several quick taps (a ride from 1x to 3x) plan once at the end, and taps are ignored until the plan appears.
+On a slow plan (mostly Park Hopper days) a tap shows a spinner, "Working out your plan…", while the plan is made; the tapped chip changes at once, several quick taps (a ride from 1x to 3x) plan once at the end, and taps are ignored until the plan appears. The extra "would still fit" and "what to take off" hints fill in a moment later, in small steps, and a tap stops them so the page stays responsive.
 
 A quick, self-contained planner for a single day, ideal for locals and annual passholders. It doesn't touch your Trip wizard plan.
 

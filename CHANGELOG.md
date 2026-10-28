@@ -4,6 +4,7 @@ What changed in each version. The version is the one in `version.js`, shown at t
 
 | Version | Date | What changed |
 |---|---|---|
+| 1.202610.19 | 2026-10-27 | Faster to use: the slow extras on a plan (which rides would still fit, what to take off) now run in small slices after taps pause, and a tap cuts them short, so the page no longer freezes for up to 2 s after a Park Hopper plan; Lightning Lane picks are worked out once per park per search. Plans are unchanged. |
 | 1.202610.18 | 2026-10-27 | Restaurant chips: tap picks lunch (or dinner if lunch is taken), tap again for the other meal, a third time to take it off, so any two restaurants can be picked in either order; Good for lunch/dinner is only a hint and never limits a pick. |
 | 1.202610.17 | 2026-10-27 | Thinking overlay and quick-tap batching: slow plans show a spinner and several quick taps plan once; ride chips update at once. |
 | 1.202610.16 | 2026-10-27 | Lunch time: Around 11 am becomes Around 11:30 am (park hopping opens at 11, so an 11 am lunch in the other park never fit on a Park Hopper day); a saved 11 am lunch loads as 11:30. |

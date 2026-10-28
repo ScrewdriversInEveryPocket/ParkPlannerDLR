@@ -20,18 +20,21 @@ function gapFill(ctx, b, until, picked, why) {
 }
 // when picked rides don't fit: the picked rides that take the most time, and what taking each one off makes room for.
 // drop(park, name) re-plans the day without that ride and returns what's still left over.
-function fullAdvice(steps, left, drop) {
+function* fullAdvice(steps, left, drop) {   // a generator, like roomFor: one re-plan per step
   if (!left.length) return null;
   const c = new Map();
   steps.forEach(x => { if (!x.ride || !x.r) return; const k = x.r.park + '|' + x.r.name; const o = c.get(k) || { park: x.r.park, name: x.r.name, min: 0, n: 0
       }; o.min += (x.wait || 0) + x.r.rmin; o.n++; c.set(k, o); });
   const count = (L) => d3.rollup(L, v => v.length, r => r.park + '|' + r.name), before = count(left);
   // try the 5 biggest time users, then show the 3 that make the most room (ties: the one taking more time)
-  return [...c.values()].sort((a, b) => b.min - a.min).slice(0, 5).map(o => {
+  const tried = [];
+  for (const o of [...c.values()].sort((a, b) => b.min - a.min).slice(0, 5)) {
     const after = count(drop(o.park, o.name)), k0 = o.park + '|' + o.name;
     const now = [...before].filter(([k, n]) => k !== k0 && (after.get(k) || 0) < n).map(([k]) => k.split('|')[1]);
-    return Object.assign(o, { all: ![...after.keys()].some(k => k !== k0), now });
-  }).sort((a, b) => ((b.all ? 99 : b.now.length) - (a.all ? 99 : a.now.length)) || (b.min - a.min)).slice(0, 3);
+    tried.push(Object.assign(o, { all: ![...after.keys()].some(k => k !== k0), now }));
+    yield;
+  }
+  return tried.sort((a, b) => ((b.all ? 99 : b.now.length) - (a.all ? 99 : a.now.length)) || (b.min - a.min)).slice(0, 3);
 }
 const advLine = (o) => `${o.name}${o.n > 1 ? ` (all ${o.n} times)` : ''}: about ${Math.round(o.min)} min in line and riding. ${o.all ?
   'Taking it off makes room for everything else.' : o.now.length ? `Taking it off makes room for ${o.now.join(', ')}.` :
@@ -321,13 +324,21 @@ const mealsWanted = (steps, S) => mealMisses(steps, S).concat(mealsLost(steps, S
 const roundUp15 = (t) => Math.ceil(t * 4) / 4;
 const roundDn15 = (t) => Math.floor(t * 4) / 4;
 
+// The Lightning Lane picks only depend on the park's hours, the pool and S.ll, and a hopper search asks for the same park and pool
+// hundreds of times, so the sorted Multi Pass list is remembered per park context (average waits worked out once per ride).
+const LL_MEMO = new WeakMap();
 function llPlan(ctx, pool, hoursInPark, S = dpState) {
-  const avgW = (r) => d3.mean(d3.range(Math.max(9, Math.ceil(ctx.open)), Math.min(22, ctx.close)), h => expWait(ctx, r, h)) || r.avg;
-  pool = pool.filter(r => !r.lap); // Lightning Lane is once per ride per day; repeats wait in standby
-  const elig = S.ll ? pool.filter(r => r.ll === 'Multi Pass').sort((a, b) => avgW(b) - avgW(a)) : [];
+  let e = LL_MEMO.get(ctx);
+  if (!e || e.pool !== pool || e.n !== pool.length || e.ll !== S.ll || e.open !== ctx.open || e.close !== ctx.close || e.wf !== ctx.weekFactor) {
+    const avg = new Map(), avgW = (r) => { let v = avg.get(r); if (v === undefined) avg.set(r, v = d3.mean(d3.range(Math.max(9, Math.ceil(ctx.open)), Math.min(22, ctx.close)), h => expWait(ctx, r, h)) || r.avg); return v; };
+    const p2 = pool.filter(r => !r.lap); // Lightning Lane is once per ride per day; repeats wait in standby
+    e = { pool, n: pool.length, ll: S.ll, open: ctx.open, close: ctx.close, wf: ctx.weekFactor, p2, elig: S.ll ? p2.filter(r => r.ll === 'Multi Pass').sort((a, b) => avgW(b) - avgW(a)) : [] };
+    LL_MEMO.set(ctx, e);
+  }
+  const elig = e.elig;
   const K = Math.min(elig.length, Math.max(1, Math.min(LL.max, Math.floor(hoursInPark / LL.per))));
   const multi = elig.slice(0, K);
-  const single = S.single ? pool.filter(r => r.ll === 'Single Pass') : [];
+  const single = S.single ? e.p2.filter(r => r.ll === 'Single Pass') : [];
   return { set: new Set(multi.concat(single)), multi, single };
 }
 // one plan with the group's own finish time and break (planDay below may give the day a little more time)

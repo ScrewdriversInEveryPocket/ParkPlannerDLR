@@ -9,9 +9,13 @@ let lastTap = null;
 // the pool with extra rides added, in the park's own ride order (the planner breaks ties by list order,
 // so a trial has to match what a real tap would plan)
 const withRides = (ctx, pool, qs) => { const add = new Set(qs.map(q => q.r)); return ctx.rides.filter(r => add.has(r) || pool.includes(r)).concat(pool.filter(r => r.lap)); };
-function roomFor(ctxs, isFree, trial) {
+// A generator: one re-plan per step (it yields after each), so js/plan-day.js (laterRun) can hand the page back between them.
+// Use `yield*`; laterSync() runs one to the end at once.
+function* roomFor(ctxs, isFree, trial) {
   const free = [].concat(ctxs).flatMap(c => c.rides.filter(r => !c.closedSet.has(r.name) && isFree(c.park, r)).map(r => ({ park: c.park, r })));
-  const ok = free.filter(q => trial([q])).sort((a, b) => (b.r.head - a.r.head) || (b.r.avg - a.r.avg));
+  const fits = [];
+  for (const q of free) { if (trial([q])) fits.push(q); yield; }
+  const ok = fits.sort((a, b) => (b.r.head - a.r.head) || (b.r.avg - a.r.avg));
   return { fit: ok.length, total: free.length, names: ok.map(q => q.r.name), keys: new Set(ok.map(q => q.park + '|' + q.r.name)), no: free.filter(q => !ok.includes(q)).map(q => q.r.name) };
 }
 // more: { fit, total } from roomFor, or null when not checked (then estimate from spare time)

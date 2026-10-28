@@ -98,7 +98,7 @@ function wzSlack(left, end, close, freeCosts, more, adv, S = dpState) {
   const k = slack < 1 ? 0 : Math.floor(slack * 60 / d3.mean(freeCosts));
   return k < 1 ? 'This day is full.' : `${fin}: room for roughly ${k} more ride${k === 1 ? '' : 's'}. Add them below.`;
 }
-const wzMore = (left, ctxs, taken, trial) => left.length ? null : roomFor(Object.values(ctxs), (p, r) => !taken.has(p + '|' + r.name), trial);
+function* wzMore(left, ctxs, taken, trial) { return left.length ? null : yield* roomFor(Object.values(ctxs), (p, r) => !taken.has(p + '|' + r.name), trial); }
 // the picked-restaurant note on a wizard day page, after the note on a pick just taken off this day (day.dropNote, shown once)
 function wzDine(el, steps, parks, box, day, D) {
   dineNote(el, steps, parks, { chips: box.parentElement && box.parentElement.querySelector('.qt-chipgroup'),
@@ -144,8 +144,8 @@ function wzRenderPlan(box, iso, opt, day, D) {
             [`Break ${fmtClock(X.brk)}–${fmtClock(X.ret)} · ${eOut.min} min each way${eOut.g ? " via the hotel's own park entrance" : ''}`, []], ['Evening',
               X.evening.steps]]);
         // which rides would still fit, or what to take off, fills in a moment after the page shows (later, below)
-        const later = () => { const more = wzMore(X.left, ctxs, taken, qs => { const P2 = planDay(ctx, withRides(ctx, pool, qs), cfg); return !(P2.split || P2.stay.plan).left.length; });
-          const adv = fullAdvice(X.morning.steps.concat(X.evening.steps), X.left, (p, name) => { const P2 = planDay(ctx, pool.filter(r => r.name !== name), cfg); return (P2.split || P2.stay.plan).left; });
+        const later = function* () { const more = yield* wzMore(X.left, ctxs, taken, qs => { const P2 = planDay(ctx, withRides(ctx, pool, qs), cfg); return !(P2.split || P2.stay.plan).left.length; });
+          const adv = yield* fullAdvice(X.morning.steps.concat(X.evening.steps), X.left, (p, name) => { const P2 = planDay(ctx, pool.filter(r => r.name !== name), cfg); return (P2.split || P2.stay.plan).left; });
           note.textContent = wzSlack(X.left, X.leave, P.win.t1, freeCosts, more, adv, cfg); return { more, adv }; };
         note.textContent = wzSlack(X.left, X.leave, P.win.t1, freeCosts, null, null, cfg);
         wzDine(mk('p', 'qt-note'), X.morning.steps.concat(X.evening.steps), [park], box, day, D);
@@ -161,8 +161,8 @@ function wzRenderPlan(box, iso, opt, day, D) {
               '') : 'park hours too short for the break, so no break') : ''}`;
         ll.textContent = llText(S.llp);
         stepList(steps, [['', S.plan.steps]]);
-        const later = () => { const more = wzMore(S.plan.left, ctxs, taken, qs => !planDay(ctx, withRides(ctx, pool, qs), cfg).stay.plan.left.length);
-          const adv = fullAdvice(S.plan.steps, S.plan.left, (p, name) => planDay(ctx, pool.filter(r => r.name !== name), cfg).stay.plan.left);
+        const later = function* () { const more = yield* wzMore(S.plan.left, ctxs, taken, qs => !planDay(ctx, withRides(ctx, pool, qs), cfg).stay.plan.left.length);
+          const adv = yield* fullAdvice(S.plan.steps, S.plan.left, (p, name) => planDay(ctx, pool.filter(r => r.name !== name), cfg).stay.plan.left);
           note.textContent = wzSlack(S.plan.left, S.leave, P.win.t1, freeCosts, more, adv, cfg); return { more, adv }; };
         note.textContent = wzSlack(S.plan.left, S.leave, P.win.t1, freeCosts, null, null, cfg);
         wzDine(mk('p', 'qt-note'), S.plan.steps, [park], box, day, D);
@@ -193,7 +193,7 @@ function wzRenderPlan(box, iso, opt, day, D) {
           const Y = (day.brk > 0 && planHopper(iso, D, true, cfg)) || planHopper(iso, D, false, cfg); return Y ? Y.left : H.left; } finally {
           if (had) day.rides[p].add(name); } };
       // which rides would still fit, or with rides left over the advice on what to take off, fills in a moment after the page shows (later, below)
-      const later = () => { const more = wzMore(H.left, ctxs, taken, hopTrial), adv = fullAdvice(H.segs.flatMap(s => s.steps), H.left, hopDrop);
+      const later = function* () { const more = yield* wzMore(H.left, ctxs, taken, hopTrial), adv = yield* fullAdvice(H.segs.flatMap(s => s.steps), H.left, hopDrop);
         note.textContent = wzSlack(H.left, H.leave, closeH, freeCosts, more, adv, cfg); return { more, adv }; };
       note.textContent = wzSlack(H.left, H.leave, closeH, freeCosts, null, null, cfg);
       wzDine(mk('p', 'qt-note'), H.flat, WZ_PARKS, box, day, D);
@@ -416,8 +416,8 @@ function drawWalk(D) {
     if (fit) fitStatus(chips, fit.left, fit.slack, fit.freeCosts, fitHint, fit.more, fit.adv, fit.glance);
     else lastTap = null;
     // which rides would still fit (or what to take off) is filled in just after, so the day shows first, unless the page is drawn again first
-    if (fit && fit.later) { const job = () => { lastTap = tap0; const L = fit.later(); fitStatus(chips, fit.left, fit.slack, fit.freeCosts, fitHint, L.more, L.adv, fit.glance); };
-      wz.laterJob = job; setTimeout(() => { if (wz.laterJob === job && chips.isConnected) { wz.laterJob = null; job(); } }, 0); }
+    if (fit && fit.later) { const job = { make: fit.later, done: (L) => { if (wz.laterJob === job) wz.laterJob = null; lastTap = tap0; fitStatus(chips, fit.left, fit.slack, fit.freeCosts, fitHint, L.more, L.adv, fit.glance); } };
+      wz.laterJob = job; laterRun(job, () => wz.laterJob === job && chips.isConnected); }
     const nav = el('div', 'qt-controls');
     const back = el('button', 'qt-btn', k === 0 ? '← Rides' : `← Day ${k}`); back.type = 'button'; back.addEventListener('click', () => go(wz.step - 1));
     const next = el('button', 'qt-btn', k === nDays - 1 ? 'Finish and export →' : `Next: Day ${k + 2} →`); next.type = 'button'; next.addEventListener('click', () => go(wz.step + 1));

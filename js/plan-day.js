@@ -1,13 +1,37 @@
 // DLR Planner: Plan a day: fit banner, ride chips, schedule list, day charts, Tonight.
 // Part of the app script. The js files load in the order of their script tags in index.html (listed in CLAUDE.md).
 // Work that can wait a moment after a plan is drawn (the "room for more" check, which re-plans the day once per unpicked
-// ride, and the "take X off to make room" advice, which re-plans it a few times): it runs just after, so the plan shows
-// first, unless another draw comes first. One job at a time (a new draw replaces it). dpFlush() runs it straight away (the tests use it).
+// ride, and the "take X off to make room" advice, which re-plans it a few times): it runs after the plan paints, in slices.
+// A job is { make, done }: make() returns a generator that does one re-plan per step (roomFor, fullAdvice; `yield*` them), done(result)
+// puts the answer on the page. laterRun starts it only once taps have paused LATER_WAIT ms, runs a step, hands the page back (a timer), and
+// runs the next; a tap in between starts it again after the pause, and a new draw replaces it (live() turns false), so a tap never waits
+// behind it. The plan and its answers are the same as running it in one go. One job at a time (a new draw replaces it). dpFlush() runs it
+// to the end straight away, which the tests use.
+const LATER_WAIT = 250;      // ms of no taps before the slow extras start
+let laterTapAt = 0;
+['click', 'change', 'input', 'keydown', 'pointerdown'].forEach(ev => document.addEventListener(ev, () => { laterTapAt = performance.now(); }, true));
+const laterSync = (g) => { let r; do r = g.next(); while (!r.done); return r.value; };
+function laterRun(job, live) {
+  const begin = () => {
+    if (!live()) return;
+    const wait = LATER_WAIT - (performance.now() - laterTapAt);
+    if (wait > 0 || (typeof BUSY !== 'undefined' && (BUSY.busy || BUSY.pending.size))) { setTimeout(begin, Math.max(wait, 50)); return; }
+    const g = job.make(), at = laterTapAt;
+    const step = () => {
+      if (!live()) return;
+      if (laterTapAt !== at) { begin(); return; }
+      const r = g.next();
+      if (r.done) job.done(r.value); else setTimeout(step, 0);
+    };
+    step();
+  };
+  setTimeout(begin, 0);
+}
 let dpLaterJob = null;
-function dpLater(f) { dpLaterJob = f; setTimeout(() => { if (dpLaterJob === f) dpFlush(); }, 0); }
-function dpFlush() { const f = dpLaterJob; dpLaterJob = null; if (f) f(); }
+function dpLater(make, done) { const job = { make, done: (r) => { if (dpLaterJob === job) dpLaterJob = null; done(r); } }; dpLaterJob = job; laterRun(job, () => dpLaterJob === job); }
+function dpFlush() { const j = dpLaterJob; dpLaterJob = null; if (j) j.done(laterSync(j.make())); }
 // the fit banner; more is dpRoom()'s answer, or null until it's worked out (the banner estimates from spare time meanwhile)
-const dpRoom = (ctxs, left, trial) => left.length ? null : roomFor(ctxs, (p, r) => !dpState.rides[p].has(r.name), trial);
+function* dpRoom(ctxs, left, trial) { return left.length ? null : yield* roomFor(ctxs, (p, r) => !dpState.rides[p].has(r.name), trial); }
 function dpFitStatus(ctxs, left, end, close, more, adv, glance) {
   const free = [].concat(ctxs).flatMap(c => c.rides.filter(r => !dpState.rides[c.park].has(r.name)).map(r => 20 + expWait(c, r, 14) + r.rmin));
   // only suggest what could still help: the planner has already tried every shorter break (down to FLEX_BRK_MIN_H at the
@@ -410,7 +434,8 @@ function drawHopperDay(D) {
       { warn: flexWarn(V), text: glanceText(V.leave, V.done, V.total, V.totalWait, V.flat), target: document.getElementById(Hb && dpState.brk > 0 ? 'dp-split' : 'dp-stay') });
     // the plan shows now; which rides would still fit (or, with rides left over, the advice on what to take off) fills in a moment later
     const tap = lastTap; fit(null, null);
-    dpLater(() => { lastTap = tap; fit(dpRoom([dl, dca], V.left, trial), fullAdvice(V.segs.flatMap(s => s.steps), V.left, drop)); }); }
+    dpLater(function* () { return [yield* dpRoom([dl, dca], V.left, trial), yield* fullAdvice(V.segs.flatMap(s => s.steps), V.left, drop)]; },
+      ([more, adv]) => { lastTap = tap; fit(more, adv); }); }
   // week at a glance: cheap columns now, the (slower) hop plan for each day filled in one day at a time
   const token = weekToken;
   const tb = document.querySelector('#dp-week tbody'); tb.textContent = '';
@@ -539,8 +564,9 @@ function drawDay() {
         warn: flexWarn(S), text: glanceText(S.leave, S.done, pool.length, S.plan.totalWait, S.plan.steps, S.heat), target: document.getElementById('dp-stay') });
     // the plan shows now; which rides would still fit (or what to take off) fills in a moment later
     const tap = lastTap; fit(null, null);
-    dpLater(() => { lastTap = tap; fit(dpRoom(ctx, X ? X.left : S.plan.left, trial),
-      X ? fullAdvice(X.morning.steps.concat(X.evening.steps), X.left, drop) : fullAdvice(S.plan.steps, S.plan.left, drop)); }); }
+    dpLater(function* () { return [yield* dpRoom(ctx, X ? X.left : S.plan.left, trial),
+        yield* (X ? fullAdvice(X.morning.steps.concat(X.evening.steps), X.left, drop) : fullAdvice(S.plan.steps, S.plan.left, drop))]; },
+      ([more, adv]) => { lastTap = tap; fit(more, adv); }); }
   dayChart(document.getElementById('dp-chart'), ctx, pool, P);
   renderTake();
   // week at a glance: cheap columns now, each day's plan (7 more plans) filled in just after, so the day's own plan shows first
