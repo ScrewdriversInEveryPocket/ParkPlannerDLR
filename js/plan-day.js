@@ -28,7 +28,9 @@ function buildRideChips(ctxs) {
   { const q = document.createElement('span'); q.className = 'g qt-quick'; q.append('Quick picks: ');
     const pick = (txt, f, tip) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'qt-link'; b.textContent = txt;
       if (tip) b.title = tip; b.addEventListener('click', () => { ctxs.forEach(ctx => { dpState.rides[ctx.park] = new Set(ctx.rides.filter(r => f(r) && !r.refurb).map(r => r.name));
-              dpState.reps[ctx.park] = new Map(); }); drawDay(); drawTrip(); }); q.append(b, ' '); };
+              dpState.reps[ctx.park] = new Map();
+              box.querySelectorAll('.qt-chip[data-fit]').forEach(c => { const [p, nm] = c.dataset.fit.split('|'), on = dpState.rides[p] && dpState.rides[p].has(nm);   // chips first, plan after (js/busy.js)
+                if (p === ctx.park && c.dataset.cycle) chipNow(c, c.firstChild.nodeValue.replace(/ ×\d+/, ''), '', !!on, 1); }); }); drawDay(); drawTrip(); }); q.append(b, ' '); };
     pick('Headliners only', r => r.head); pick('Good for little kids', kidPick, 'Gentle rides with no height limit'); pick('Everything', () => true);
       pick('Nothing', () => false, 'Take every ride off'); q.append(riToggle()); box.append(q); }
   ctxs.forEach(ctx => {
@@ -49,9 +51,12 @@ function buildRideChips(ctxs) {
       if (sel.has(r.name)) { b.dataset.laps = String(n); if (n > 1) b.textContent += ' ×' + n; }
       rideInfo(b, r);
       if (r.refurb) { closedChip(b, refurbTip(ctx.iso, ctx.park, r.name)); box.append(b); return; }
-      const setN = v => { lastTap = { key: b.dataset.fit, added: v > (sel.has(r.name) ? n : 0) }; if (v) sel.add(r.name); else sel.delete(r.name);
-        if (v > 1) reps.set(r.name, v); else reps.delete(r.name); drawDay(); drawTrip(); };
-      cycleTap(b, () => setN(nextLap(sel.has(r.name), n, REP_DAY_MAX)), () => { if (sel.has(r.name)) setN(0); });
+      // read the picks fresh on each tap: the plan may not have redrawn yet after the last one (js/busy.js), so the chip is updated here
+      const label = r.name + (ctx.closedSet.has(r.name) && !r.refurb ? ' ⚠' : '');
+      const cur = () => { const s = dpState.rides[ctx.park], rp = dpState.reps[ctx.park]; return { s, rp, on: s.has(r.name), n: lapsOf(rp, r.name) }; };
+      const setN = v => { const c = cur(); lastTap = { key: b.dataset.fit, added: v > (c.on ? c.n : 0) }; if (v) c.s.add(r.name); else c.s.delete(r.name);
+        if (v > 1) c.rp.set(r.name, v); else c.rp.delete(r.name); chipNow(b, label, '', v > 0, v); drawDay(); drawTrip(); };
+      cycleTap(b, () => { const c = cur(); setN(nextLap(c.on, c.n, REP_DAY_MAX)); }, () => { if (cur().on) setN(0); });
       box.append(b);
     });
   });

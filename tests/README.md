@@ -11,6 +11,7 @@ It takes about two minutes and prints what passed and what failed. It doesn't ch
 ## What it checks
 
 `tests/run.html` drives the real app in a hidden frame, as if today were **2026-11-02** (the `TODAY` setting at the top of the file), so results don't drift from day to day.
+The hidden frame loads the app with `?nobusy`, which turns off the "Working out your plan" overlay and quick-tap batching (`js/busy.js`) so a tap redraws at once.
 
 1. **Data and loading:** every data file passes its checks, the app loads with no errors, and every tab opens.
 2. **Plan a day:** 392 plans (8 dates from 3 to 300 days out × Disneyland, California Adventure and Park Hopper × 13 groups of settings: breaks, pace, hotels, start and finish times, repeats, Lightning Lane, sit-down meals, and `three-rides`, a light day with only the first 3 headliners picked, for spreading a light day; plus 10 Park Hopper-only groups, `hop-*`, with a restaurant picked in one park or both: Starting park set or on auto, with and without a break, the waits ↔ steps slider at 0, 2 and 4, a set dinner time, and a park with no rides picked). Each plan is checked against the planner's rules:

@@ -87,28 +87,37 @@ const ORD = ['', '1st', '2nd', '3rd', '4th', '5th', '6th'];
 const leftNames = (left, lapsFn) => { const c = d3.rollup(left, v => v.length, r => r.park + '|' + r.name); return [...c].map(([k, n]) => {
       const [pk, nm] = k.split('|'); const tot = lapsFn(pk, nm); return tot > 1 ? `${nm} (${n} of ${tot} times)` : nm; }); };
 // tap cycles a ride ×1 → ×2 → … → max → off; press and hold clears it straight to off
+// show a ride chip's new state at once, before the plan is redrawn (see js/busy.js): pressed, laps, and the ×N in its label
+// (the label is the chip's first text node: pre + ×N + post)
+function chipNow(b, pre, post, on, n) {
+  b.setAttribute('aria-pressed', on ? 'true' : 'false'); if (on) b.dataset.laps = String(n); else delete b.dataset.laps;
+  if (b.firstChild && b.firstChild.nodeType === 3) b.firstChild.nodeValue = pre + (on && n > 1 ? ' ×' + n : '') + post;
+}
 function cycleTap(b, onTap, onHold) {
   let t = null, held = false;
   const stop = () => { clearTimeout(t); t = null; };
   b.dataset.cycle = '1';
   b.addEventListener('pointerdown', e => { if (e.button) return; held = false; stop(); t = setTimeout(() => { t = null; held = true;
-          if (navigator.vibrate) navigator.vibrate(15); onHold(); }, 500); });
+          if (navigator.vibrate) navigator.vibrate(15); busyTap(onHold); }, 500); });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, stop));
   b.addEventListener('contextmenu', e => e.preventDefault());
   b.addEventListener('click', e => { if (held) { held = false; e.preventDefault(); return; } onTap(); });
 }
-// meal-time choices: the hours offered, and their words ("Around 1 pm")
-const MEAL_HOURS = { lunch: [11, 12, 13, 14, 15], dinner: [16, 17, 18, 19, 20, 21] };
-const hourLbl = (h) => h === 12 ? 'noon' : h > 12 ? `${h - 12} pm` : `${h} am`;
+// meal-time choices: the hours offered, and their words ("Around 1 pm", "Around 11:30 am"). Lunch starts at 11:30, not 11: park
+// hopping opens at 11, so an 11 am lunch in the other park never fits on a Park Hopper day (a saved 11 is read as 11:30, see js/state.js)
+const MEAL_HOURS = { lunch: [11.5, 12, 13, 14, 15], dinner: [16, 17, 18, 19, 20, 21] };
+const hourLbl = (h) => { const H = Math.floor(h), m = Math.round((h - H) * 60), mm = m ? ':' + String(m).padStart(2, '0') : '';
+  return H === 12 && !m ? 'noon' : H >= 12 ? `${H > 12 ? H - 12 : 12}${mm} pm` : `${H}${mm} am`; };
 const mealAtLbl = (v) => v == null || v === 'auto' ? 'whenever fits' : 'around ' + hourLbl(Number(v));
 const nextLap = (on, n, max) => !on ? 1 : n < max ? n + 1 : 0;
-// sit-down and walk-up restaurants as chips: tap to pick one for the meal you're in its park for (see dineAt below), tap again
-// for its other meal or to take it off (skipping a meal it doesn't serve), press and hold to clear.
+// sit-down and walk-up restaurants as chips: tap to pick one for lunch (or dinner when lunch is taken), tap again for its other meal,
+// a third time to take it off (see dineTap in js/meals.js); press and hold takes it off at once. Any restaurant that serves a meal can be
+// picked for it, wherever you are at that meal.
 // dine is { lunch, dinner } holding 'park|name'; one place per meal per day.
 // mt (optional): the meal-time choices to show first, { value: { lunch, dinner }, same: the trip's { lunch, dinner } on a wizard day (or null),
 // set(kind, value) } with value 'auto', an hour, or null for the trip's choice.
 // Returns dineAt(where): call it once the plan is made, with mealWhere()'s { lunch, dinner }, to show where you'll be at each meal,
-// mark the closest places for it, and make taps pick the right meal. Returns nothing when there are no places to pick.
+// mark the closest places for it (a hint, never a limit). Returns nothing when there are no places to pick.
 function dineChips(box, parks, dine, onChange, mt) {
   if (mt) {
     const h = document.createElement('span'); h.className = 'g wzh'; h.textContent = 'Meal times'; box.append(h);
@@ -126,16 +135,11 @@ function dineChips(box, parks, dine, onChange, mt) {
   const any = parks.some(p => (DINE_PICKS[p] || []).length); if (!any) return;
   const g = document.createElement('span'); g.className = 'g wzh'; g.textContent = 'Sit-down meals (optional)'; box.append(g);
   const hint = document.createElement('span'); hint.className = 'g qt-dinehint';
-    hint.textContent = 'Tap a restaurant to have the meal there when you’re in its park, tap again to switch meals, ' +
-      'or press and hold to take it off. Other meals are planned at the nearest quick-service place.';
+    hint.textContent = 'Tap a restaurant for lunch (or dinner if lunch is taken), tap again for the other meal, tap a third time or press and hold ' +
+      'to take it off. Pick any restaurant for any meal it serves: on a Park Hopper day the plan hops to it. Other meals are planned at the nearest quick-service place.';
     box.append(hint);
   const whereLine = document.createElement('span'); whereLine.className = 'g qt-dinehint qt-dinewhere'; whereLine.hidden = true; box.append(whereLine);
   let where = null;
-  // the first meal for a new pick: one you're in its park for, the free one if both are; otherwise its first meal, as before
-  const firstMeal = (r) => {
-    const inPark = r.serves.filter(m => where && where[m] && where[m].park === r.park);
-    return inPark.find(m => !dine[m]) || inPark[0] || r.serves[0];
-  };
   const chipsOf = {};
   parks.forEach(p => (DINE_PICKS[p] || []).forEach(r => {
     const st = dine.lunch === r.key ? 'lunch' : dine.dinner === r.key ? 'dinner' : null;
@@ -145,9 +149,12 @@ function dineChips(box, parks, dine, onChange, mt) {
     sp.textContent = [r.price, r.book ? `book ${BOOK_DAYS} days ahead` : r.walkup ? 'walk-up list only' : 'no booking for lunch or dinner',
       r.book && r.walkup ? 'walk-up list on the day' : '', r.serves.join(' and '), r.cuisine].filter(Boolean).join(' · ');
     b.append(sp);
-    const set = (v) => { ['lunch', 'dinner'].forEach(m => { if (dine[m] === r.key) dine[m] = null; }); if (v) dine[v] = r.key; onChange(); };
-    cycleTap(b, () => { if (!st) return set(firstMeal(r)); const order = [null].concat(r.serves), i = order.indexOf(st); set(order[(i + 1) % order.length]); },
-      () => set(null));
+    // show the new picks at once (before the plan is redrawn, see js/busy.js); a pick now in a meal clears its old warning
+    const show = () => Object.values(chipsOf).forEach(c => { const k = c.dataset.key, st = dine.lunch === k ? 'lunch' : dine.dinner === k ? 'dinner' : null, rr = DINE_BY_KEY[k];
+      c.setAttribute('aria-pressed', st ? 'true' : 'false');
+      c.firstChild.nodeValue = rr.name + (parks.length > 1 ? ` (${rr.park === 'Disneyland' ? 'DL' : 'DCA'})` : '') + (st ? ` · ${st === 'lunch' ? 'Lunch' : 'Dinner'}` : '');
+      c.classList.remove('miss'); c.querySelectorAll('.dmiss').forEach(x => x.remove()); });
+    cycleTap(b, () => { dineTap(dine, r); show(); onChange(); }, () => { ['lunch', 'dinner'].forEach(m => { if (dine[m] === r.key) dine[m] = null; }); show(); onChange(); });
     chipsOf[r.key] = b; box.append(b);
   }));
   return (w) => {
@@ -165,7 +172,7 @@ function dineChips(box, parks, dine, onChange, mt) {
         const b = chipsOf[x.r.key]; if (!b) return;
         const tag = document.createElement('span'); tag.className = 'dgood'; tag.textContent = ` ✓ Good for ${m}`;
         b.classList.add('good'); b.insertBefore(tag, b.querySelector('.ri'));
-        b.title = (b.title ? b.title + ' ' : '') + `Good for ${m}: about ${x.min} min’s walk from where your plan has you at ${m} time.`;
+        b.title = (b.title ? b.title + ' ' : '') + `Good for ${m} (a hint only; you can pick it for any meal it serves): about ${x.min} min’s walk from where your plan has you at ${m} time.`;
       });
     });
   };

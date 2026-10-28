@@ -129,7 +129,7 @@
   });
 
   async function loadApp() {
-    const f = el('iframe'); f.src = '../index.html?today=' + TODAY; document.body.append(f);
+    const f = el('iframe'); f.src = '../index.html?nobusy&today=' + TODAY; document.body.append(f);
     await new Promise(r => f.addEventListener('load', r, { once: true }));
     const w = f.contentWindow; w.__errs = [];
     w.addEventListener('error', (e) => w.__errs.push(`${e.message} (${(e.filename || '').replace(/^.*\//, '')}:${e.lineno})`));
@@ -217,23 +217,44 @@
       }
     }
     Object.assign(w.eval('dpState'), { lunchAt: 'auto', dinnerAt: 'auto' });
-    // the restaurant chips on a Park Hopper day: a tap picks the meal you're in that restaurant's park for
+    // the restaurant chips: the tap rule (lunch if free, else dinner; second tap the other meal; third tap off; one-meal places skip the
+    // meal they lack), and any pair of restaurants reachable in either order, on a Park Hopper day and on a one-park day
     try {
-      const st = w.eval('dpState');
+      const st = w.eval('dpState'), by = w.eval('DINE_BY_KEY');
+      const dl = w.eval('DINE_PICKS')['Disneyland'].filter(x => x.serves.length === 2), dca = w.eval('DINE_PICKS')['California Adventure'].filter(x => x.serves.length === 2);
+      const one = Object.values(by).find(x => x.park === 'California Adventure' && x.serves.length === 1 && x.serves[0] === 'dinner' && w.eval('DINE_PICKS')[x.park].some(y => y.key === x.key));
+      const tapOf = (k) => { const c = doc.querySelector(`#dp-rides .qt-chip.dine[data-key="${k}"]`); c.click(); return w.eval('JSON.stringify(dpState.dine)'); };
+      const S = (l, d) => JSON.stringify({ lunch: l ? l.key : null, dinner: d ? d.key : null });
+      const [A, B] = [dca[0], dl[0]], bad = [];
+      const run = (label, steps) => steps.forEach(([k, want], i) => { const got = tapOf(k.key); if (got !== want) bad.push(`${label}, tap ${i + 1} on ${k.name}: ${got}, wanted ${want}`); });
       Object.assign(st, JSON.parse(JSON.stringify(base)), { date: addDays(TODAY, 10), park: 'Hopper', dine: { lunch: null, dinner: null } });
       w.drawDay(); w.dpFlush();
-      const where = () => w.eval('mealWhere(planSegs(dpLast.P, dpLast.ctx.park))');
-      let W = where(); const p = W.dinner.park;
-      const both = (w.eval('DINE_PICKS')[p] || []).filter(x => x.serves.length === 2);
-      // in that park for both meals: with lunch taken, a new pick goes to dinner (the plan may move once lunch is picked)
-      if (W.lunch.park === p && both.length > 1) { st.dine = { lunch: both[1].key, dinner: null }; w.drawDay(); w.dpFlush(); W = where(); }
-      const inPark = ['lunch', 'dinner'].filter(m => W[m].park === p), want = inPark.find(m => !st.dine[m]) || inPark[0] || 'lunch';
-      const line = doc.querySelector('#dp-rides .qt-dinewhere'), chip = doc.querySelector(`#dp-rides .qt-chip.dine[data-key="${both[0].key}"]`);
-      chip.click(); await wait(50);
-      const dine = w.eval('dpState.dine');
-      check(S2, 'tapping a restaurant picks the meal you are in its park for', dine[want] === both[0].key && line && !line.hidden,
-        `picked ${JSON.stringify(dine)}; the plan has you in ${W.lunch.park} at lunch and ${W.dinner.park} at dinner; line: ${line ? line.textContent : 'none'}`);
-      st.dine = { lunch: null, dinner: null };
+      // hopper: DCA lunch + DL dinner, then DL lunch + DCA dinner, then replacement and the switch freeing its old slot
+      run('hopper DCA lunch, DL dinner', [[A, S(A, null)], [B, S(A, B)]]);
+      check(S2, 'DCA lunch and DL dinner both stay picked and the plan draws', doc.querySelectorAll('#dp-rides .qt-chip.dine[aria-pressed="true"]').length === 2 && !!w.eval('dpLast.P'),
+        'dine ' + w.eval('JSON.stringify(dpState.dine)'));
+      w.drawDay(); w.dpFlush(); st.dine = { lunch: null, dinner: null }; w.drawDay(); w.dpFlush();
+      run('hopper DL lunch, DCA dinner', [[B, S(B, null)], [A, S(B, A)]]);
+      st.dine = { lunch: null, dinner: null }; w.drawDay(); w.dpFlush();
+      run('A dinner then B lunch (A tapped twice)', [[A, S(A, null)], [A, S(null, A)], [B, S(B, A)]]);
+      st.dine = { lunch: null, dinner: null }; w.drawDay(); w.dpFlush();
+      run('switch and off', [[A, S(A, null)], [A, S(null, A)], [A, S(null, null)]]);
+      const C = dca[1] || dl[1];
+      st.dine = { lunch: null, dinner: null }; w.drawDay(); w.dpFlush();
+      run('both slots full: a new chip takes dinner', [[A, S(A, null)], [B, S(A, B)], [C, S(A, C)]]);
+      st.dine = { lunch: null, dinner: null }; w.drawDay(); w.dpFlush();
+      run('switching replaces the other meal pick and frees the old slot', [[A, S(A, null)], [B, S(A, B)], [A, S(null, A)]]);
+      if (one) {
+        st.dine = { lunch: null, dinner: null }; w.drawDay(); w.dpFlush();
+        const O = { key: one.key, name: one.name };
+        run('one-meal restaurant (dinner only)', [[O, JSON.stringify({ lunch: null, dinner: one.key })], [O, S(null, null)]]);
+      } else bad.push('no dinner-only restaurant found to test');
+      // one-park day: Disneyland only, two restaurants, then switching
+      Object.assign(st, { park: 'Disneyland', dine: { lunch: null, dinner: null } }); w.drawDay(); w.dpFlush();
+      const B2 = dl[1];
+      run('one-park day', [[B, S(B, null)], [B2, S(B, B2)], [B, S(null, B)]]);
+      Object.assign(st, { park: 'Hopper', dine: { lunch: null, dinner: null } });
+      check(S2, 'restaurant chips: tap rule, any pair reachable in either order, one-meal places, one-park day', !bad.length, bad.join('; '));
     } catch (err) { check(S2, 'restaurant tap', false, 'crashed: ' + (err && err.stack || err)); }
     // chosen meal times: lunch around 1 pm and dinner around 6 pm start within half an hour of it, or the plan says why not
     try {

@@ -317,13 +317,16 @@ function drawWalk(D) {
         const n = lapsOf(wz.reps[p], r.name), on = wz.sel[p].has(r.name);
         // trip total: up to REP_TRIP_MAX, and no more than REP_DAY_MAX on each day that visits this park
         const maxT = Math.min(REP_TRIP_MAX, REP_DAY_MAX * Math.max(1, pd.filter(x => x.opt.parks.includes(p)).length));
-        const setN = v => { if (v) wz.sel[p].add(r.name); else wz.sel[p].delete(r.name); if (v > 1) wz.reps[p].set(r.name, v); else wz.reps[p].delete(r.name); wz.hopperAsk = null; drawWalk(D); };
-        const c = wzChip(r.name + (on && n > 1 ? ' ×' + n : '') + (tooShort(r) ? ` (${r.minH} in and up)` : ''), on, null,
+        const post = tooShort(r) ? ` (${r.minH} in and up)` : '';
+        const cur = () => ({ on: wz.sel[p].has(r.name), n: lapsOf(wz.reps[p], r.name) });   // fresh on each tap: the redraw may still be waiting (js/busy.js)
+        const setN = v => { if (v) wz.sel[p].add(r.name); else wz.sel[p].delete(r.name); if (v > 1) wz.reps[p].set(r.name, v); else wz.reps[p].delete(r.name); wz.hopperAsk = null;
+          chipNow(c, r.name, post, v > 0, v); drawWalk(D); };
+        const c = wzChip(r.name + (on && n > 1 ? ' ×' + n : '') + post, on, null,
           tooShort(r) ? shortTip(r) : null); c.dataset.park = p; if (tooShort(r)) c.classList.add('short');
         rideInfo(c, r);
         if (closedAll(p, r.name)) { if (on) { wz.sel[p].delete(r.name); wz.reps[p].delete(r.name); }
           closedChip(c, refurbTip(visits(p)[0].iso, p, r.name) + ' It’s closed on all your days at this park.'); box.append(c); return; }
-        cycleTap(c, () => setN(nextLap(on, n, maxT)), () => { if (on) setN(0); }); box.append(c);
+        cycleTap(c, () => { const x = cur(); setN(nextLap(x.on, x.n, maxT)); }, () => { if (cur().on) setN(0); }); box.append(c);
       });
     });
     body.append(box);
@@ -389,8 +392,8 @@ function drawWalk(D) {
         if (list !== here) { if (!r.refurb) rideInfo(c, r); return; }
         const n = dLaps(day, p, r.name); c.dataset.fit = p + '|' + r.name; c.dataset.laps = String(n); if (n > 1) c.textContent += ' ×' + n;
         rideInfo(c, r);
-        const setN = v => { lastTap = { key: p + '|' + r.name, added: v > n }; dSet(day, p, r.name, v); drawWalk(D); };
-        cycleTap(c, () => setN(nextLap(true, n, REP_DAY_MAX)), () => setN(0));
+        const setN = v => { lastTap = { key: p + '|' + r.name, added: v > dLaps(day, p, r.name) }; dSet(day, p, r.name, v); chipNow(c, r.name, '', v > 0, v); drawWalk(D); };
+        cycleTap(c, () => setN(nextLap(day.rides[p].has(r.name), dLaps(day, p, r.name), REP_DAY_MAX)), () => setN(0));
       }); };
       section(`${pre}Closed on this day`, all.filter(r => r.refurb), r => { const c = wzChip(r.name, false, null); closedChip(c, refurbTip(iso, p, r.name)); return c; });
       section(`${pre}On this day (${here.length})`, here, r => wzChip(r.name, true, null, 'Tap again to ride it more times; press and hold to take it off this day'));

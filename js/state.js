@@ -1,6 +1,8 @@
 // DLR Planner: restoring and saving your settings (localStorage).
 // Part of the app script. The js files load in the order of their script tags in index.html (listed in CLAUDE.md).
 // ---------- app: restore saved settings ----------
+// lunch around 11 am is no longer offered (see MEAL_HOURS): a saved one becomes 11:30
+const lunch1130 = (v) => String(v) === '11' ? '11.5' : v;
 (function restore() {
   const S = PDP_SAVED;
   try {
@@ -8,6 +10,7 @@
     if (S.dp) {
       const d = S.dp;
       SETTINGS.filter(s => s.save).forEach(s => { if (d[s.key] != null) dpState[s.key] = d[s.key]; });
+      dpState.lunchAt = lunch1130(dpState.lunchAt);
       if (d.win && typeof d.win === 'object') dpState.win = Object.assign({}, dpState.win, d.win);
       if (d.dine && typeof d.dine === 'object') dpState.dine = { lunch: d.dine.lunch || null, dinner: d.dine.dinner || null };
       if (d.reps) Object.keys(d.reps).forEach(p => { if (dpState.reps[p]) dpState.reps[p] = new Map(Object.entries(d.reps[p])); });
@@ -27,7 +30,7 @@
       if (W.sel) wz.sel = Object.fromEntries(WZ_PARKS.map(p => [p, new Set(W.sel[p] || [])]));
       wz.reps = Object.fromEntries(WZ_PARKS.map(p => [p, new Map(Object.entries((W.reps && W.reps[p]) || {}))]));
       if (W.days) wz.days = Object.fromEntries(Object.entries(W.days).map(([iso, d]) => [iso, {
-              brk: d.brk, brkAt: d.brkAt, walk: d.walk, start: d.start, lunchAt: d.lunchAt, dinnerAt: d.dinnerAt, win: d.win && typeof d.win === 'object' ? Object.assign({}, dpState.win,
+              brk: d.brk, brkAt: d.brkAt, walk: d.walk, start: d.start, lunchAt: lunch1130(d.lunchAt), dinnerAt: d.dinnerAt, win: d.win && typeof d.win === 'object' ? Object.assign({}, dpState.win,
                 d.win) : Object.assign({}, dpState.win), rides: Object.fromEntries(WZ_PARKS.map(p => [p, new Set((d.rides && d.rides[p]) || [])])),
               reps: Object.fromEntries(WZ_PARKS.map(p => [p, new Map(Object.entries((d.reps && d.reps[p]) || {}))])),
               dine: d.dine && typeof d.dine === 'object' ? { lunch: d.dine.lunch || null, dinner: d.dine.dinner || null } : { lunch: null, dinner: null } }]));

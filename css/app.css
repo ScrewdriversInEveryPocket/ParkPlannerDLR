@@ -349,3 +349,12 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
 .wel-data a:hover, .wel-data a:focus-visible { text-decoration: underline; }
 .wel-foot { margin-top: var(--cds-gap-xl); text-align: center; }
 @media (max-width: 520px) { .wel-hero { font-size: 21px; } }
+
+/* "Working out your plan" overlay (js/busy.js): the spinner turns with transform only, so it keeps moving while the page is busy */
+.busy-ov { position: fixed; inset: 0; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  background: color-mix(in srgb, var(--color-panel) 72%, transparent); color: var(--royal); font-weight: 600; cursor: progress; }
+.busy-ov[hidden] { display: none; }
+.busy-spin { width: 44px; height: 44px; border-radius: 50%; border: 5px solid color-mix(in srgb, var(--royal) 22%, transparent); border-top-color: var(--royal);
+  animation: busy-turn .9s linear infinite; }
+@keyframes busy-turn { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .busy-spin { animation: none; border-top-color: var(--royal); border-right-color: var(--royal); } }

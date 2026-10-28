@@ -52,6 +52,25 @@ const dineSpot = (park, name) => { const k = park + '|' + name; let s = DINE_SPO
   return s; };
 // the restaurant picked for a meal on this day, if it's in this park
 const dinePicked = (park, kind, S = dpState) => { const k = S.dine && S.dine[kind]; if (!k) return null; const [p, n] = k.split('|'); return p === park && DINE_BY_KEY[k] ? dineSpot(p, n) : null; };
+// A tap on a restaurant chip (dine is changed in place; returns the meal it now holds, or null when taken off). Any restaurant that serves
+// a meal can be picked for it: which park you're in at that meal never limits the pick (the Park Hopper search plans the hops around the
+// picks, and the plan warns when it can't). First tap: lunch if the lunch slot is free, else dinner (replacing that pick); a restaurant
+// serving one meal goes to that meal. Second tap: the other meal, replacing whatever is there (its old slot is free again). Third tap, or
+// a tap on a one-meal pick: off. Two picks are reachable in either order. The tap count is kept per day (dine object) and restaurant;
+// a pick loaded from a saved plan counts as tapped once.
+const DINE_TAPS = new WeakMap();
+function dineTap(dine, r) {
+  let n = DINE_TAPS.get(dine); if (!n) DINE_TAPS.set(dine, n = {});
+  const st = dine.lunch === r.key ? 'lunch' : dine.dinner === r.key ? 'dinner' : null;
+  const put = (m) => { ['lunch', 'dinner'].forEach(k => { if (dine[k] === r.key) dine[k] = null; }); if (m) dine[m] = r.key; };
+  if (!st) {
+    const m = r.serves.includes('lunch') && !dine.lunch ? 'lunch' : r.serves.includes('dinner') ? 'dinner' : r.serves[0];
+    n[r.key] = 1; put(m); return m;
+  }
+  const other = st === 'lunch' ? 'dinner' : 'lunch';
+  if ((n[r.key] || 1) === 1 && r.serves.includes(other)) { n[r.key] = 2; put(other); return other; }
+  n[r.key] = 0; put(null); return null;
+}
 // picked meals that didn't make it into the plan, and why: the restaurant is in a park the day doesn't visit ('park'),
 // you're in the other park at that meal ('where'), it didn't fit ('fit'), or the plan has no such meal ('none')
 function dineIssues(steps, parks, S = dpState) {
