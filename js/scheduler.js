@@ -107,6 +107,8 @@ function scheduleBlock(ctx, start, end, pool, opts) {
   let t = start, prev = null; const steps = []; const left = pool.slice();
   // opts.meals is shared across the park segments of a hopper day so each meal happens once
   const eaten = opts.meals || { lunch: !opts.lunch, dinner: !opts.dinner }; let totalWait = 0, saved = 0, lastRest = start, lastLL = -9;
+  // opts.hold: meals this block leaves for later (on a Park Hopper day, a restaurant picked in the other park, which a later visit goes to)
+  const done = (k) => eaten[k] || !!(opts.hold && opts.hold[k]);
   // repeat rides: opts.seen (shared across a day's park segments) holds when each ride was last finished and how
   // many times it's been done; unless back to back is allowed, the next time waits an hour after the last one
   const seen = opts.seen || new Map(), REP_GAP = 1;
@@ -132,7 +134,7 @@ function scheduleBlock(ctx, start, end, pool, opts) {
   const spreading = !!pad.spread, later = new Map();
   const waiting = (r, at) => later.has(r) && later.get(r).at > at + 1e-9;
   // the start of the next meal still to come (free time stops there, so the meal happens as usual)
-  const mealNext = () => d3.min(['lunch', 'dinner'].filter(k => !eaten[k]).map(k => want[k] ? want[k].from : k === 'lunch' ? (opts.lunchFrom || earlyLunch) : 17.5)
+  const mealNext = () => d3.min(['lunch', 'dinner'].filter(k => !done(k)).map(k => want[k] ? want[k].from : k === 'lunch' ? (opts.lunchFrom || earlyLunch) : 17.5)
     .filter(at => at > t + 1e-9)) ?? Infinity;
   // free time until `until`, waiting for put-off ride r; free time back to back stays one block
   const spreadFree = (until, r) => {
@@ -153,6 +155,10 @@ function scheduleBlock(ctx, start, end, pool, opts) {
   const tol = opts.exit ? 0 : 0.05;
   let afterMeal = false; // the first walk after a meal counts double, so the plan doesn't cross the park straight after eating
   const LOOK_WIDTH = 6, LOOK_WEIGHT = 0.6, wv = S.walk == null ? 2 : S.walk, walkW = WALK_WEIGHT * WALK_FACTOR[wv], waitW = WAIT_WEIGHT[wv];
+  // a later visit to this park the same day (opts.later: [[from, to], ...] hours) counts as later too: each ride's shortest wait then
+  const later2 = opts.later && opts.later.length ? opts.later : null, laterMin = new Map();
+  const laterW = (r, hw) => { let m = laterMin.get(r); if (m === undefined) { m = Infinity;
+      for (const [a, b] of later2) for (let hh = Math.ceil(a); hh < Math.min(24, b); hh++) m = Math.min(m, hw[hh]); laterMin.set(r, m); } return m; };
   // cost of riding r next at time t, coming from land `from` (null = the gate); lower is better
   const rideCost = (r, t, from, lastLL) => {
     const w = wxAt(ctx, t);
@@ -160,6 +166,7 @@ function scheduleBlock(ctx, start, end, pool, opts) {
     const hw = hourWaits(ctx, r), standby = hw[Math.max(0, Math.min(24, Math.floor(t)))];
     const wait = isLL ? LL.wait : standby;
     let minW = standby; for (let hh = Math.floor(t) + 1; hh < Math.min(24, end); hh++) minW = Math.min(minW, hw[hh]);
+    if (later2) minW = Math.min(minW, laterW(r, hw));
     let score = isLL ? 1.0 + (t < ctx.open + 1 ? 0.6 : 0) - Math.min(0.3, standby / 200) : standby / Math.max(minW, 5);
     if (w.feels >= 85) score += r.expo === 'Outdoor' ? 0.3 : r.expo === 'Mixed' ? 0.12 : -0.08;
     if (w.rain >= 8) score += r.expo === 'Outdoor' ? 0.25 : r.expo === 'Mixed' ? 0.1 : 0;
@@ -190,8 +197,8 @@ function scheduleBlock(ctx, start, end, pool, opts) {
   while (left.length && t < end - 0.1) {
     // meals are always in the park, never during the hotel break: lunch waits for the return if it won't fit before leaving
     const inWin = (k) => t >= want[k].from - 1e-9 && t <= want[k].to + 1e-9;
-    if (!eaten.lunch && (want.lunch ? inWin('lunch') : t >= (opts.lunchFrom || earlyLunch) && t < (opts.lunchBy || 14.5))) { const m = mealFits(prev, 'lunch'); if (m.ok) { eat('lunch', m); continue; } }
-    if (!eaten.dinner && (want.dinner ? inWin('dinner') : t >= 17.5 && t < (opts.dinnerBy || 20))) { const m = mealFits(prev, 'dinner'); if (m.ok) { eat('dinner', m); continue; } }
+    if (!done('lunch') && (want.lunch ? inWin('lunch') : t >= (opts.lunchFrom || earlyLunch) && t < (opts.lunchBy || 14.5))) { const m = mealFits(prev, 'lunch'); if (m.ok) { eat('lunch', m); continue; } }
+    if (!done('dinner') && (want.dinner ? inWin('dinner') : t >= 17.5 && t < (opts.dinnerBy || 20))) { const m = mealFits(prev, 'dinner'); if (m.ok) { eat('dinner', m); continue; } }
     if (restBreaks && t - lastRest >= 1.25 && t < end - 0.75) { const hot = wxAt(ctx, t).feels >= 82; steps.push({
           t, meal: hot ? 'Rest break: something cold in the shade or an indoor show' : 'Rest break: snack, sit down or catch a show', dur: restMin });
       t += restMin / 60; lastRest = t; continue; }
@@ -201,8 +208,8 @@ function scheduleBlock(ctx, start, end, pool, opts) {
     // (and before any break at all, keep room for the walk to lunch, lunch and the walk out (about 22 min of walking), since there's no lunch at the hotel)
     const lunchFrom0 = want.lunch ? null : opts.lunchFrom || (opts.exit === 'break' ? earlyLunch : null);
     // a chosen meal time this block can hold: rides must be done by the end of its half hour
-    const due = ['lunch', 'dinner'].filter(k => want[k] && !eaten[k] && t <= want[k].to + 1e-9 && end - mealLen(k) / 60 >= want[k].from - 1e-9);
-    const lunchLatest = end - (mealLen('lunch') + (opts.exit === 'break' ? 22 : 0)) / 60, lunchDue = !eaten.lunch && lunchFrom0 && lunchLatest >= lunchFrom0 - 0.01;
+    const due = ['lunch', 'dinner'].filter(k => want[k] && !done(k) && t <= want[k].to + 1e-9 && end - mealLen(k) / 60 >= want[k].from - 1e-9);
+    const lunchLatest = end - (mealLen('lunch') + (opts.exit === 'break' ? 22 : 0)) / 60, lunchDue = !done('lunch') && lunchFrom0 && lunchLatest >= lunchFrom0 - 0.01;
     const cands = left.filter(r => !blocked(r, t) && !waiting(r, t)).map(r => rideCost(r, t, prev, lastLL)).filter(c => c && (!lunchDue || t + c.dur / 60 <= lunchLatest + 0.01) &&
       due.every(k => t + c.dur / 60 <= want[k].to + 0.01)).sort((a, b) => a.score - b.score);
     // a light day: nothing can go now but rides put off for a later hour: free time until the first of them (or the next meal)
@@ -278,10 +285,12 @@ function scheduleBlock(ctx, start, end, pool, opts) {
   }
   // the list is done before the end of the day, or before the hotel break: lunch (and dinner) still happen in the park before you leave
   // A meal the group wants (keen) is tried even with rides left over, and waits as long as it takes (with free time first);
-  // before a break, one that doesn't fit by then goes after the break instead.
-  if ((opts.tail || opts.exit === 'break') && (!left.length || ['lunch', 'dinner'].some(k => keen[k] && !eaten[k]))) {
+  // before a break, one that doesn't fit by then goes after the break instead. Before a park hop only a meal the group wants
+  // waits like this (other meals are eaten before hopping, as the day goes).
+  const tailAll = opts.tail || opts.exit === 'break', keenLeft = ['lunch', 'dinner'].some(k => keen[k] && !done(k));
+  if ((tailAll && (!left.length || keenLeft)) || (opts.exit === 'hop' && keenLeft)) {
     const meal = (kind, from, by, maxWait) => {
-      if (eaten[kind] || t >= by || (left.length && !keen[kind])) return;
+      if (done(kind) || t >= by || ((left.length || !tailAll) && !keen[kind])) return;
       if (keen[kind]) maxWait = Infinity;
       const t0 = t, at = Math.max(t, from); if (at - t0 > maxWait) return;
       t = at; const m = mealFits(prev, kind); if (!m.ok) { t = t0; return; }

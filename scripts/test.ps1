@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
   Runs all the app tests in one go and prints the result: data checks, about 300 sample plans checked
-  against the planner's rules, a wizard trip, both PDFs, and 72 plans compared with the expected ones.
+  against the planner's rules, a wizard trip, both PDFs, and 101 plans compared with the expected ones.
 .DESCRIPTION
   Starts scripts\serve.ps1 in the background, opens tests\run.html in Microsoft Edge (or Chrome) with no
   window and a fresh, throwaway profile, waits for the results, then closes everything. Nothing in the app

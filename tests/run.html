@@ -25,7 +25,7 @@
 <body>
 <main>
   <h1>DLR Planner: app tests</h1>
-  <p class="muted">Checks the data, plans about 300 days in Plan a day against the planner's rules, runs a trip through the wizard, makes both PDFs, and compares 81 of the plans line by line with the expected ones in <code>tests/golden/plans.json</code>.</p>
+  <p class="muted">Checks the data, plans about 300 days in Plan a day against the planner's rules, runs a trip through the wizard, makes both PDFs, and compares 101 of the plans line by line with the expected ones in <code>tests/golden/plans.json</code>.</p>
   <p id="sum" class="big">Not run yet.</p>
   <p><button type="button" id="run">Run the tests</button> <button type="button" id="upd" title="Save today's plans as the expected ones (after you've checked the changes are wanted)">Save these plans as expected</button></p>
   <div id="out"></div>
@@ -36,7 +36,7 @@
   const TODAY = '2026-11-02';
   // days ahead of TODAY to plan: published hours and showtimes, then typical hours further out
   const DAYS_AHEAD = [3, 10, 25, 40, 75, 130, 200, 300];
-  // plans on these days are also compared line by line with tests/golden/plans.json (all 13 settings, all parks);
+  // plans on these days are also compared line by line with tests/golden/plans.json (every setting, every park it runs in);
   // a setting with golden: [days] is compared on those days too (three-rides on a summer day, for the heat)
   const GOLDEN_AHEAD = [10, 130];
   const PARKS = ['Disneyland', 'California Adventure', 'Hopper'];
@@ -62,7 +62,19 @@
     'single-pass-fewest-steps': { rides: 'all', single: true, walk: 4, brk: 0 },
     'sit-down-meals': { rides: 'head', dine: true, hotel: 'pp' },
     'custom-hotel-4h-break': { rides: 'all', hotel: 'custom', custom: 45, brk: 4, walk: 0 },
-    'three-rides': { rides: 'three', golden: [300] }
+    'three-rides': { rides: 'three', golden: [300] },
+    // Park Hopper days with a restaurant picked in one park or both (parks: planned on these only). dine: meal -> 'park|restaurant';
+    // start: Starting park; none: a park with no rides picked; lunchAt / dinnerAt: a chosen meal time
+    'hop-dinner-dca-start-dl': { parks: ['Hopper'], rides: 'head', brk: 0, start: 'Disneyland', dine: { dinner: 'California Adventure|Lamplight Lounge' } },
+    'hop-lunch-dca-start-dl': { parks: ['Hopper'], rides: 'head', brk: 0, start: 'Disneyland', dine: { lunch: 'California Adventure|Wine Country Trattoria' } },
+    'hop-meal-each-park': { parks: ['Hopper'], rides: 'head', brk: 0, dine: { lunch: 'Disneyland|Blue Bayou Restaurant', dinner: 'California Adventure|Carthay Circle Restaurant' } },
+    'hop-dinner-dca-auto': { parks: ['Hopper'], rides: 'head', brk: 0, dine: { dinner: 'California Adventure|Lamplight Lounge' } },
+    'hop-dinner-dca-break': { parks: ['Hopper'], rides: 'head', start: 'Disneyland', dine: { dinner: 'California Adventure|Lamplight Lounge' } },
+    'hop-lunch-dl-start-dca-break': { parks: ['Hopper'], rides: 'head', start: 'California Adventure', dine: { lunch: 'Disneyland|Blue Bayou Restaurant' } },
+    'hop-dinner-dca-shortest-waits': { parks: ['Hopper'], rides: 'head', brk: 0, walk: 0, dine: { dinner: 'California Adventure|Lamplight Lounge' } },
+    'hop-dinner-dca-fewest-steps': { parks: ['Hopper'], rides: 'head', brk: 0, walk: 4, dine: { dinner: 'California Adventure|Lamplight Lounge' } },
+    'hop-dinner-only-in-dca': { parks: ['Hopper'], rides: 'head', none: 'California Adventure', brk: 0, start: 'Disneyland', dine: { dinner: 'California Adventure|Lamplight Lounge' } },
+    'hop-timed-dinner-dca': { parks: ['Hopper'], rides: 'head', brk: 0, start: 'Disneyland', lunchAt: '12', dinnerAt: '18.5', dine: { dinner: 'California Adventure|Lamplight Lounge' } }
   };
 
   let results, golden = null, fresh = {};
@@ -157,24 +169,26 @@
       const iso = addDays(TODAY, ahead);
       for (const park of PARKS) {
         for (const [vn, v] of Object.entries(VARIANTS)) {
+          if (v.parks && !v.parks.includes(park)) continue;
           const key = `${iso} ${park} ${vn}`, e0 = w.__errs.length;
           try {
             const st = w.eval('dpState');
-            Object.assign(st, JSON.parse(JSON.stringify(base)), { date: iso, park, dine: { lunch: null, dinner: null } });
-            ['brk', 'brkAt', 'b2b', 'll', 'single', 'hotel', 'custom', 'pace', 'walk', 'height'].forEach(k => { if (v[k] !== undefined) st[k] = v[k]; });
+            Object.assign(st, JSON.parse(JSON.stringify(base)), { date: iso, park, dine: { lunch: null, dinner: null }, lunchAt: v.lunchAt || 'auto', dinnerAt: v.dinnerAt || 'auto' });
+            ['brk', 'brkAt', 'b2b', 'll', 'single', 'hotel', 'custom', 'pace', 'walk', 'height', 'start'].forEach(k => { if (v[k] !== undefined) st[k] = v[k]; });
             if (v.win) st.win = Object.assign({}, st.win, v.win);
             for (const p of ['Disneyland', 'California Adventure']) {
               const ctx = w.dayContext(iso, p, D);
               const pick = v.rides === 'all' ? () => true : v.rides === 'kids' ? w.eval('kidPick') : (r) => r.head;
-              const names = ctx.rides.filter(pick).map(r => r.name).slice(0, v.rides === 'three' ? 3 : Infinity);
+              const names = v.none === p ? [] : ctx.rides.filter(pick).map(r => r.name).slice(0, v.rides === 'three' ? 3 : Infinity);
               st.rides[p] = new w.Set(names);
               st.reps[p] = new w.Map(v.reps ? names.slice(0, v.reps).map(x => [x, 2]) : []);
-              if (v.dine && p === (park === 'Hopper' ? 'Disneyland' : park)) {
+              if (v.dine === true && p === (park === 'Hopper' ? 'Disneyland' : park)) {
                 const picks = (w.eval('DINE_PICKS')[p] || []).filter(r => r.walkup || r.book);
                 const lunch = picks.find(r => r.serves.includes('lunch')), dinner = picks.find(r => r.serves.includes('dinner') && r !== lunch);
                 st.dine = { lunch: lunch ? lunch.key : null, dinner: dinner ? dinner.key : null };
               }
             }
+            if (v.dine && typeof v.dine === 'object') st.dine = Object.assign({ lunch: null, dinner: null }, v.dine);
             w.drawDay(); w.dpFlush(); n++;
             const errs = errsSince(w, e0);
             const lines = shown(doc);
@@ -202,6 +216,7 @@
         }
       }
     }
+    Object.assign(w.eval('dpState'), { lunchAt: 'auto', dinnerAt: 'auto' });
     // the restaurant chips on a Park Hopper day: a tap picks the meal you're in that restaurant's park for
     try {
       const st = w.eval('dpState');
@@ -236,6 +251,16 @@
       Object.assign(st, { lunchAt: 'auto', dinnerAt: 'auto' });
       check(S2, 'chosen meal times are kept, or the plan says why not', !bad.length, bad.join('; '));
     } catch (err) { check(S2, 'meal times', false, 'crashed: ' + (err && err.stack || err)); }
+    // a one-park day offers only its park's restaurants: a pick saved for the other park comes off, and the plan says so
+    try {
+      const st = w.eval('dpState');
+      Object.assign(st, JSON.parse(JSON.stringify(base)), { date: addDays(TODAY, 10), park: 'Disneyland', dine: { lunch: null, dinner: 'California Adventure|Lamplight Lounge' } });
+      w.drawDay(); w.dpFlush();
+      const note = doc.getElementById('dp-dinenote'), chip = doc.querySelector('#dp-rides .qt-chip.dine[data-key^="California Adventure"]');
+      check(S2, 'a restaurant in the other park comes off a one-park day, with a note', !st.dine.dinner && !chip && note && !note.hidden && /Lamplight Lounge/.test(note.textContent),
+        `dinner ${st.dine.dinner}; other-park chip ${chip ? 'shown' : 'not shown'}; note: ${note ? note.textContent : 'none'}`);
+      st.dine = { lunch: null, dinner: null };
+    } catch (err) { check(S2, 'other-park restaurant', false, 'crashed: ' + (err && err.stack || err)); }
     // a ride closed for refurbishment on the date: its chip is greyed out and can't be picked
     try {
       const st = w.eval('dpState'), rf = (w.eval("dash.data('refurbs').data") || []).find(r => r.start && (!r.end || r.end >= TODAY));

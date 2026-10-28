@@ -230,11 +230,11 @@ function staySum() {
         }); el.append(bt); });
 }
 // the line under the waits-vs-steps slider, by position, kept up to date while it moves
-const WALK_HINT = ["Goes to the ride with the shortest line next, even if it's across the park.",
+const WALK_HINT = ["Goes to the ride with the shortest line next. Walking still counts as time, so no long walk to save a minute or two.",
   "Mostly goes to the ride with the shortest line next, unless it's a long walk.",
   'Balances lines and walking: a long walk only to save a lot of waiting.',
-  'Mostly goes to nearby rides first, unless their line is much longer.',
-  'Goes to nearby rides first, even if the line is a bit longer.'];
+  'Mostly goes to nearby rides first, unless their line is much longer. On Park Hopper days, fewer hops.',
+  'Goes to nearby rides first, even if the line is a bit longer. On Park Hopper days, as few hops as it can.'];
 const walkHint = (pre) => { const s = document.getElementById(pre + '-walk'), h = document.getElementById(pre + '-walk-hint'); if (s && h) h.textContent = WALK_HINT[+s.value] || ''; };
 ['dp', 'wz'].forEach(pre => { const s = document.getElementById(pre + '-walk'); if (s) s.addEventListener('input', () => walkHint(pre)); });
 // changing a setting in either tab: store it, show it in both tabs, redraw both

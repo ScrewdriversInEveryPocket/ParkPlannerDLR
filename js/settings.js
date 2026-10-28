@@ -15,8 +15,9 @@ const MOVE_EXTRA_MIN = 10, GATE_EXTRA_MIN = 8;
 const WALK_BUSY_MAX = 0.15;
 // how much an extra minute of walking counts against a ride, in the same units as the wait-now / best-later ratio
 const WALK_WEIGHT = 0.02;
-// waits-vs-steps slider: 0 = shortest waits (walking only costs time), 2 = balanced, 4 = fewest steps
-const WALK_FACTOR = [0, 0.4, 1, 2.5, 5], WAIT_WEIGHT = [0.02, 0.01, 0, 0, 0];
+// waits-vs-steps slider: 0 = shortest waits, 2 = balanced, 4 = fewest steps. A minute of walking always counts at least as much as
+// a minute in line at 0 (walking takes time too), so the plan never crosses the park to save a minute or two
+const WALK_FACTOR = [1, 1, 1, 2.5, 5], WAIT_WEIGHT = [0.02, 0.01, 0, 0, 0];
 
 // ---------- meals ----------
 // minutes for a picked sit-down meal and a lounge, plus SIT_PACE_MIN at Relaxed pace (minus it at Go-go)
@@ -32,6 +33,13 @@ const RR_NEAR_MIN = 2, RR_NEAR_MUST_MIN = 3, RR_LINE_MIN = 30, RR_EVERY_H = 1.5,
 // ---------- Park Hopper ----------
 // the first hop is not before this hour (11 am)
 const HOP_FIRST = 11;
+// choosing between Park Hopper plans that keep the same wanted meals, fit the same rides and finish at the same time: the one
+// with the least minutes in line + minutes walking x HOP_RANK_WALK (by the waits-vs-steps slider; walking in the parks, plus each
+// hop's walk across the Esplanade and tap-in line) + idle minutes x HOP_RANK_IDLE (waiting for hopping to open or for a break)
+const HOP_RANK_WALK = [1, 1.5, 2, 3.5, 5], HOP_RANK_IDLE = 1;
+// with a restaurant picked in a park, hops into that park are also tried in the HOP_MEAL_STEPS quarter hours just before the meal,
+// and hops out of it in the HOP_MEAL_STEPS quarter hours just after it
+const HOP_MEAL_STEPS = 2;
 
 // ---------- midday break ----------
 // a hotel break starts between BREAK_FIRST and BREAK_LAST (hours), and within BREAK_NEAR_H hours of the group's "Break around" time

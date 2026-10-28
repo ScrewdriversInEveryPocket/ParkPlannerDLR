@@ -99,11 +99,11 @@ function wzSlack(left, end, close, freeCosts, more, adv, S = dpState) {
   return k < 1 ? 'This day is full.' : `${fin}: room for roughly ${k} more ride${k === 1 ? '' : 's'}. Add them below.`;
 }
 const wzMore = (left, ctxs, taken, trial) => left.length ? null : roomFor(Object.values(ctxs), (p, r) => !taken.has(p + '|' + r.name), trial);
-// the picked-restaurant note on a wizard day page; the trip's ticket decides whether a hop can be offered
+// the picked-restaurant note on a wizard day page, after the note on a pick just taken off this day (day.dropNote, shown once)
 function wzDine(el, steps, parks, box, day, D) {
   dineNote(el, steps, parks, { chips: box.parentElement && box.parentElement.querySelector('.qt-chipgroup'),
-    noHop: tpState.ticket === 'hopper' ? null : 'Your ticket is one park per day, so there’s no hop to add (Park Hopper is a ticket choice on the Trip step).',
-    clear: (x) => { day.dine[x.kind] = null; drawWalk(D); }, S: wzSettings(day) });
+    pre: day.dropNote, S: wzSettings(day) });
+  delete day.dropNote;
   if (el.hidden) el.remove();
 }
 function wzRenderPlan(box, iso, opt, day, D) {
@@ -197,6 +197,7 @@ function wzRenderPlan(box, iso, opt, day, D) {
         note.textContent = wzSlack(H.left, H.leave, closeH, freeCosts, more, adv, cfg); return { more, adv }; };
       note.textContent = wzSlack(H.left, H.leave, closeH, freeCosts, null, null, cfg);
       wzDine(mk('p', 'qt-note'), H.flat, WZ_PARKS, box, day, D);
+      { const hn = hopNotes(H, iso, D, cfg); if (hn) mk('p', 'qt-note').textContent = hn; }
       if (flexText(H)) mk('p', 'qt-note').textContent = flexText(H);
       if (H.whyLeft) mk('p', 'qt-note').textContent = H.whyLeft;
       if (H.brkMoved) mk('p', 'qt-note').textContent = `No break fits around ${brkAtLbl(day.brkAt)} on this day, so the planner picked the best time for it.`;
@@ -276,6 +277,8 @@ function drawWalk(D) {
   } else { wz.days = null; wz.step = Math.min(wz.step, lastTrip ? WZ_PRE - 1 : 1); }
   const nDays = pd.length, lastStep = nDays + WZ_PRE + 1;
   if (!wz.days && wz.step > WZ_PRE) wz.step = WZ_PRE;
+  // a one-park day offers only its own park's restaurants: a pick saved for the other park (the ticket changed) comes off, with a note
+  if (wz.days) pd.forEach(x => { const d = wz.days[x.iso], n = d && d.dine ? dineDrop(d.dine, x.opt.parks) : ''; if (n) d.dropNote = n; });
   wz.step = Math.max(0, Math.min(wz.step, lastStep));
   wzShowSetup();
   const go = (s) => wzGo(s);

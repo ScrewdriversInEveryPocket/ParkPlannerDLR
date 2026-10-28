@@ -74,19 +74,18 @@ function dineIssueText(x, parks) {
   return `${Meal} at ${r.name} (${r.park}) didn't fit in this plan, so it eats somewhere nearer. Try fewer rides, or pick it for a different meal or day.`;
 }
 function dineMiss(steps, parks, S = dpState) { return dineIssues(steps, parks, S).map(x => dineIssueText(x, parks)).join(' '); }
-// the note under a plan, with a way out when the restaurant is in a park the day doesn't visit:
-// hop (when the ticket allows it) or pick a restaurant in this park instead. opts.S: the settings whose meals to check (default dpState). Picked chips that missed get a ⚠.
+// A one-park day only offers that park's restaurants. A pick saved for the other park (the park or the ticket changed since) is taken
+// off the day (dine is changed in place) and the note to show says so ('' when nothing was taken off).
+function dineDrop(dine, parks) {
+  return ['lunch', 'dinner'].map(k => { const r = dine && DINE_BY_KEY[dine[k]]; if (!r || parks.includes(r.park)) return '';
+    dine[k] = null; return `${k === 'lunch' ? 'Lunch' : 'Dinner'} at ${r.name} is in ${r.park}, so it's off this ${parks.join(' and ')} day. Pick a ${parks[0]} restaurant if you'd like one.`;
+  }).filter(Boolean).join(' ');
+}
+// the note under a plan when a picked restaurant didn't make it in. opts.pre: a note to show first (dineDrop's);
+// opts.S: the settings whose meals to check (default dpState). Picked chips that missed get a ⚠.
 function dineNote(el, steps, parks, opts) {
-  const xs = dineIssues(steps, parks, opts.S); el.textContent = ''; el.hidden = !xs.length;
-  xs.forEach(x => {
-    const line = document.createElement('span'); line.textContent = dineIssueText(x, parks) + ' '; el.append(line);
-    if (x.why !== 'park') return;
-    const btn = (t, f) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'qt-link'; b.textContent = t;
-      b.style.marginRight = 'var(--cds-gap-sm)'; b.addEventListener('click', f); el.append(b); };
-    if (opts.hop) btn(`Add a hop for ${x.kind}`, () => opts.hop(x));
-    else if (opts.noHop) el.append(document.createTextNode(opts.noHop + ' '));
-    btn(`Pick a ${parks.length === 1 ? parks[0] + ' ' : ''}restaurant instead`, () => opts.clear(x));
-  });
+  const xs = dineIssues(steps, parks, opts.S); el.textContent = opts.pre ? opts.pre + ' ' : ''; el.hidden = !xs.length && !opts.pre;
+  xs.forEach(x => { const line = document.createElement('span'); line.textContent = dineIssueText(x, parks) + ' '; el.append(line); });
   if (opts.chips) opts.chips.querySelectorAll('.qt-chip.dine').forEach(c => {
     const x = xs.find(y => y.r.key === c.dataset.key); c.classList.toggle('miss', !!x);
     if (x && !c.querySelector('.dmiss')) { const w = document.createElement('span'); w.className = 'dmiss';

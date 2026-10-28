@@ -13,7 +13,7 @@ It takes about two minutes and prints what passed and what failed. It doesn't ch
 `tests/run.html` drives the real app in a hidden frame, as if today were **2026-11-02** (the `TODAY` setting at the top of the file), so results don't drift from day to day.
 
 1. **Data and loading:** every data file passes its checks, the app loads with no errors, and every tab opens.
-2. **Plan a day:** 312 plans (8 dates from 3 to 300 days out × Disneyland, California Adventure and Park Hopper × 13 groups of settings: breaks, pace, hotels, start and finish times, repeats, Lightning Lane, sit-down meals, and `three-rides`, a light day with only the first 3 headliners picked, for spreading a light day). Each plan is checked against the planner's rules:
+2. **Plan a day:** 392 plans (8 dates from 3 to 300 days out × Disneyland, California Adventure and Park Hopper × 13 groups of settings: breaks, pace, hotels, start and finish times, repeats, Lightning Lane, sit-down meals, and `three-rides`, a light day with only the first 3 headliners picked, for spreading a light day; plus 10 Park Hopper-only groups, `hop-*`, with a restaurant picked in one park or both: Starting park set or on auto, with and without a break, the waits ↔ steps slider at 0, 2 and 4, a set dinner time, and a park with no rides picked). Each plan is checked against the planner's rules:
    - no errors, and nothing on screen reads NaN, undefined or Invalid Date;
    - rides are planned when rides are picked;
    - steps run in time order;
@@ -23,9 +23,9 @@ It takes about two minutes and prints what passed and what failed. It doesn't ch
    - a day in the park from 11:30 to 2 includes lunch;
    - the day PDF is made (once per park).
 
-   More checks: tapping a restaurant on a Park Hopper day picks the meal when you're in its park; lunch around 1 pm and dinner around 6 pm are kept (or the plan says why not); a ride closed for refurbishment has a greyed-out chip; and no plan leaves after close, more than 2 hours past a set finish (unless that's to fit a picked or timed meal), or with under an hour at the hotel when a break is shortened.
+   More checks: tapping a restaurant on a Park Hopper day picks the meal when you're in its park; a restaurant picked in the other park comes off a one-park day, with a note; lunch around 1 pm and dinner around 6 pm are kept (or the plan says why not); a ride closed for refurbishment has a greyed-out chip; and no plan leaves after close, more than 2 hours past a set finish (unless that's to fit a picked or timed meal), or with under an hour at the hotel when a break is shortened.
 3. **Trip wizard:** a 3-day Park Hopper trip with a break day, through every step, then the trip PDF.
-4. **Expected plans:** 81 of the plans (10 and 130 days out, plus `three-rides` 300 days out, a summer day, for the heat) are compared line by line with `tests/golden/plans.json`. Any difference is listed.
+4. **Expected plans:** 101 of the plans (10 and 130 days out, including the `hop-*` groups, plus `three-rides` 300 days out, a summer day, for the heat) are compared line by line with `tests/golden/plans.json`. Any difference is listed.
 
 ## When plans are meant to change
 

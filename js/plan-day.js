@@ -19,7 +19,7 @@ function dpFitStatus(ctxs, left, end, close, more, adv, glance) {
 }
 
 // the restaurant chips' dineAt (see dineChips), called once the plan is made
-let dpDineAt = null;
+let dpDineAt = null, dpDropNote = '';
 function buildRideChips(ctxs) {
   ctxs = [].concat(ctxs);
   const box = document.getElementById('dp-rides'); box.textContent = '';
@@ -317,9 +317,8 @@ function drawTonight() {
   const el = document.getElementById('dp-tonight'); if (!el || !dpLast) return;
   { const P = dpLast.P, steps = P.hop ? ((dpState.brk > 0 && P.Hb) || P.H).flat : P.split ? P.split.morning.steps.concat(P.split.evening.steps) : P.stay.plan.steps;
     const parks = P.hop ? Object.keys(P.H.ctxs) : [dpLast.ctx.park];
-    dineNote(document.getElementById('dp-dinenote'), steps || [], parks, { chips: document.getElementById('dp-rides'),
-      hop: () => { const b = document.querySelector('#dp-park button[data-v="Hopper"]'); if (b) b.click(); },
-      clear: (x) => { dpState.dine[x.kind] = null; drawDay(); const c = document.querySelector('#dp-rides .qt-chip.dine'); if (c) c.scrollIntoView({ block: 'center' }); } });
+    dineNote(document.getElementById('dp-dinenote'), steps || [], parks, { chips: document.getElementById('dp-rides'), pre: P.hop ? '' : dpDropNote
+      });
     if (dpDineAt) dpDineAt(mealWhere(planSegs(P, dpLast.ctx.park))); }
   const T = tonightText(dpLast.ctx.iso, tonightCtxs(dpLast)); el.hidden = !T; el.textContent = '';
   if (T) tonightInto(el, T);
@@ -387,7 +386,7 @@ function drawHopperDay(D) {
     stepList(document.getElementById(pre + '-steps'),
       X.segs.map(s => [`${s.park} · ${fmtClock(s.start % 24)}–${fmtClock((s.hopStep ? s.depart : X.leave) % 24)}`,
           s.steps.concat(s.hopStep ? [s.hopStep] : [])]));
-    document.getElementById(pre + '-note').textContent = (flexText(X) ? flexText(X) + ' ' : '') + (X.left.length ? (X.whyLeft || `Not enough time for: ${leftList(X.left,
+    document.getElementById(pre + '-note').textContent = [hopNotes(X, dpState.date, D), flexText(X)].filter(Boolean).map(x => x + ' ').join('') + (X.left.length ? (X.whyLeft || `Not enough time for: ${leftList(X.left,
           true)}. Remove a few rides or pick a longer stay.`) : 'Every ride you picked in both parks fits.');
   };
   fill('dp-stay', H);
@@ -449,6 +448,8 @@ function drawDay() {
   const D = Object.fromEntries(DAY_IDS.map(id => [id, dash.data(id).data]));
   const hopDay = dpState.park === 'Hopper';
   document.getElementById('dp-start-wrap').hidden = !hopDay;
+  // a one-park day offers only its own park's restaurants: a pick saved for the other park comes off, with a note
+  dpDropNote = hopDay ? '' : dineDrop(dpState.dine, [dpState.park]);
   if (hopDay) { drawHopperDay(D); return; }
   const ctx = dayContext(dpState.date, dpState.park, D);
   buildRideChips(ctx);
