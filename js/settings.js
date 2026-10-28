@@ -38,7 +38,8 @@ const HOP_FIRST = 11;
 const BREAK_FIRST = 11, BREAK_LAST = 17, BREAK_NEAR_H = 0.5;
 
 // ---------- more time when picked rides don't fit ----------
-// a finish time the group set may move up to FLEX_END_MAX_H later (never past close); a break may shrink while it still leaves
+// a finish time the group set may move up to FLEX_END_MAX_H later (never past close; past that, up to close, only to fit a
+// lunch or dinner the group picked a restaurant or set a time for); a break may shrink while it still leaves
 // FLEX_BRK_MIN_H at the hotel after the trip each way; both in FLEX_STEP_H steps
 const FLEX_END_MAX_H = 2, FLEX_BRK_MIN_H = 1, FLEX_STEP_H = 0.25;
 

@@ -92,6 +92,9 @@ function scheduleBlock(ctx, start, end, pool, opts) {
   // meal times the group chose (S.lunchAt / S.dinnerAt; 'auto' = whenever fits): the meal starts within half an hour of
   // that time, never lunch before 11, and the rides fit around it. null = no chosen time, the rules below as before.
   const want = { lunch: mealWin(S, 'lunch'), dinner: mealWin(S, 'dinner') };
+  // meals the group wants in the park: a restaurant picked for it in this park, or a time set for it. At the end of the day
+  // these always happen: the day runs on to them with free time instead of leaving early (see the tail below).
+  const keen = { lunch: !!(want.lunch || dinePicked(ctx.park, 'lunch', S)), dinner: !!(want.dinner || dinePicked(ctx.park, 'dinner', S)) };
   const blocked = (r, t) => (!S.b2b && seen.has(r.name) && t < seen.get(r.name).end + REP_GAP) || (r.meetFrom != null && t < r.meetFrom) || (r.meetTo != null && t + 0.5 > r.meetTo);
   // group pace: relaxed adds rest breaks, longer meals and slower walking; go-go does the opposite
   // walking speed by group pace, a little slower again on the busiest weeks
@@ -204,16 +207,20 @@ function scheduleBlock(ctx, start, end, pool, opts) {
     left.splice(left.indexOf(best.r), 1);
   }
   // the list is done before the end of the day, or before the hotel break: lunch (and dinner) still happen in the park before you leave
-  if ((opts.tail || opts.exit === 'break') && !left.length) {
+  // A meal the group wants (keen) is tried even with rides left over, and waits as long as it takes (with free time first);
+  // before a break, one that doesn't fit by then goes after the break instead.
+  if ((opts.tail || opts.exit === 'break') && (!left.length || ['lunch', 'dinner'].some(k => keen[k] && !eaten[k]))) {
     const meal = (kind, from, by, maxWait) => {
-      if (eaten[kind] || t >= by) return;
+      if (eaten[kind] || t >= by || (left.length && !keen[kind])) return;
+      if (keen[kind]) maxWait = Infinity;
       const t0 = t, at = Math.max(t, from); if (at - t0 > maxWait) return;
       t = at; const m = mealFits(prev, kind); if (!m.ok) { t = t0; return; }
       if (at - t0 >= 5 / 60) steps.push({ t: t0, meal: freeText(ctx.park, prev, 'catch a show, grab a snack or shop', gates), dur: Math.round((at - t0) * 60), free: true });
       eat(kind, m);
     };
-    if (want.lunch) meal('lunch', want.lunch.from, want.lunch.to + 0.01, 4); else meal('lunch', opts.exit === 'break' ? (opts.lunchFrom || earlyLunch) : 11.5, 14.5, 1.5);
-    if (want.dinner) meal('dinner', want.dinner.from, want.dinner.to + 0.01, 4); else if (t >= 16.5) meal('dinner', 17.5, 20.5, 1);
+    if (want.lunch) meal('lunch', want.lunch.from, want.lunch.to + 0.01, 4); else meal('lunch', opts.exit === 'break' ? (opts.lunchFrom || earlyLunch) : 11.5,
+        keen.lunch ? Math.max(14.5, opts.lunchBy || 0) : 14.5, 1.5);
+    if (want.dinner) meal('dinner', want.dinner.from, want.dinner.to + 0.01, 4); else if (t >= 16.5 || keen.dinner) meal('dinner', 17.5, 20.5, 1);
   }
   if (opts.exit && prev) { const w = exitMin(prev); steps.push({
         t, meal: `Walk to the ${opts.gateOut ? opts.gateOut.name : ctx.park + ' exit'} (~${Math.max(1, Math.round(w))} min)`, dur: Math.max(1, Math.round(w)),
@@ -227,6 +234,11 @@ const mealWin = (S, k) => { const T = mealAtOf(S, k); return T == null ? null : 
 // chosen meal times a plan's steps miss (no such meal, or not within half an hour of the time)
 const mealMisses = (steps, S) => ['lunch', 'dinner'].filter(k => { const T = mealAtOf(S, k); if (T == null) return false;
   const m = steps.find(x => x.mealKind === k); return !m || Math.abs(m.t - T) > 0.6; });
+// restaurants picked for a meal with no set time that a plan's steps have no such meal for at all
+const mealsLost = (steps, S) => ['lunch', 'dinner'].filter(k => mealAtOf(S, k) == null && S.dine && S.dine[k] && DINE_BY_KEY[S.dine[k]] &&
+  !steps.some(x => x.mealKind === k));
+// meals the group wants that a plan misses: chosen times missed, then picked restaurants with no such meal
+const mealsWanted = (steps, S) => mealMisses(steps, S).concat(mealsLost(steps, S));
 const roundUp15 = (t) => Math.ceil(t * 4) / 4;
 const roundDn15 = (t) => Math.floor(t * 4) / 4;
 
@@ -297,10 +309,11 @@ function planDay0(ctx, pool, S) {
 // A plan that was short of time gets flexTried: the ways that were tried ('end', 'brk'), so it can say when even they weren't enough.
 const flexClock = (t) => { const m = Math.round(t * 60); return `${pad2(Math.floor(m / 60) % 24)}:${pad2(m % 60)}`; };
 // later finish times to try, earliest first (none unless the group set a finish time before close)
-function flexEnds(W, close, S) {
+// long: the finish times past FLEX_END_MAX_H instead, up to close, tried only to fit a meal the group wants (see flexFix)
+function flexEnds(W, close, S, long) {
   if (!S.win || S.win.end !== 'set' || W.e == null || !W.early) return [];
-  const top = Math.min(close, W.e + FLEX_END_MAX_H), out = [];
-  for (let t = W.t1 + FLEX_STEP_H; t <= top + 1e-9; t += FLEX_STEP_H) out.push({ kind: 'end', min: Math.round((t - W.t1) * 60), from: W.t1,
+  const cap = Math.min(close, W.e + FLEX_END_MAX_H), top = long ? close : cap, out = [];
+  for (let t = long ? cap + FLEX_STEP_H : W.t1 + FLEX_STEP_H; t <= top + 1e-9; t += FLEX_STEP_H) out.push({ kind: 'end', long: !!long, min: Math.round((t - W.t1) * 60), from: W.t1,
       // a start after lunch or a finish by 4 pm still means no break, even when the finish moves later
       S: Object.assign({}, S, W.why ? { brk: 0 } : {}, { win: Object.assign({}, S.win, { endAt: flexClock(t) }) }) });
   return out;
@@ -316,12 +329,14 @@ function flexBrks(L0, overhead, S) {
 // and left-over rides; backOf(X): { back, hotel }, when a break plan is back in the park and its minutes at the hotel;
 // auto(S2): the plan again with settings S2.
 // Returns the plan to use: X0 itself, or a new one with its flex and mealNote.
+// Candidates marked long (finish times past FLEX_END_MAX_H) are tried last, and only while a meal the group wants (a picked
+// restaurant or a set time, see mealsWanted) is still missing: the earliest of them that fits the most of those meals wins.
 function flexFix(X0, S, cands, run, stepsOf, leftOf, backOf, auto) {
-  const score = (X) => mealMisses(stepsOf(X), S).length * 1000 + leftOf(X).length, s0 = score(X0);
+  const meals0 = (X) => mealsWanted(stepsOf(X), S).length, score = (X) => meals0(X) * 1000 + leftOf(X).length, s0 = score(X0);
   if (!s0) return X0;
   let best = null;
   ['end', 'brk'].forEach(kind => {
-    const cs = cands.filter(c => c.kind === kind); if (!cs.length) return;
+    const cs = cands.filter(c => c.kind === kind && !c.long); if (!cs.length) return;
     // the most time first: if even that does no better, this way can't help
     let most = null, mi = -1; for (let i = cs.length - 1; i >= 0 && !most; i--) { most = run(cs[i]); mi = i; }
     if (!most || score(most) >= s0) return;
@@ -331,12 +346,22 @@ function flexFix(X0, S, cands, run, stepsOf, leftOf, backOf, auto) {
     while (lo < hi) { const mid = (lo + hi) >> 1, Y = run(cs[mid]); if (Y && score(Y) <= n) { hi = mid; X = Y; c = cs[mid]; } else lo = mid + 1; }
     if (!best || n < best.n || (n === best.n && c.min < best.c.min)) best = { X, c, n };
   });
+  // still missing a meal the group wants: a later finish past the usual cap (never past close), the least that fits the most of them
+  const longs = cands.filter(c => c.long);
+  if (longs.length && meals0(best ? best.X : X0)) {
+    const top = run(longs[longs.length - 1]), n = top ? meals0(top) : Infinity;
+    if (n < meals0(best ? best.X : X0)) {
+      let lo = 0, hi = longs.length - 1, Y = top, c = longs[hi];
+      while (lo < hi) { const mid = (lo + hi) >> 1, Z = run(longs[mid]); if (Z && meals0(Z) <= n) { hi = mid; Y = Z; c = longs[mid]; } else lo = mid + 1; }
+      best = { X: Y, c, n: score(Y) };
+    }
+  }
   let X = X0, S1 = S;
   const tried = ['end', 'brk'].filter(kind => cands.some(c => c.kind === kind));
   if (best) {
     X = best.X; S1 = best.c.S;
     const count = (L) => d3.rollup(L, v => v.length, r => r.park + '|' + r.name), after = count(leftOf(X));
-    const missed = mealMisses(stepsOf(X), S), meals = mealMisses(stepsOf(X0), S).filter(k => !missed.includes(k));
+    const missed = mealsWanted(stepsOf(X), S), meals = mealsWanted(stepsOf(X0), S).filter(k => !missed.includes(k));
     const b = best.c.kind === 'brk' ? backOf(X) || {} : {};
     X.flex = { kind: best.c.kind, min: best.c.min, names: [...count(leftOf(X0))].filter(([k, n]) => (after.get(k) || 0) < n).map(([k]) => k.split('|')[1]),
       meals: meals.map(k => ({ kind: k, at: mealAtOf(S, k) })), from: best.c.from, brk: best.c.brk, back: b.back != null ? b.back : null,
@@ -349,7 +374,7 @@ function flexFix(X0, S, cands, run, stepsOf, leftOf, backOf, auto) {
     const Y = auto(Object.assign({}, S1, Object.fromEntries(missed.map(k => [k + 'At', 'auto']))));
     if (Y) { if (X.flex) Y.flex = X.flex; if (X.flexTried) Y.flexTried = X.flexTried; X = Y; }
     const brk = X.brk != null ? [X.brk, X.ret] : X.segs ? (h => h ? [h.back - (h.hotel + h.overhead) / 60, h.back] : null)(hopHotel(X, S1)) : null;
-    X.mealNote = missed.map(k => { const T = mealAtOf(S, k), why = brk && T >= brk[0] && T <= brk[1] ? 'falls in your break' : T > X.leave ? 'is after you leave' :
+    X.mealNote = missed.map(k => { const T = mealAtOf(S, k), why = brk && T >= brk[0] && T <= brk[1] ? 'falls in your break' : T > X.leave && S.win && S.win.end === 'set' ? 'is after you leave' :
         "doesn't fit this day"; return `${k === 'lunch' ? 'Lunch' : 'Dinner'} around ${hourLbl(T)} ${why}, so it's when it fits best.`; }).join(' ');
   }
   return X;
@@ -362,7 +387,7 @@ function splitHotel(ctx, X, S) {
 // S: the settings to plan with (default: Plan a day's dpState; the wizard passes a day's own)
 function planDay(ctx, pool, S = dpState) {
   const P = planDay0(ctx, pool, S);
-  const ends = flexEnds(P.win, ctx.close, S);
+  const ends = flexEnds(P.win, ctx.close, S).concat(flexEnds(P.win, ctx.close, S, true));
   P.stay = flexFix(P.stay, S, ends, c => planDay0(ctx, pool, c.S).stay, X => X.plan.steps, X => X.plan.left, null, S2 => planDay0(ctx, pool, S2).stay);
   if (P.split) {
     const steps = (X) => X.morning.steps.concat(X.evening.steps);
@@ -382,7 +407,7 @@ const flexHours = (h) => { const m = Math.round(h * 60), r = m % 60; return m < 
 function flexWarn(X) {
   const f = X && X.flex, out = [];
   if (f && (f.names.length || f.meals.length)) {
-    const why = [f.names.length ? `fit ${flexList(f.names)}` : '', ...f.meals.map(m => `have ${m.kind} around ${hourLbl(m.at)}`)].filter(Boolean).join(' and ');
+    const why = [f.names.length ? `fit ${flexList(f.names)}` : '', ...f.meals.map(m => `have ${m.kind}${m.at != null ? ` around ${hourLbl(m.at)}` : ''}`)].filter(Boolean).join(' and ');
     const hotel = f.hotel != null ? `, with about ${flexHours(Math.round(f.hotel / 5) * 5 / 60)} at your hotel` : '';
     out.push(f.kind === 'end' ? `You leave ${flexHours(f.min / 60)} later, at ${fmtClock(X.leave % 24)} instead of ${fmtClock(f.from % 24)}, to ${why}.` :
       `Your break is ${flexHours(f.min / 60)} shorter to ${why}: ${flexHours(f.brk)}${hotel}${f.back != null ? `, back in the park by ${fmtClock(f.back % 24)}` : ''}.`);

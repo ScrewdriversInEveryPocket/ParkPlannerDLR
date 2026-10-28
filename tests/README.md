@@ -23,7 +23,7 @@ It takes about two minutes and prints what passed and what failed. It doesn't ch
    - a day in the park from 11:30 to 2 includes lunch;
    - the day PDF is made (once per park).
 
-   More checks: tapping a restaurant on a Park Hopper day picks the meal when you're in its park; lunch around 1 pm and dinner around 6 pm are kept (or the plan says why not); a ride closed for refurbishment has a greyed-out chip; and no plan leaves after close, more than 2 hours past a set finish, or with under an hour at the hotel when a break is shortened.
+   More checks: tapping a restaurant on a Park Hopper day picks the meal when you're in its park; lunch around 1 pm and dinner around 6 pm are kept (or the plan says why not); a ride closed for refurbishment has a greyed-out chip; and no plan leaves after close, more than 2 hours past a set finish (unless that's to fit a picked or timed meal), or with under an hour at the hotel when a break is shortened.
 3. **Trip wizard:** a 3-day Park Hopper trip with a break day, through every step, then the trip PDF.
 4. **Expected plans:** 72 of the plans (10 and 130 days out) are compared line by line with `tests/golden/plans.json`. Any difference is listed.
 

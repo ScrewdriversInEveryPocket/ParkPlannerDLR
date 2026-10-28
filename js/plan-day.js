@@ -494,7 +494,7 @@ function drawDay() {
   llNote(document.getElementById('dp-stay-ll'), S.llp);
   stepList(document.getElementById('dp-stay-steps'), [['', S.plan.steps]]);
   const stayNote = document.getElementById('dp-stay-note');
-  stayNote.textContent = (flexText(S) ? flexText(S) + ' ' : '') + ((!S.plan.left.length && P.win.t1 > S.leave + 0.5 && ctx.sunset) ?
+  stayNote.textContent = (flexText(S) ? flexText(S) + ' ' : '') + ((!S.plan.left.length && P.win.t1 > S.leave + 0.5 && ctx.sunset && Math.min(P.win.t1, roundUp15(ctx.sunset + 2)) > S.leave + 1e-9) ?
     `Done early. Nighttime shows usually start 1–2 hours after sunset (${fmtClock(ctx.sunset)}), so stay until about ${fmtClock(Math.min(P.win.t1,
         roundUp15(ctx.sunset + 2)) % 24)} if you want them.` : (S.plan.left.length ? `Not enough time for: ${leftList(S.plan.left)}.` : ''));
   // split

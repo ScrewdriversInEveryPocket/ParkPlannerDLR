@@ -183,12 +183,13 @@
             const L = w.eval('dpLast'), P = L.P, picked = ['Disneyland', 'California Adventure'].some(p => w.eval('dpState').rides[p].size);
             const done = P.hop ? P.H.done : P.stay.done, open = P.hop ? true : L.ctx.close > L.ctx.open;
             if (picked && open && !done) bad.push('no rides planned');
-            // more time for left-over rides: never past close, at most 2 h past a set finish, a shortened break keeps 1 h at the hotel
+            // more time for left-over rides: never past close, at most 2 h past a set finish (unless it's for a picked or timed meal),
+            // a shortened break keeps 1 h at the hotel
             { const S = w.eval('dpState'), W = P.hop ? P.H.win : P.win;
               const close = P.hop ? Math.max(...Object.values(P.H.ctxs).map(c => c.close)) : L.ctx.close;
               (P.hop ? [P.H, P.Hb] : [P.stay, P.split]).filter(Boolean).forEach(X => {
                 if (X.leave > close + 1e-6) bad.push(`leaves at ${X.leave} after close (${close})`);
-                if (S.win.end === 'set' && W.e != null && X.leave > W.e + 2 + 1e-6) bad.push(`leaves at ${X.leave}, more than 2 h after the set finish`);
+                if (S.win.end === 'set' && W.e != null && X.leave > W.e + 2 + 1e-6 && !(X.flex && X.flex.meals.length)) bad.push(`leaves at ${X.leave}, more than 2 h after the set finish`);
                 if (X.flex && X.flex.kind === 'brk') { const h = P.hop ? w.hopHotel(X, S) : w.splitHotel(L.ctx, X, S);
                   if (!h || h.hotel < 60 - 1e-6) bad.push('a shortened break leaves under 1 h at the hotel'); }
               }); }
