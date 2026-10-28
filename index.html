@@ -49,6 +49,7 @@ window.addEventListener('error', (e) => {
   <nav class="qt-tabs" role="tablist" aria-label="Dashboard sections">
     <button type="button" role="tab" id="tab-wizard" aria-controls="panel-wizard" aria-selected="true" data-tab="wizard">Trip wizard</button>
     <button type="button" role="tab" id="tab-plan" aria-controls="panel-plan" aria-selected="false" data-tab="plan">Plan a day</button>
+    <button type="button" role="tab" class="tab-extra" id="tab-welcome" aria-controls="panel-welcome" aria-selected="false" data-tab="welcome">Welcome</button>
     <button type="button" role="tab" class="tab-extra" id="tab-when" aria-controls="panel-when" aria-selected="false" data-tab="when">When to go</button>
     <button type="button" role="tab" class="tab-extra" id="tab-weather" aria-controls="panel-weather" aria-selected="false" data-tab="weather">Weather</button>
     <button type="button" role="tab" class="tab-extra" id="tab-timeofday" aria-controls="panel-timeofday" aria-selected="false" data-tab="timeofday">Time of day</button>
@@ -58,12 +59,53 @@ window.addEventListener('error', (e) => {
     <button type="button" class="tab-more" id="tab-more" aria-haspopup="true" aria-expanded="false">More ▾</button>
   </nav>
   <div class="tab-menu" id="tab-menu" hidden>
+    <button type="button" data-tab="welcome">Welcome</button>
     <button type="button" data-tab="when">When to go</button>
     <button type="button" data-tab="weather">Weather</button>
     <button type="button" data-tab="timeofday">Time of day</button>
     <button type="button" data-tab="explore">Explore</button>
     <button type="button" data-tab="walks">Walking times</button>
     <button type="button" data-tab="about">About the data</button>
+  </div>
+  <div class="qt-panel" role="tabpanel" id="panel-welcome" aria-labelledby="tab-welcome" hidden>
+  <section class="wel">
+    <p class="wel-hero">Welcome! Let’s plan your Disneyland Resort visit, one easy step at a time.</p>
+    <p class="qt-note wel-calm">Nothing is final. You can change anything at any time, and it saves as you go.</p>
+    <div class="wel-cards">
+      <div class="qt-card wel-card">
+        <button type="button" class="qt-btn wel-big" data-go="wizard" data-trip-btn>Plan my whole trip</button>
+        <h3><span class="wel-ico" aria-hidden="true">🧳</span> Trip wizard</h3>
+        <p>Going for a few days? Answer a few easy questions and we’ll build every day for you.</p>
+        <ol class="wel-steps">
+          <li><b>Trip:</b> tell us how many days, your ticket and your hotel.</li>
+          <li><b>Dates:</b> pick your dates. We show the quieter ones first.</li>
+          <li><b>Days</b> and <b>Rides:</b> choose a park for each day and the rides you want.</li>
+          <li><b>Day 1, Day 2…:</b> check each day’s plan, then <b>Export</b> a PDF.</li>
+        </ol>
+      </div>
+      <div class="qt-card wel-card">
+        <button type="button" class="qt-btn wel-big" data-go="plan">Plan just one day</button>
+        <h3><span class="wel-ico" aria-hidden="true">🏰</span> Plan a day</h3>
+        <p>Just one day, or want to tinker? Pick a date and rides and see your day laid out.</p>
+        <ol class="wel-steps">
+          <li>Pick a <b>date</b> and a <b>park</b>.</li>
+          <li>Tap the <b>rides</b> you want.</li>
+          <li>Read your plan: meals, walks and Lightning Lane tips.</li>
+          <li><b>Take it with you:</b> a checklist, copy it as text, or save a PDF.</li>
+        </ol>
+      </div>
+    </div>
+    <h2 id="welcome-data">Want the raw data?</h2>
+    <ul class="wel-data">
+      <li><a href="#when" data-go="when">When to go</a> Crowds through the year, by month and weekday, plus park hours, events and closures.</li>
+      <li><a href="#weather" data-go="weather">Weather</a> The next 15 days’ forecast and typical weather through the year.</li>
+      <li><a href="#timeofday" data-go="timeofday">Time of day</a> The quietest hours for each ride.</li>
+      <li><a href="#explore" data-go="explore">Explore</a> Lay crowds, weather and more over each other, and compare every week.</li>
+      <li><a href="#walks" data-go="walks">Walking times</a> The walk between any two rides, restaurants, shows, restrooms, gates and hotels.</li>
+      <li><a href="#about" data-go="about">About the data</a> How current each dataset is, and the sources and methods.</li>
+    </ul>
+    <p class="qt-note wel-foot">Unofficial; not affiliated with Disney. Works offline, and you can add it to your home screen. Your plans stay on this device.</p>
+  </section>
   </div>
   <div class="qt-panel" role="tabpanel" id="panel-wizard" aria-labelledby="tab-wizard">
   <div id="wz-stepper" class="qt-chipgroup" style="margin:var(--cds-gap-md) 0 var(--cds-gap-sm)"></div>

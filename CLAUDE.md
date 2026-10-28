@@ -49,7 +49,7 @@ The scripts load in this order, and they share one set of top-level names (every
 | `js/walk-explorer.js` | Walking times page (More menu): the walk between any two mapped spots at each pace and crowd level |
 | `js/state.js` | Restoring and saving settings (localStorage `pdp-state`) |
 | `js/pdf.js` | Day PDF (Plan a day) and trip PDF (Trip wizard) |
-| `js/app.js` | Settings dialog, redraw when data loads, tabs, startup |
+| `js/app.js` | Settings dialog, redraw when data loads, tabs, startup. Startup opens the Welcome tab (`panel-welcome` in `index.html`, a hidden `tab-extra` also listed first in More) on every load unless `location.hash` names a tab (`#plan`) or an element on one; nothing saves Welcome as a last tab. Welcome is information only (no settings): its `data-go` buttons and links click that tab's own button, so the More label updates, and its `data-trip-btn` buttons read "Pick up my trip" when `PDP_SAVED.wz.key` is set (a saved wizard trip with park days picked). Its styles are the `.wel-*` rules at the end of `css/app.css` |
 
 - Put new code in the file it belongs to. Functions can be used from any file once the page has loaded.
 - The planner (`planDay`, `planHopper`, `planHopperBoth`, `scheduleBlock` via `opts.S`, and helpers such as `travelMin`, `hotelGate`, `entryInfo`, `paceWalk`, `dinePicked`) takes a settings object, `dpState` (Plan a day) when none is passed. The wizard and the trip PDF pass `wzSettings(day)`, a day's own rides, break, walking choice, start and finish and meals on top of the shared settings. Don't change `dpState` to plan a wizard day.

@@ -332,3 +332,20 @@ input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(-
 /* the waits-vs-steps slider and its help line: a full-width row, with room kept for two lines so nothing below moves as the text changes */
 .qt-walkrow { flex: 1 1 100%; width: 100%; }
 .qt-walkhint { display: block; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-top: var(--cds-gap-xs); min-height: 2.8em; line-height: 1.4; }
+/* Welcome page: hero line, two big start buttons, the two tool cards (side by side on wide screens), the raw-data list */
+.wel { max-width: 62rem; margin: var(--cds-gap-lg) auto 0; }
+.wel-hero { font-family: var(--font-anthropic-serif); font-size: 26px; font-weight: 700; line-height: 1.25; color: var(--royal); margin: 0 0 var(--cds-gap-md); }
+.qt-btn.wel-big { font-size: 17px; padding: 14px 28px; align-self: center; width: min(100%, 22rem); margin-bottom: var(--cds-gap-sm); }
+.wel-calm { margin: 0; }
+.wel-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--cds-gap-md); margin-top: var(--cds-gap-lg); }
+.wel-card { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
+.wel-card p { margin: 0; line-height: 1.5; }
+.wel-ico { font-size: 24px; vertical-align: -3px; margin-right: 4px; }
+.wel-steps { margin: 0 0 var(--cds-gap-sm); padding-left: 1.4em; line-height: 1.5; }
+.wel-steps li { margin: 2px 0; }
+.wel-steps b { font-weight: var(--cds-font-weight-medium); }
+.wel-data { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--cds-gap-sm) var(--cds-gap-lg); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.45; }
+.wel-data a { display: block; font-size: var(--cds-font-size-body); font-weight: 600; color: var(--royal); text-decoration: none; }
+.wel-data a:hover, .wel-data a:focus-visible { text-decoration: underline; }
+.wel-foot { margin-top: var(--cds-gap-xl); text-align: center; }
+@media (max-width: 520px) { .wel-hero { font-size: 21px; } }

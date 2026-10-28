@@ -25,7 +25,7 @@ It runs entirely in your browser. There's no account, no install and no tracking
 
 ## Getting started
 
-**Online:** open the hosted page and start with the **Trip wizard** tab. On a phone, use your browser's *Add to Home Screen* and it will work like an app, even without signal in the park.
+**Online:** open the hosted page. It opens on the **Welcome** page, which explains the two planners and has a big button for each: **Plan my whole trip** (the Trip wizard; it reads **Pick up my trip** once you've saved one) and **Plan just one day** (Plan a day). It also links to every data page. Welcome shows each time you open the app, unless the link names a tab (for example `#plan` opens Plan a day straight away), and you can get back to it from **More**. On a phone, use your browser's *Add to Home Screen* and it will work like an app, even without signal in the park.
 
 **On your computer:** download or clone this repository and double-click `index.html`. It opens in your browser. Everything works except installing it as a phone app, which needs a web address (see [Hosting your own copy](#hosting-your-own-copy)).
 

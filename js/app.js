@@ -206,8 +206,14 @@ tabBtns.forEach((b, i) => {
   b.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         const n = tabBtns[(i + (e.key === 'ArrowRight' ? 1 : tabBtns.length - 1)) % tabBtns.length]; showTab(n.dataset.tab, true); e.preventDefault(); } });
 });
+// Welcome: its buttons and links open a tab; a saved wizard trip (park days picked, so wz.key is set) turns "Plan my whole trip" into "Pick up my trip"
+if (PDP_SAVED.wz && PDP_SAVED.wz.key) document.querySelectorAll('#panel-welcome [data-trip-btn]').forEach(b => { b.textContent = 'Pick up my trip'; });
+document.querySelectorAll('#panel-welcome [data-go]').forEach(b => b.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('tab-' + b.dataset.go).click(); window.scrollTo(0, 0); })); // the tab's own click also updates the More label
+// open Welcome on every load unless the link names a tab or a spot on one
 const linked = location.hash.slice(1);
+let opened = false;
 if (linked) {
-  if (document.getElementById('panel-' + linked)) showTab(linked);
-  else { const el = document.getElementById(linked); const p = el && el.closest('.qt-panel'); if (p) { showTab(p.id.replace('panel-', '')); el.scrollIntoView(); dash.setLink(linked); } }
+  if (document.getElementById('panel-' + linked)) { showTab(linked); opened = true; }
+  else { const el = document.getElementById(linked); const p = el && el.closest('.qt-panel'); if (p) { showTab(p.id.replace('panel-', '')); el.scrollIntoView(); dash.setLink(linked); opened = true; } }
 }
+if (!opened) showTab('welcome');

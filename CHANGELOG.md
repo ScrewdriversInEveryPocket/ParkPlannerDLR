@@ -4,6 +4,8 @@ What changed in each version. The version is the one in `version.js`, shown at t
 
 | Version | Date | What changed |
 |---|---|---|
+| 1.202610.13 | 2026-10-27 | Welcome: each planner's big button now sits centred at the top of its box; the small buttons and the top button row are gone. |
+| 1.202610.12 | 2026-10-27 | Welcome page: shown on every open unless the link names a tab; also in More. |
 | 1.202610.11 | 2026-10-27 | Picked or timed lunch and dinner always stay in the plan; the day runs on to dinner with free time instead of leaving early. |
 | 1.202610.10 | 2026-10-27 | Single rider flags now follow Disney's single rider page: added Indiana Jones Adventure, Matterhorn Bobsleds, Space Mountain, Soarin', Grizzly River Run and Goofy's Sky School; removed Silly Symphony Swings (11 rides). The ride check (update-data.ps1 -Only rides) compares single rider against that page instead of the attraction tag. Plans only gain or lose the 'Single Rider line available' label. |
 | 1.202610.9 | 2026-10-27 | Faster restaurant and ride taps: the plan shows first, then which rides would still fit, the take-off advice and the week table fill in a moment later; a restaurant tap no longer redraws trip scoring; restaurant spots are made once and reused. Plans unchanged. |
