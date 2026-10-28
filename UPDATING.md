@@ -392,6 +392,7 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
 - **How meals use it:**
   - Meals are planned at the nearest `quick service` place, using its `food` point in `park_places`.
   - Quick service, table service, snacks and lounges are offered as nearby alternatives. Events, festival booths and members-only places aren't suggested.
+  - Which meals a chip can take comes from what the place serves (`serves` in `DINE_PICKS`): a tap picks lunch if free, else dinner, a second tap the other meal, a third tap off (`dineTap`, `js/meals.js`). A dinner-only place goes straight to dinner; "Good for lunch/dinner" is a hint only and never limits a pick.
   - The **Sit-down meals** picks are the `table service` places that serve lunch or dinner, plus lounges with a walk-up list. `reservations` of `accepted` or `recommended` (and a note that isn't "only for breakfast") gives the 60-day booking reminder; `walkup` = `yes` adds the walk-up list fallback; `mobile_order` = `yes` adds the mobile order tip on quick-service meals.
 - **How:**
   1. Run `.\scripts\update-data.ps1 -Only dining`. It runs `fetch-dining.ps1` and `parse-dining.ps1`, which write `_sources\dining\disney_dining.csv` (with Disney's map pins) and `disney_dining_hours.csv` (a week of hours), then prints only the differences from `data/dining.js` by name (`DINING TO ADD`, `DINING NOT ON DISNEY'S LIST`). Festival booths, dining events, Magic Key and party-only places are left out of that list on purpose. Work from those lines only; don't rebuild the file.

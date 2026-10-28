@@ -191,15 +191,16 @@ Repeats are spaced at least an hour apart unless you tick **Allow repeat rides b
 
 Under the rides, on Plan a day and on each wizard day page, **Sit-down meals (optional)** lists the table-service restaurants and lounges in that day's park(s), with price, how booking works and what they serve.
 
-A line above them says where your plan has you at each meal, such as "Lunch: you're in California Adventure · Dinner: you're in Disneyland" (on a one-park day, "Lunch and dinner: you're in Disneyland"). The one or two places closest to where you'll be at each meal are marked **✓ Good for lunch** or **✓ Good for dinner**. Hover over the chip to see the walk.
+A line above them says where your plan has you at each meal, such as "Lunch: you're in California Adventure · Dinner: you're in Disneyland" (on a one-park day, "Lunch and dinner: you're in Disneyland"). The one or two places closest to where you'll be at each meal are marked **✓ Good for lunch** or **✓ Good for dinner**. That is only a hint about where you will be: it never limits what you can pick, and any restaurant can be picked for any meal it serves. Hover over the chip to see the walk.
 
 | Do this | What happens |
 |---|---|
-| **Tap** a restaurant | Have the meal there that you're in its park for. If you're in its park for both meals, it takes the one you haven't picked a restaurant for yet (lunch first). If you're not in its park for either meal, it's lunch. |
-| **Tap** it again | Switch to its other meal (if it serves both), then take it off |
-| **Press and hold** | Take it off straight away |
+| **Tap** a restaurant | It becomes lunch if the lunch slot is free, otherwise dinner (replacing the dinner pick). A restaurant that serves only one meal (such as Carthay Circle Restaurant, dinner only) goes straight to that meal. |
+| **Tap** it again | Switch to its other meal, replacing any pick already there and freeing its old slot |
+| **Tap** it a third time | Take it off |
+| **Press and hold** | Take it off straight away, at any point |
 
-You can pick one restaurant for lunch and one for dinner each day. The plan books about an hour for a sit-down meal (45 minutes in a lounge, a little longer at a relaxed pace) and fits your rides around it. Every other meal is still planned at the nearest quick-service place, with a tip to **mobile order** in the Disneyland app when that place offers it.
+You can pick one restaurant for lunch and one for dinner each day, in either order (a California Adventure lunch and a Disneyland dinner, or the other way round); with both slots full, a new restaurant takes dinner. The plan books about an hour for a sit-down meal (45 minutes in a lounge, a little longer at a relaxed pace) and fits your rides around it. Every other meal is still planned at the nearest quick-service place, with a tip to **mobile order** in the Disneyland app when that place offers it.
 
 Most sit-down places take bookings 60 days ahead. The meal step tells you **the date to book it** in the Disneyland app (at about 6 am, when new days open) and the time to ask for. If you didn't get a booking, it reminds you that you can join the **walk-up list** in the app on the day. Oga's Cantina is walk-up only. A picked meal is always kept in the plan when it can be, even if that means free time before it or a later finish (see **Meals you want are always in the plan** above); only if it still doesn't fit (say the park closes first) does the plan say so and eat somewhere nearer instead. On a Park Hopper day, a pick decides which park you're in for that meal: the hops are timed so you're there, and the rides fit around it. A one-park day (on Plan a day, or a wizard day on a one-park ticket) only offers that park's restaurants. If a pick saved earlier is in the other park (say you changed the park or the ticket after picking), it comes off that day and the plan says so. On a Park Hopper day (Plan a day set to Park Hopper, or any day on a Park Hopper ticket) a restaurant in the other park is planned as a hop for that meal, even if all your rides are in one park. The chip of a pick that didn't make it shows ⚠.
 
