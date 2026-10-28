@@ -33,7 +33,7 @@ The app's only network calls are the live weather forecast, live park hours and 
 | Refurbishments (check only) | part of `-Only calendar` | Nothing: prints `REFURB TO ADD` / `REFURB TO CHECK` lines. You add those rows to `refurbs` (its `note` is our own wording). |
 | Restrooms | `.\scripts\update-data.ps1 -Only restrooms` (runs `_sources\restrooms\fetch-restrooms.ps1`, `parse-restrooms.ps1`) | `data/restrooms.js` |
 | Restaurants (check only) | `.\scripts\update-data.ps1 -Only dining` (runs `_sources\dining\fetch-dining.ps1`, `parse-dining.ps1`) | Nothing: prints `DINING TO ADD` / `DINING NOT ON DISNEY'S LIST`. Make those few changes to `dining` and the `food` rows of `park_places` by hand (see **dining**). |
-| Rides (check only) | `.\scripts\update-data.ps1 -Only rides` (runs `_sources\rides\check-rides.ps1`, one request to Disney's attraction list) | Nothing: prints `RIDE: NEW`, `GONE`, `HEIGHT differs`, `SINGLE RIDER differs`, `LIGHTNING LANE differs`. Seasonal overlays (Haunted Mansion Holiday, Hyperspace Mountain, ...) are matched to their ride by the `$alias` list in the script; attractions the planner leaves out on purpose are in its `$ignore` list. |
+| Rides (check only) | `.\scripts\update-data.ps1 -Only rides` (runs `_sources\rides\check-rides.ps1`: one request to Disney's attraction list, one to Disney's single rider page) | Nothing: prints `RIDE: NEW`, `GONE`, `HEIGHT differs`, `SINGLE RIDER differs`, `LIGHTNING LANE differs`. Seasonal overlays (Haunted Mansion Holiday, Hyperspace Mountain, ...) are matched to their ride by the `$alias` list in the script; attractions the planner leaves out on purpose are in its `$ignore` list. |
 | Events (check only) | part of `-Only calendar` | Nothing: prints `EVENT TO CHECK` when Disney's hours show a ticketed party night outside every `Ticketed nights` row of `events`. |
 | Re-parse without downloading again | add `-NoFetch` (and `-NoTest` to skip the tests) | as above |
 | Put an edited CSV back into a dataset | `.\scripts\export-dataset.ps1 <id>`, edit `_sources\edit\<id>.csv`, `.\scripts\import-dataset.ps1 <id> [-Until d] [-Review d]` | that dataset; backs it up; bumps the version |
@@ -90,7 +90,8 @@ Don't commit or push; leave that to the owner.
 | `RIDE: NEW on Disney's list` | An attraction that is neither in `ride_profiles` nor in the script's `$ignore` list. | A real new ride: add it (see **ride_profiles, New ride**). A show, walk-through or play area: add its normalised name to `$ignore` in `_sources\rides\check-rides.ps1` with the date. An overlay or new name of a ride we have: add it to `$alias`. |
 | `RIDE: GONE from Disney's list` | A `ride_profiles` ride matches nothing on Disney's list. | Renamed (most likely): add Disney's new name to `$alias`. Closed for good: remove it everywhere (**ride_profiles, Closed for good**). |
 | `RIDE: HEIGHT differs` | Disney's minimum height isn't `min_height_in`. | Use Disney's number, unless the row's comment in **ride_profiles** explains a deliberate difference (the lowest height that rides with an adult). |
-| `RIDE: SINGLE RIDER differs` | Disney's single rider tag doesn't match `single_rider`. | Change `single_rider` to match Disney (`Yes` or blank). |
+| `RIDE: SINGLE RIDER differs` | Disney's single rider page (disneyland.disney.go.com/guest-services/single-rider-line/) doesn't list the same rides as `single_rider`. The attraction list's own single rider tag is only used if the page can't be read; it also tags rides with no line (Hyperspace Mountain, Soarin' Around the World). | Change `single_rider` to match Disney (`Yes` or blank). |
+| `RIDE: SINGLE RIDER page names a ride not in ride_profiles` | A name on the single rider page didn't match any ride. | A new ride: add it (New ride). A renamed or overlay name: add it to `$alias` in `check-rides.ps1`. If the page says it has no "Single Rider at" links, Disney changed the page: fix the script's pattern. |
 | `RIDE: LIGHTNING LANE differs` | Disney's Multi Pass tag doesn't match `lightning_lane`. | Check Disney's Lightning Lane page and fix the column (`Multi Pass`, `Single Pass` or blank). Disney's feed doesn't tag Single Pass rides, so those are never flagged. |
 | `Due by hand: <id> (...)` | A dataset with no script has passed its `review` date or ends within 45 days. | The **Browser runbook** below. |
 
@@ -357,7 +358,7 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
   - hourly wait profile `h7` to `h23`;
   - month factors `m1` to `m12` and weekday factors `d_sun` to `d_sat`, where 1 = average;
   - `lightning_lane` (`Multi Pass`, `Single Pass` or blank);
-  - `single_rider` (`Yes` or blank);
+  - `single_rider` (`Yes` or blank): `Yes` only for the rides on Disney's single rider page (11 as of Oct 2026). No source gives single rider waits (Disney posts none), so plans just say "Single Rider line available";
   - `min_height_in`: the minimum rider height in inches, blank if none. Use the lowest height that lets a child ride with an adult (Autopia 32, Silly Symphony Swings 40 for the tandem swings).
   - `thrill`: `gentle`, `moderate` or `thrill`. This is our own rating from Disney's ride description (drops, speed, darkness). The app shows it as gentle, some thrills or big thrills, and **Good for little kids** picks gentle rides with no height limit. Rate a new ride the same way.
 - **Source:**

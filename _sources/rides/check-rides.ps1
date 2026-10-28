@@ -7,6 +7,10 @@
     https://disneyland.disney.go.com/finder/api/v1/explorer-service/list-ancestor-entities/dlr/80008297;entityType=destination/<date>/attractions
   into raw\attractions-<date>.json, and writes attractions.csv here (park, name, height_in, single_rider,
   multi_pass, virtual_queue, water, thrill, disney_id, url) for reference.
+  Single rider is checked against Disney's single rider page instead (a second request, saved as
+  raw\single-rider-<date>.html): https://disneyland.disney.go.com/guest-services/single-rider-line/
+  The feed's interests=single-rider-line tag also marks rides with no single rider line, so it's only used
+  (and kept in attractions.csv) when the page can't be read.
   Disney's facets used: height (e.g. 40-inches-102-cm-or-taller), interests=single-rider-line,
   experienceQueue=flex-rec-dlr (Lightning Lane Multi Pass), experienceQueue=VQ (virtual queue),
   thrillFactor (water-rides, big-drops, ...).
@@ -36,6 +40,14 @@ if (-not $NoFetch) {
 }
 if (-not (Test-Path $file)) { $file = (Get-ChildItem $raw -Filter 'attractions-*.json' | Sort-Object Name | Select-Object -Last 1).FullName }
 if (-not $file) { 'No attractions-*.json saved yet; run without -NoFetch.'; exit 1 }
+# single rider: Disney's single rider page (one more request), not the attraction feed's single-rider-line tag,
+# which also tags rides with no single rider line (Hyperspace Mountain overlay, Soarin' Around the World, ...)
+$srFile = Join-Path $raw "single-rider-$Date.html"
+if (-not $NoFetch) {
+  try { $p = Invoke-WebRequest -UseBasicParsing -UserAgent $ua 'https://disneyland.disney.go.com/guest-services/single-rider-line/'; [IO.File]::WriteAllText($srFile, $p.Content, $utf8) }
+  catch { "SINGLE RIDER page FAILED: $($_.Exception.Message) (a 401/403/429 is a block: stop, don't get around it)" }
+}
+if (-not (Test-Path $srFile)) { $srFile = (Get-ChildItem $raw -Filter 'single-rider-*.html' | Sort-Object Name | Select-Object -Last 1).FullName }
 
 # Disney's name (normalised) -> ride_profiles name, where taking out punctuation isn't enough
 $alias = @{
@@ -90,6 +102,21 @@ $ours = @([regex]::Match($js, '(?s)\}, `(.*?)\r?\n`\);').Groups[1].Value | Conve
 $byKey = @{}; foreach ($o in $ours) { $byKey["$($o.park)|$(Norm $o.ride)"] = $o }
 
 "Disney lists $($dis.Count) attractions in the two parks; ride_profiles has $($ours.Count) rows. ($([IO.Path]::GetFileName($file)))"
+# rides on the single rider page: its links read "Single Rider at <ride>"; matched to ride_profiles like the feed's names
+$srRides = $null
+if ($srFile) {
+  $txt = [IO.File]::ReadAllText($srFile, $utf8) -replace '(?s)<script.*?</script>', '' -replace '<[^>]+>', '|' -replace '\s+', ' '
+  $srNames = @([regex]::Matches($txt, 'Single Rider at ([^|]+)') | ForEach-Object { [Net.WebUtility]::HtmlDecode($_.Groups[1].Value).Trim() } | Sort-Object -Unique)
+  if ($srNames.Count) {
+    $srRides = @{}
+    foreach ($s in $srNames) {
+      $n = Norm $s; if ($alias[$n]) { $n = Norm $alias[$n] }
+      $o = @($ours | Where-Object { (Norm $_.ride) -eq $n })[0]
+      if ($o) { $srRides[$o.ride] = $true } else { "SINGLE RIDER page names a ride not in ride_profiles (add it to `$alias): $s" }
+    }
+    "Disney's single rider page lists $($srNames.Count) rides. ($([IO.Path]::GetFileName($srFile)))"
+  } else { "SINGLE RIDER page has no 'Single Rider at' links any more (page changed?): checking against the feed's tag instead" }
+} else { 'No single-rider-*.html saved yet: checking single rider against the feed''s tag instead' }
 # group Disney's entries by the ride they match (an overlay and the regular ride count as one: any "yes" wins)
 $match = @{}
 foreach ($d in $dis) {
@@ -103,7 +130,7 @@ foreach ($o in $ours) {
   $ds = $match[$o.ride]
   if (-not $ds) { if ($o.kind -ne 'Character meet') { "GONE from Disney's list (closed for good, renamed, or a name to add to `$alias): $($o.park) | $($o.ride)" }; continue }
   $h = ($ds | Where-Object height_in | ForEach-Object { [int]$_.height_in } | Measure-Object -Maximum).Maximum
-  $sr = [bool]($ds | Where-Object single_rider -eq 'yes'); $mp = [bool]($ds | Where-Object multi_pass -eq 'yes')
+  $sr = if ($srRides) { [bool]$srRides[$o.ride] } else { [bool]($ds | Where-Object single_rider -eq 'yes') }; $mp = [bool]($ds | Where-Object multi_pass -eq 'yes')
   $hOurs = if ($o.min_height_in) { [int]$o.min_height_in } else { $null }
   if ($hOurs -ne $h) { "HEIGHT differs: $($o.ride): ride_profiles $(if ($hOurs) { "$hOurs in" } else { 'none' }), Disney $(if ($h) { "$h in" } else { 'any height' })" }
   if (($o.single_rider -eq 'Yes') -ne $sr) { "SINGLE RIDER differs: $($o.ride): ride_profiles '$($o.single_rider)', Disney $(if ($sr) { 'yes' } else { 'no' })" }
