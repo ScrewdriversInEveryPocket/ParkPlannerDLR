@@ -361,6 +361,7 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
   - `single_rider` (`Yes` or blank): `Yes` only for the rides on Disney's single rider page (11 as of Oct 2026). No source gives single rider waits (Disney posts none), so plans just say "Single Rider line available";
   - `min_height_in`: the minimum rider height in inches, blank if none. Use the lowest height that lets a child ride with an adult (Autopia 32, Silly Symphony Swings 40 for the tandem swings).
   - `thrill`: `gentle`, `moderate` or `thrill`. This is our own rating from Disney's ride description (drops, speed, darkness). The app shows it as gentle, some thrills or big thrills, and **Good for little kids** picks gentle rides with no height limit. Rate a new ride the same way.
+- **What the planner reads from it:** the hourly profile (`h7` to `h23`, scaled by the month and weekday factors) picks each ride's best time of day; `exposure` and `wet` steer rides away from hot, rainy or (for wet rides) cool hours; on a light day (see **Spreading a light day** in README.md) the same columns decide whether a ride is put off until a later hour. A wrong `exposure` or a flat hourly profile shows up as rides at odd times, so get these right for a new ride.
 - **Source:**
   - waits from [Queue-Times](https://queue-times.com)' per-ride statistics, [queue-times.com/parks/16/stats](https://queue-times.com/en-US/parks/16/stats) (park 17 for California Adventure);
   - Lightning Lane tiers from Disney or [MickeyVisit](https://www.mickeyvisit.com)'s guide;
@@ -505,6 +506,7 @@ Character meets are rows too, with `kind` `Character meet`: only the permanent s
   - `hot_day_pct` is days with a high of 90°F or more, `chilly_night_pct` nights below 45°F, `windy_day_pct` days with gusts of 30 mph or more (the download must include `wind_gusts_10m_max`);
   - the hourly `rain_chance_pct` is hours with at least 0.01 in;
   - `sun_by_week` holds sunrise and sunset as decimal hours, from the last year of the download.
+- **What the planner reads from it:** `weather_by_hour`'s `feels_like_f` and `rain_chance_pct` by hour (through `wxAt` in `js/day.js`) nudge outdoor rides away from hot (85°F+ feels-like) or rainy (8%+) hours, wet rides away from cool ones (under 68°F), and place the midday break; on a light day they also count as minutes of waiting when a ride is weighed against a later hour (`SPREAD_HEAT_MIN`, `SPREAD_RAIN_MIN`, `SPREAD_COLD_WET_MIN` in `js/settings.js`).
 - **Check:** `build-weather.ps1 -Check` compares with the current files. If Open-Meteo renames a field, fix the script, not the data.
 - **How often:** averages barely change, so every two years is plenty.
 

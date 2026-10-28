@@ -25,7 +25,7 @@
 <body>
 <main>
   <h1>DLR Planner: app tests</h1>
-  <p class="muted">Checks the data, plans about 300 days in Plan a day against the planner's rules, runs a trip through the wizard, makes both PDFs, and compares 72 of the plans line by line with the expected ones in <code>tests/golden/plans.json</code>.</p>
+  <p class="muted">Checks the data, plans about 300 days in Plan a day against the planner's rules, runs a trip through the wizard, makes both PDFs, and compares 81 of the plans line by line with the expected ones in <code>tests/golden/plans.json</code>.</p>
   <p id="sum" class="big">Not run yet.</p>
   <p><button type="button" id="run">Run the tests</button> <button type="button" id="upd" title="Save today's plans as the expected ones (after you've checked the changes are wanted)">Save these plans as expected</button></p>
   <div id="out"></div>
@@ -36,7 +36,8 @@
   const TODAY = '2026-11-02';
   // days ahead of TODAY to plan: published hours and showtimes, then typical hours further out
   const DAYS_AHEAD = [3, 10, 25, 40, 75, 130, 200, 300];
-  // plans on these days are also compared line by line with tests/golden/plans.json (all 12 settings, all parks)
+  // plans on these days are also compared line by line with tests/golden/plans.json (all 13 settings, all parks);
+  // a setting with golden: [days] is compared on those days too (three-rides on a summer day, for the heat)
   const GOLDEN_AHEAD = [10, 130];
   const PARKS = ['Disneyland', 'California Adventure', 'Hopper'];
   const q = new URLSearchParams(location.search), AUTO = q.has('auto'), UPDATE = q.has('update');
@@ -47,7 +48,7 @@
   const clock = (t) => { const h = Math.floor(t + 1e-9), m = Math.round((t - h) * 60); return `${h}:${String(m).padStart(2, '0')}`; };
 
   // Settings to plan each day with. Each one changes a few things from the app's defaults.
-  // rides: which quick pick (head = Headliners only, all = Everything, kids = Good for little kids)
+  // rides: which quick pick (head = Headliners only, all = Everything, kids = Good for little kids, three = the first 3 headliners: a light day)
   const VARIANTS = {
     'default': { rides: 'head' },
     'everything-no-break': { rides: 'all', brk: 0 },
@@ -60,7 +61,8 @@
     'start-1pm': { rides: 'head', win: { start: '13' } },
     'single-pass-fewest-steps': { rides: 'all', single: true, walk: 4, brk: 0 },
     'sit-down-meals': { rides: 'head', dine: true, hotel: 'pp' },
-    'custom-hotel-4h-break': { rides: 'all', hotel: 'custom', custom: 45, brk: 4, walk: 0 }
+    'custom-hotel-4h-break': { rides: 'all', hotel: 'custom', custom: 45, brk: 4, walk: 0 },
+    'three-rides': { rides: 'three', golden: [300] }
   };
 
   let results, golden = null, fresh = {};
@@ -164,7 +166,7 @@
             for (const p of ['Disneyland', 'California Adventure']) {
               const ctx = w.dayContext(iso, p, D);
               const pick = v.rides === 'all' ? () => true : v.rides === 'kids' ? w.eval('kidPick') : (r) => r.head;
-              const names = ctx.rides.filter(pick).map(r => r.name);
+              const names = ctx.rides.filter(pick).map(r => r.name).slice(0, v.rides === 'three' ? 3 : Infinity);
               st.rides[p] = new w.Set(names);
               st.reps[p] = new w.Map(v.reps ? names.slice(0, v.reps).map(x => [x, 2]) : []);
               if (v.dine && p === (park === 'Hopper' ? 'Disneyland' : park)) {
@@ -176,7 +178,7 @@
             w.drawDay(); w.dpFlush(); n++;
             const errs = errsSince(w, e0);
             const lines = shown(doc);
-            if (GOLDEN_AHEAD.includes(ahead)) fresh[key] = lines;
+            if (GOLDEN_AHEAD.includes(ahead) || (v.golden || []).includes(ahead)) fresh[key] = lines;
             const odd = lines.filter(x => moreErr.test(x));
             const bad = [].concat(errs, odd.map(x => `shows "${x}"`));
             segsOf(w).forEach(([which, segs]) => rules(segs, { b2b: w.eval('dpState.b2b') }).forEach(b => bad.push(`${which}: ${b}`)));

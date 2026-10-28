@@ -46,3 +46,19 @@ const FLEX_END_MAX_H = 2, FLEX_BRK_MIN_H = 1, FLEX_STEP_H = 0.25;
 // ---------- repeat rides ----------
 // the most times one ride can be on a day, and on a whole trip
 const REP_DAY_MAX = 3, REP_TRIP_MAX = 6;
+
+// ---------- spreading a light day ----------
+// when the picked rides are done at least SPREAD_SPARE_MIN minutes before the day (or the block before a break) ends, the
+// plan is tried again letting a ride wait for a quieter or more comfortable hour: free time first, then that ride. The new
+// plan is kept only if every picked ride and every meal still fits (see spreadTry in js/scheduler.js)
+const SPREAD_SPARE_MIN = 90;
+// a ride is put off only when that saves at least SPREAD_GAIN_MIN minutes, SPREAD_GAIN_PCT of its wait-and-weather minutes now,
+// and SPREAD_GAIN_PER_H minutes for every hour it's put off (so the day isn't made hours longer for a few minutes)
+const SPREAD_GAIN_MIN = 5, SPREAD_GAIN_PCT = 0.1, SPREAD_GAIN_PER_H = 5;
+// a ride is never put off to an hour that starts within this many minutes of the end of the day (or the block)
+const SPREAD_RESERVE_MIN = 15;
+// weather counted as minutes of waiting when comparing hours: heat (feels 85°F or more) by the ride's exposure (an indoor
+// ride counts as better in the heat), rain (8% chance or more) by exposure, and a wet ride when it's cool (under 68°F)
+const SPREAD_HEAT_MIN = { Outdoor: 15, Mixed: 6, Indoor: -5 }, SPREAD_RAIN_MIN = { Outdoor: 12, Mixed: 5 }, SPREAD_COLD_WET_MIN = 12;
+// at the two fewest-steps settings of the waits-vs-steps slider, a spread plan may walk at most this much more (0.05 = 5%)
+const SPREAD_WALK_MAX = 0.05;

@@ -66,17 +66,40 @@ function addLLBooking(lists) {
 }
 // When the list is done well before the end, plan it again with the spare time spread through the day:
 // meals up to 20 min longer and 20 to 30 min rest breaks. Kept only if every ride still fits.
+// Then, with SPREAD_SPARE_MIN or more still to spare, rides may also wait for a quieter or more comfortable hour (spreadTry).
 function scheduleSpread(ctx, start, end, pool, opts) {
   const m0 = opts.meals && Object.assign({}, opts.meals), s0 = opts.seen && new Map(opts.seen);
   const b = scheduleBlock(ctx, start, end, pool, opts), spare = (end - b.end) * 60;
   if (b.left.length || spare < 45) return b;
+  let keep = { b, pad: {} };
   const m1 = m0 && Object.assign({}, m0), s1 = s0 && new Map(s0);
   const pad = { meal: Math.min(20, Math.round(spare / 6)), rest: spare >= 150 ? 30 : spare >= 90 ? 20 : 0 };
   const b2 = scheduleBlock(ctx, start, end, pool, Object.assign({}, opts, { pad, meals: m1, seen: s1 }));
-  if (b2.left.length || b2.end > end + 1e-9) return b;
-  if (opts.meals) Object.assign(opts.meals, m1);
-  if (opts.seen) { opts.seen.clear(); s1.forEach((v, k) => opts.seen.set(k, v)); }
-  return b2;
+  if (!b2.left.length && b2.end <= end + 1e-9) keep = { b: b2, pad, meals: m1, seen: s1 };
+  keep = spreadTry(ctx, start, end, pool, opts, keep.b, keep.pad, m0, s0) || keep;
+  spreadKeep(opts, keep);
+  return keep.b;
+}
+// the meals eaten and rides done by the plan kept, for the next block of the day (opts.meals and opts.seen are shared)
+function spreadKeep(opts, keep) {
+  if (opts.meals && keep.meals) Object.assign(opts.meals, keep.meals);
+  if (opts.seen && keep.seen) { opts.seen.clear(); keep.seen.forEach((v, k) => opts.seen.set(k, v)); }
+}
+// A light day: plan block b again, letting each ride wait for a quieter or more comfortable hour when there's
+// SPREAD_SPARE_MIN or more to spare (pad.spread in scheduleBlock). m0 / s0: copies of opts.meals and opts.seen from
+// before b was planned. The new plan is kept only if it has a wait in it, every ride still fits, no meal b has or wanted
+// meal b meets is lost, and, at the two fewest-steps settings, it walks at most SPREAD_WALK_MAX more.
+// Returns { b, pad, meals, seen } to keep, or null to keep b.
+function spreadTry(ctx, start, end, pool, opts, b, pad, m0, s0) {
+  const spare = (end - b.end) * 60, S = opts.S || dpState;
+  if (b.left.length || spare < SPREAD_SPARE_MIN) return null;
+  const m1 = m0 && Object.assign({}, m0), s1 = s0 && new Map(s0), p = Object.assign({}, pad, { spread: spare });
+  const x = scheduleBlock(ctx, start, end, pool, Object.assign({}, opts, { pad: p, meals: m1, seen: s1 }));
+  if (!x.spread || x.left.length || x.end > end + 1e-9) return null;
+  const has = new Set(x.steps.map(s => s.mealKind)), missed = new Set(mealsWanted(b.steps, S));
+  if (b.steps.some(s => s.mealKind && !has.has(s.mealKind)) || mealsWanted(x.steps, S).some(k => !missed.has(k))) return null;
+  if ((S.walk == null ? 2 : S.walk) >= 3 && x.walked > b.walked * (1 + SPREAD_WALK_MAX) + 1e-9) return null;
+  return { b: x, pad, meals: m1, seen: s1 };
 }
 // opts.S: the settings to plan with (default: Plan a day's dpState); opts.gateIn / gateOut: the gates the block enters and leaves by
 function scheduleBlock(ctx, start, end, pool, opts) {
@@ -103,6 +126,27 @@ function scheduleBlock(ctx, start, end, pool, opts) {
   const exitMin = (x) => opts.exit && x ? walkMin(ctx.park, x, null, gates) * walkMult : 0;
   // opts.pad: spare time spread through the day as longer meals and rest breaks (see scheduleSpread)
   const pad = opts.pad || {};
+  // pad.spread: minutes to spare on a light day (see spreadTry). A ride that's a lot better at a later hour is put off until
+  // then (later: ride -> { at, why }; each ride at most once), and the other rides and meals go on as usual. When only
+  // put-off rides are left, the plan has free time until the first of them.
+  const spreading = !!pad.spread, later = new Map();
+  const waiting = (r, at) => later.has(r) && later.get(r).at > at + 1e-9;
+  // the start of the next meal still to come (free time stops there, so the meal happens as usual)
+  const mealNext = () => d3.min(['lunch', 'dinner'].filter(k => !eaten[k]).map(k => want[k] ? want[k].from : k === 'lunch' ? (opts.lunchFrom || earlyLunch) : 17.5)
+    .filter(at => at > t + 1e-9)) ?? Infinity;
+  // free time until `until`, waiting for put-off ride r; free time back to back stays one block
+  const spreadFree = (until, r) => {
+    const txt = freeText(ctx.park, prev, `catch a show, grab a snack or shop. ${r.name} comes later, when ${later.get(r).why}`, gates), last = steps[steps.length - 1];
+    if (last && last.spread && Math.abs(last.t + last.dur / 60 - t) < 1 / 60) Object.assign(last, { meal: txt, dur: Math.round((until - last.t) * 60) });
+    else if (until - t >= 5 / 60) steps.push({ t, meal: txt, dur: Math.round((until - t) * 60), free: true, spread: true });
+    t = until; lastRest = t;
+  };
+  // a ride's wait at that time plus its weather, in minutes, to compare one hour with another (SPREAD_* in js/settings.js)
+  const feelMin = (c, at) => { const w = wxAt(ctx, at), x = c.r.expo; let m = c.wait;
+    if (w.feels >= 85) m += SPREAD_HEAT_MIN[x] || 0;
+    if (w.rain >= 8) m += SPREAD_RAIN_MIN[x] || 0;
+    if (c.r.wet && w.feels < 68) m += SPREAD_COLD_WET_MIN;
+    return m; };
   const restBreaks = pace === 'relaxed' || (pace === 'normal' && opts.relaxed) || !!pad.rest, restMin = pad.rest || 20;
   const mealMin = (pace === 'relaxed' ? 50 : pace === 'fast' ? 30 : (opts.relaxed ? 45 : 40)) + (pad.meal || 0);
   // before a break or a hop, everything has to be done by `end` (no few-minute overrun past the break time)
@@ -159,8 +203,13 @@ function scheduleBlock(ctx, start, end, pool, opts) {
     // a chosen meal time this block can hold: rides must be done by the end of its half hour
     const due = ['lunch', 'dinner'].filter(k => want[k] && !eaten[k] && t <= want[k].to + 1e-9 && end - mealLen(k) / 60 >= want[k].from - 1e-9);
     const lunchLatest = end - (mealLen('lunch') + (opts.exit === 'break' ? 22 : 0)) / 60, lunchDue = !eaten.lunch && lunchFrom0 && lunchLatest >= lunchFrom0 - 0.01;
-    const cands = left.filter(r => !blocked(r, t)).map(r => rideCost(r, t, prev, lastLL)).filter(c => c && (!lunchDue || t + c.dur / 60 <= lunchLatest + 0.01) &&
+    const cands = left.filter(r => !blocked(r, t) && !waiting(r, t)).map(r => rideCost(r, t, prev, lastLL)).filter(c => c && (!lunchDue || t + c.dur / 60 <= lunchLatest + 0.01) &&
       due.every(k => t + c.dur / 60 <= want[k].to + 0.01)).sort((a, b) => a.score - b.score);
+    // a light day: nothing can go now but rides put off for a later hour: free time until the first of them (or the next meal)
+    if (!cands.length && left.some(r => waiting(r, t))) {
+      const first = d3.least(left.filter(r => waiting(r, t)), r => later.get(r).at), next = Math.min(later.get(first).at, mealNext());
+      if (next < end - 0.1) { spreadFree(next, first); continue; }
+    }
     // only repeats that are too soon, or character meets not started yet, are left: fill the gap until the next one may go
     if (!cands.length && left.length && left.every(r => blocked(r, t))) {
       const next = d3.min(left, r => r.meetTo != null && t + 0.5 > r.meetTo ? Infinity : Math.max(seen.has(r.name) && !S.b2b ?
@@ -189,7 +238,7 @@ function scheduleBlock(ctx, start, end, pool, opts) {
       const t2 = t + c.dur / 60, ll2 = c.isLL && c.r.ll !== 'Single Pass' ? t : lastLL;
       let follow = 0;
       if (left.length > 1 && t2 < end - 0.1) {
-        let f = null; for (const r2 of left) { if (r2 === c.r || (!S.b2b && r2.name === c.r.name)) continue;
+        let f = null; for (const r2 of left) { if (r2 === c.r || (!S.b2b && r2.name === c.r.name) || waiting(r2, t2)) continue;
           const c2 = rideCost(r2, t2, c.r, ll2); if (c2 && (!f || c2.score < f.score)) f = c2; }
         follow = f ? f.score : 0;
       }
@@ -197,6 +246,27 @@ function scheduleBlock(ctx, start, end, pool, opts) {
       if (total < bestTotal - 1e-9 || (Math.abs(total - bestTotal) < 1e-9 && best && c.r.avg > best.r.avg)) { best = c; bestTotal = total; }
     }
     if (!best) break;
+    // a light day: if this ride is a lot better at a later hour (a shorter line, or better weather for it), put it off until
+    // that hour and pick again. Only on the hour (waits and weather change by the hour), never a Lightning Lane ride, and
+    // never for an hour within SPREAD_RESERVE_MIN of the end (if it then doesn't fit, spreadTry keeps the packed plan).
+    if (spreading && !best.isLL && !later.has(best.r)) {
+      const tMax = end - 0.1 - SPREAD_RESERVE_MIN / 60;
+      const now = feelMin(best, t), need = Math.max(SPREAD_GAIN_MIN, SPREAD_GAIN_PCT * now) - 1e-9; let pick = null, gain = need;
+      for (let h = Math.floor(t) + 1; h <= tMax + 1e-9; h++) {
+        if (blocked(best.r, h)) continue;
+        const c = rideCost(best.r, h, prev, lastLL);
+        if (!c || c.isLL) continue;
+        // the hour that saves the most, as long as it saves enough for how long the ride is put off
+        const g = now - feelMin(c, h); if (g > gain && g >= SPREAD_GAIN_PER_H * (h - t) - 1e-9) { gain = g; pick = { h, c }; }
+      }
+      if (pick) {
+        const r = best.r, w0 = wxAt(ctx, t), w1 = wxAt(ctx, pick.h);
+        const why = (best.wait - pick.c.wait) * 2 >= gain ? 'its line is usually shorter' : r.expo === 'Indoor' ? "it's indoors, out of the heat" :
+          w0.rain >= 8 && w1.rain < 8 ? 'rain is less likely' : r.wet && w0.feels < 68 ? "it's warmer for a wet ride" : "it's cooler";
+        later.set(r, { at: pick.h, why });
+        continue;
+      }
+    }
     walked += best.walkOnly;
     const nth = (seen.has(best.r.name) ? seen.get(best.r.name).n : 0) + 1;
     steps.push({ t: t + best.walk / 60, ride: best.r.name + (nth > 1 ? ` (${ORD[nth] || nth + 'th'} time)` : ''), wait: best.wait, r: best.r,
@@ -225,7 +295,7 @@ function scheduleBlock(ctx, start, end, pool, opts) {
   if (opts.exit && prev) { const w = exitMin(prev); steps.push({
         t, meal: `Walk to the ${opts.gateOut ? opts.gateOut.name : ctx.park + ' exit'} (~${Math.max(1, Math.round(w))} min)`, dur: Math.max(1, Math.round(w)),
         exit: true }); walked += w; t += w / 60; }
-  return { steps, end: t, totalWait, left, saved, walked, last: prev };
+  return { steps, end: t, totalWait, left, saved, walked, last: prev, spread: later.size };
 }
 // a chosen meal time as the half hour either side of it ({ from, to }), or null for whenever fits; lunch never before 11
 const mealAtOf = (S, k) => { const v = S[k + 'At']; return v == null || v === 'auto' || v === '' ? null : Number(v); };
@@ -276,7 +346,11 @@ function planDay0(ctx, pool, S) {
   if (L > 0 && bestS != null) {
     const llSplit = llPlan(ctx, pool, (bestS - o) + (c - bestS - L), S);
     const meals = { lunch: false, dinner: false }, seen = new Map();
-    const morning = scheduleBlock(ctx, o, bestS, pool, { meals, seen, lunchFrom: bestS <= 12.5 ? 11 : null, ll: llSplit.set, exit: 'break', gateIn: hg(arrive), gateOut: hg(bestS), S });
+    const mo = { meals, seen, lunchFrom: bestS <= 12.5 ? 11 : null, ll: llSplit.set, exit: 'break', gateIn: hg(arrive), gateOut: hg(bestS), S };
+    let morning = scheduleBlock(ctx, o, bestS, pool, mo);
+    // a light morning: rides may wait for a better hour before the break too
+    const msp = spreadTry(ctx, o, bestS, pool, mo, morning, {}, { lunch: false, dinner: false }, new Map());
+    if (msp) { morning = msp.b; spreadKeep(mo, msp); }
     gapFill(ctx, morning, bestS, new Set(pool.map(r => r.name)), 'before your break');
     const evening = scheduleSpread(ctx, bestS + L, c, morning.left, {
         meals, seen, lunchBy: meals.lunch ? 16.5 : Math.max(16.5, bestS + L + 1), dinnerBy: 21, ll: llSplit.set, gateIn: hg(bestS + L), tail: true, S });
