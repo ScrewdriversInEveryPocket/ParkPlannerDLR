@@ -153,6 +153,9 @@
     check(S1, 'every data file checks out', !(w.PDP_DATA_ISSUES || []).some(x => x.level === 'error'), 'see above');
     check(S1, 'the app loads with no errors', !w.__errs.length, w.__errs.join('; '));
     check(S1, 'the test date took effect', w.eval('todayISO()') === TODAY, 'todayISO() is ' + w.eval('todayISO()'));
+    { const want = { 0: '0 min', 30: '30 min', 59.6: '1 h', 60: '1 h', 84: '1 h 24 min', 90: '1 h 30 min', 120: '2 h', 330: '5 h 30 min' }, bad = [];
+      for (const k in want) { const got = w.eval(`fmtDur(${k})`); if (got !== want[k]) bad.push(`fmtDur(${k}) is "${got}", not "${want[k]}"`); }
+      check(S1, 'fmtDur shows minutes and hours', !bad.length, bad.join('; ')); }
     for (const b of doc.querySelectorAll('[role=tab][data-tab]')) { const n = w.__errs.length; b.click(); await wait(250); check(S1, `the ${b.textContent.trim()} tab opens`, !errsSince(w, n).length, errsSince(w, n).join('; ')); }
     { const txt = doc.body.innerText, bits = ['aria-', 'data-tab=', 'role="', '</', '">'].filter(x => txt.includes(x));
       check(S1, 'no markup shows as text on the page', !bits.length, 'found ' + bits.join(', ')); }

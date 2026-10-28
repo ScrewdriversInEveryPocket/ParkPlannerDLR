@@ -57,8 +57,8 @@ const rideOrder = (a, b) => (a.char - b.char) || (b.head - a.head) || (b.avg - a
 const meetHours = (r) => r.meetFrom != null ? `meets about ${fmtClock(r.meetFrom)} to ${fmtClock(r.meetTo)}` : '';
 function rideInfo(chip, r) {
   const sp = document.createElement('span'); sp.className = 'ri';
-  sp.textContent = r.char ? ['Character meet', `~${Math.round(r.avg)} min typical wait`, `about ${r.rmin} min with the character`, meetHours(r),
-    'times vary, check the Disneyland app'].filter(Boolean).join(' · ') : [`~${Math.round(r.avg)} min typical wait`, `${r.rmin} min ride`, THRILL_LBL[r.thrill],
+  sp.textContent = r.char ? ['Character meet', `~${fmtDur(Math.round(r.avg))} typical wait`, `about ${fmtDur(r.rmin)} with the character`, meetHours(r),
+    'times vary, check the Disneyland app'].filter(Boolean).join(' · ') : [`~${fmtDur(Math.round(r.avg))} typical wait`, `${fmtDur(r.rmin)} ride`, THRILL_LBL[r.thrill],
     r.expo ? r.expo.toLowerCase() : '', r.minH ? `${r.minH} in and up` : 'any height'].filter(Boolean).join(' · ');
   chip.append(sp); return chip;
 }
@@ -172,7 +172,7 @@ function dineChips(box, parks, dine, onChange, mt) {
         const b = chipsOf[x.r.key]; if (!b) return;
         const tag = document.createElement('span'); tag.className = 'dgood'; tag.textContent = ` ✓ Good for ${m}`;
         b.classList.add('good'); b.insertBefore(tag, b.querySelector('.ri'));
-        b.title = (b.title ? b.title + ' ' : '') + `Good for ${m} (a hint only; you can pick it for any meal it serves): about ${x.min} min’s walk from where your plan has you at ${m} time.`;
+        b.title = (b.title ? b.title + ' ' : '') + `Good for ${m} (a hint only; you can pick it for any meal it serves): about ${fmtDur(x.min)}’s walk from where your plan has you at ${m} time.`;
       });
     });
   };
@@ -200,7 +200,7 @@ function hotelLabels() {
   [...sel.options].forEach(o => {
     if (!txt[o.value]) return;
     const S = Object.assign({}, dpState, { hotel: o.value }), a = travelMin('Disneyland', null, S), b = travelMin('California Adventure', GC_GATE, S);
-    o.textContent = `${txt[o.value]} (${a} min${a === b ? ' each way' : `, ${b} to DCA`})`;
+    o.textContent = `${txt[o.value]} (${fmtDur(a)}${a === b ? ' each way' : `, ${b} to DCA`})`;
   });
 }
 // ---------- start and finish times: the part of the park's hours the group is there for ----------
@@ -229,7 +229,7 @@ function winLabel(w) {
 function staySum() {
   const a = travelMin('Disneyland'), b = travelMin('California Adventure', GC_GATE);
   const hn = (HOTELS[dpState.hotel] || {}).summary || 'your hotel';
-  const txt = `Staying at ${hn} (${a} min${a === b ? ' each way' : `, ${b} to California Adventure`}) · Lightning Lane Multi Pass: ${dpState.ll ? 'yes' :
+  const txt = `Staying at ${hn} (${fmtDur(a)}${a === b ? ' each way' : `, ${b} to California Adventure`}) · Lightning Lane Multi Pass: ${dpState.ll ? 'yes' :
     'no'}${dpState.single ? ' · Single Pass: yes' : ''}. `;
   ['dp-staysum'].forEach(id => { const el = document.getElementById(id); if (!el) return; el.textContent = txt; const bt = document.createElement('button');
       bt.type = 'button'; bt.className = 'qt-link'; bt.textContent = 'Change in the Trip wizard'; bt.addEventListener('click', () => {

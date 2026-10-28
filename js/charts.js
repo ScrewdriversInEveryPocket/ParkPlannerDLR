@@ -224,11 +224,11 @@ function renderTable() {
       const wrap = document.createElement('span'); wrap.className = 'qt-cell';
       const bar = document.createElement('span'); bar.className = 'qt-bar';
       bar.style.width = (r[k] / maxW * 3.5).toFixed(2) + 'rem'; bar.style.background = dash.colors[i];
-      wrap.append(bar, document.createTextNode(f1(r[k]) + ' min'));
+      wrap.append(bar, document.createTextNode(fmtDur(r[k])));
       c.append(wrap); tr.append(c);
     });
     td(f0(r.dl_crowd)); td(f0(r.dca_crowd));
-    td(f1(r.dl_hours) + ' h', 'qt-hide-narrow'); td(f1(r.dca_hours) + ' h', 'qt-hide-narrow');
+    td(fmtDur(r.dl_hours * 60), 'qt-hide-narrow'); td(fmtDur(r.dca_hours * 60), 'qt-hide-narrow');
     td(f0(r.high_f) + '°'); td(f0(r.rain_pct) + '%'); td(f0(r.hot_pct) + '%', 'qt-hide-narrow');
     td(f1(r.dl_closed), 'qt-hide-narrow'); td(f1(r.dca_closed), 'qt-hide-narrow'); td(fmtClock(r.sunset), 'qt-hide-narrow');
     td(r.events, 'l ev qt-hide-narrow');

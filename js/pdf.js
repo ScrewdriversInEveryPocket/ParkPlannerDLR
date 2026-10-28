@@ -123,7 +123,7 @@ async function exportTripPDF() {
   const chosen = new Map(best.combo.map((i, j) => [i, best.pick[j]]));
   const parkDays = [...chosen.keys()].sort((a, b) => a - b);
   const dayNo = new Map(parkDays.map((i, k) => [days[i], k + 1]));
-  const hotel = HOTEL_NAME[dpState.hotel] === 'your hotel' ? `about ${travelMin()} min from the gates` : HOTEL_NAME[dpState.hotel];
+  const hotel = HOTEL_NAME[dpState.hotel] === 'your hotel' ? `about ${fmtDur(travelMin())} from the gates` : HOTEL_NAME[dpState.hotel];
   // ---- page 1: overview
   pdfBanner(doc, 'trip');
   line('Your Disneyland Resort trip', 20, { bold: true, color: PDF_ROYAL });

@@ -94,7 +94,7 @@ function buildRideChips(ctxs) {
 const KT_TITLE = { Arrive: 'Arrive', Break: 'Midday break', Return: 'Back from your break', Hop: 'Park hop', Leave: 'Leave the park' };
 const ktLine = (x) => {
   x = x.trim()
-    .replace(/^~(\d+) min security( \(([^)]*)\))?( at the (.*))?$/, (m, n, a, day, b, gate) => `Security and tap-in: about ${n} min${day ? ` (${day})` : ''}${gate ? `, through the ${gate}` : ''}`)
+    .replace(/^~(\d+) min security( \(([^)]*)\))?( at the (.*))?$/, (m, n, a, day, b, gate) => `Security and tap-in: about ${fmtDur(n)}${day ? ` (${day})` : ''}${gate ? `, through the ${gate}` : ''}`)
     .replace(/^Hotel ~/, 'At your hotel about ').replace(/^Exit the park$/, 'Walk out to the gate').replace(/^Exit the park/, 'Walk out to the gate')
     .replace(/^at hotel ~/, 'At your hotel about ').replace(/^back ~/, 'Back at your hotel about ').replace(/^leave by /, 'Leave your hotel by ').replace(/^Leave hotel by /, 'Leave your hotel by ')
     .replace(/^List done$/, 'All your rides are done').replace(/~/g, 'about ');
@@ -130,7 +130,7 @@ function stepList(el, groups) {
       }
       else {
         nm.textContent = s.ride;
-        const tags = []; if (s.walk >= 3) tags.push(`${s.walk} min walk`);
+        const tags = []; if (s.walk >= 3) tags.push(`${fmtDur(s.walk)} walk`);
           if (s.ll) tags.push(s.r.ll === 'Single Pass' ? 'Lightning Lane Single Pass' : 'Lightning Lane: around this time, when your return window opens');
           if (s.r.char) tags.push('character meet: times vary, check the Disneyland app'); if (s.r.expo === 'Indoor') tags.push('indoor');
           if (s.r.expo === 'Outdoor') tags.push('outdoor'); if (s.r.wet) tags.push('you may get wet');
@@ -140,10 +140,10 @@ function stepList(el, groups) {
         if (tags.length) { const tg = document.createElement('span'); tg.className = 'tg'; tg.textContent = tags.join(' · '); nm.append(tg); }
       }
       if (s.rr) { const rr = document.createElement('span'); rr.className = 'rr';
-        rr.title = rrText(s.rr) + ': a good time for a restroom stop if anyone needs one'; rr.textContent = `🚻 ${s.rr.min} min`;
-        rr.addEventListener('click', () => { rr.textContent = rr.textContent.length > 12 ? `🚻 ${s.rr.min} min` : '🚻 ' + rrText(s.rr); });
+        rr.title = rrText(s.rr) + ': a good time for a restroom stop if anyone needs one'; rr.textContent = `🚻 ${fmtDur(s.rr.min)}`;
+        rr.addEventListener('click', () => { rr.textContent = rr.textContent.length > 12 ? `🚻 ${fmtDur(s.rr.min)}` : '🚻 ' + rrText(s.rr); });
         nm.insertBefore(rr, nm.firstChild ? nm.firstChild.nextSibling : null); }
-      const wt = document.createElement('span'); wt.className = 'wt'; wt.textContent = s.book ? '' : s.meal ? `${s.dur} min` : s.ll ? `~${s.wait} min (standby ~${s.standby})` : `~${s.wait} min wait`;
+      const wt = document.createElement('span'); wt.className = 'wt'; wt.textContent = s.book ? '' : s.meal ? `${fmtDur(s.dur)}` : s.ll ? `~${fmtDur(s.wait)} (standby ~${s.standby})` : `~${fmtDur(s.wait)} wait`;
       if (s.ll) li.classList.add('ll');
       li.append(tm, nm, wt); el.append(li);
     });
@@ -191,7 +191,7 @@ function dayChart(el, ctx, pool, P) {
   const y = d3.scaleLinear([0, wmax * 1.15], [height - 24, 10]).nice();
   const tmin = d3.min(hrs, h => wxAt(ctx, h).feels) - 3, tmax = d3.max(hrs, h => wxAt(ctx, h).feels) + 3;
   const y2 = d3.scaleLinear([tmin, tmax], [height - 24, 10]).nice();
-  const probe = svg.append('text').style('font-size', 'var(--cds-font-size-caption)').text(y.ticks(4).slice(-1)[0] + ' min');
+  const probe = svg.append('text').style('font-size', 'var(--cds-font-size-caption)').text(fmtDur(y.ticks(4).slice(-1)[0]));
   const left = probe.node().getComputedTextLength() + 10; probe.text(y2.ticks(4).slice(-1)[0] + '°F'); const right = probe.node().getComputedTextLength() + 10; probe.remove();
   const x = d3.scaleLinear([t0, t1], [left, width - right]);
   // break window
@@ -204,7 +204,7 @@ function dayChart(el, ctx, pool, P) {
     h => y(0) - (y(0) - y(wmax * 1.15)) * wxAt(ctx, h).rain / 100)
     .attr('height', h => (y(0) - y(wmax * 1.15)) * wxAt(ctx, h).rain / 100).attr('fill', dash.colors[4]).attr('fill-opacity', .45);
   function h0(k) { return t0 + k; }
-  const gy = svg.append('g').attr('transform', `translate(${left - 6},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(width - left - right + 6)).tickFormat(v => v + ' min')); axisClean(gy);
+  const gy = svg.append('g').attr('transform', `translate(${left - 6},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(width - left - right + 6)).tickFormat(v => fmtDur(v))); axisClean(gy);
   const gr = svg.append('g').attr('transform', `translate(${width - right + 6},0)`).call(d3.axisRight(y2).ticks(4).tickSize(0).tickFormat(v => v + '°F')); axisClean(gr);
   const gx = svg.append('g').attr('transform', `translate(0,${height - 24})`).call(d3.axisBottom(x).ticks(Math.min(t1 - t0, width < 480 ? 6 : 12)).tickFormat(h => fmtHour(h % 24)).tickSize(4));
   axisClean(gx); gx.selectAll('line').attr('stroke', 'var(--cds-chart-axis)');
@@ -227,7 +227,7 @@ function dayChart(el, ctx, pool, P) {
     .on('pointermove', (ev) => {
       const [mx] = d3.pointer(ev); const h = Math.floor(x.invert(mx)); const w = wxAt(ctx, h); const p = pts.find(q => q.h === h);
       tipRows(tip, `${fmtHour(h % 24)}–${fmtHour((h + 1) % 24)}`, [
-        { c: ctx.park === 'Disneyland' ? dash.colors[0] : dash.colors[1], name: 'Avg wait, your rides', v: p && p.w != null ? f0(p.w) + ' min' : 'park closed' },
+        { c: ctx.park === 'Disneyland' ? dash.colors[0] : dash.colors[1], name: 'Avg wait, your rides', v: p && p.w != null ? fmtDur(p.w) : 'park closed' },
         { c: dash.colors[2], name: 'Feels like', v: f0(w.feels) + '°F' },
         { c: dash.colors[4], name: 'Rain chance', v: f0(w.rain) + '%' }]);
       placeTip(el, tip, mx * el.clientWidth / width, 20);
@@ -253,7 +253,7 @@ function hopChart(el, X) {
   const y = d3.scaleLinear([0, wmax * 1.15], [height - 24, 10]).nice();
   const tmin = d3.min(hrs, h => wxAt(ctx, h).feels) - 3, tmax = d3.max(hrs, h => wxAt(ctx, h).feels) + 3;
   const y2 = d3.scaleLinear([tmin, tmax], [height - 24, 10]).nice();
-  const probe = svg.append('text').style('font-size', 'var(--cds-font-size-caption)').text(y.ticks(4).slice(-1)[0] + ' min');
+  const probe = svg.append('text').style('font-size', 'var(--cds-font-size-caption)').text(fmtDur(y.ticks(4).slice(-1)[0]));
   const left = probe.node().getComputedTextLength() + 10; probe.text(y2.ticks(4).slice(-1)[0] + '°F'); const right = probe.node().getComputedTextLength() + 10; probe.remove();
   const x = d3.scaleLinear([t0, t1], [left, width - right]);
   X.segs.slice(1).forEach((s, i) => {
@@ -265,7 +265,7 @@ function hopChart(el, X) {
   svg.append('g').selectAll('rect').data(hrs).join('rect').attr('x', h => x(h) + 2).attr('width', Math.max(1, x(t0 + 1) - x(t0) - 4)).attr('y',
     h => y(0) - (y(0) - y(wmax * 1.15)) * wxAt(ctx, h).rain / 100)
     .attr('height', h => (y(0) - y(wmax * 1.15)) * wxAt(ctx, h).rain / 100).attr('fill', dash.colors[4]).attr('fill-opacity', .45);
-  const gy = svg.append('g').attr('transform', `translate(${left - 6},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(width - left - right + 6)).tickFormat(v => v + ' min')); axisClean(gy);
+  const gy = svg.append('g').attr('transform', `translate(${left - 6},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(width - left - right + 6)).tickFormat(v => fmtDur(v))); axisClean(gy);
   const gr = svg.append('g').attr('transform', `translate(${width - right + 6},0)`).call(d3.axisRight(y2).ticks(4).tickSize(0).tickFormat(v => v + '°F')); axisClean(gr);
   const gx = svg.append('g').attr('transform', `translate(0,${height - 24})`).call(d3.axisBottom(x).ticks(Math.min(t1 - t0, width < 480 ? 6 : 12)).tickFormat(h => fmtHour(h % 24)).tickSize(4));
   axisClean(gx); gx.selectAll('line').attr('stroke', 'var(--cds-chart-axis)');
@@ -292,7 +292,7 @@ function hopChart(el, X) {
       tipRows(tip, `${fmtHour(h % 24)}–${fmtHour((h + 1) % 24)}`, [
         { c: l ? parkColor(l.s.park) : dash.colors[0],
           name: l ? 'Avg wait, your rides in ' + (l.s.park === 'Disneyland' ? 'Disneyland' : 'DCA') : 'Avg wait, your rides',
-          v: p ? f0(p.w) + ' min' : 'not in a park' },
+          v: p ? fmtDur(p.w) : 'not in a park' },
         { c: dash.colors[2], name: 'Feels like', v: f0(w.feels) + '°F' },
         { c: dash.colors[4], name: 'Rain chance', v: f0(w.rain) + '%' }]);
       placeTip(el, tip, mx * el.clientWidth / width, 20);
@@ -394,7 +394,7 @@ function drawHopperDay(D) {
   else if (dca.close <= 19) notes.push('The matching 2025 day was an early‑close party night at California Adventure (closed to day guests at ' +
     fmtClock(dca.close) + '). Check the official calendar for your date.');
   if (dpState.brk > 0 && winWhy(H.win)) notes.push(winWhy(H.win));
-  notes.push(`Park Hopper rules used here: no more than 2 hops in a day, about ${H.hopMin} min for each hop on this day ` +
+  notes.push(`Park Hopper rules used here: no more than 2 hops in a day, about ${fmtDur(H.hopMin)} for each hop on this day ` +
     `(the walk across the Esplanade at your pace, then the tap-in line, which is longer on busy days; no bag check, since the Esplanade is inside security) ` +
     `after walking to the gate, and the first hop is not before ${fmtClock(HOP_FIRST)}.`);
   notes.forEach(n => { const p = document.createElement('p'); p.textContent = n; warn.append(p); });
@@ -403,12 +403,12 @@ function drawHopperDay(D) {
         return s.gapBefore === 'break' ? ['Break', fmtClock(p.depart % 24), `Hotel ~${fmtClock((p.depart + travelMin(p.park, hotelGate(p.ctx,
                     p.depart)) / 60) % 24)} · leave by ${fmtClock(entryInfo(s.ctx,
                 s.start).leave % 24)} · back in ${s.park} by ${fmtClock(s.start % 24)}`] : [`Hop`, fmtClock(p.depart % 24),
-          `${p.park} → ${s.park}, ${s.hopMin} min`]; });
+          `${p.park} → ${s.park}, ${fmtDur(s.hopMin)}`]; });
     keyTimes(document.getElementById(pre + '-times'), [['Arrive', fmtClock(X.arrive), `${arrSub(X.ctx,
               X.arrive)} · ${X.first} opens ${fmtClock(X.ctx.open)}`]].concat(hopTimes, [['Leave', fmtClock(X.leave % 24),
             (X.left.length ? endLbl(X.win) : 'List done') + ` · back ~${backAt(X.segs[X.segs.length - 1].ctx, X.leave)}`]]));
     document.getElementById(pre + '-stats').textContent = `${X.done} of ${X.total} rides across both parks · ${X.hops} park hop${X.hops === 1 ? '' :
-      's'} · ~${f0(X.totalWait)} min in lines${X.saved ? ` · Lightning Lane saves ~${f0(X.saved)} min` : ''}`;
+      's'} · ~${fmtDur(f0(X.totalWait))} in lines${X.saved ? ` · Lightning Lane saves ~${fmtDur(f0(X.saved))}` : ''}`;
     const llEl = document.getElementById(pre + '-ll'); llEl.textContent = '';
     ['Disneyland', 'California Adventure'].forEach(p => { const l = X.llps[p]; if (l && (l.multi.length || l.single.length)) {
           const d = document.createElement('div'); d.textContent = p + ': ' + llText(l); llEl.append(d); } });
@@ -450,7 +450,7 @@ function drawHopperDay(D) {
     const tr = document.createElement('tr'); if (iso === ctx.iso) tr.className = 'cur';
     [d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC'
         }), `DL ${fmtClock(cs[0].open)}–${fmtClock(cs[0].close % 24)} · DCA ${fmtClock(cs[1].open)}–${fmtClock(cs[1].close % 24)}`,
-      waits.length ? f0(d3.mean(waits)) + ' min' : '–', 'Planning…', evs].forEach((v, j) => {
+      waits.length ? fmtDur(d3.mean(waits)) : '–', 'Planning…', evs].forEach((v, j) => {
       const td = document.createElement('td'); td.textContent = v; if (j === 0 || j === 3 || j === 4) td.className = 'l'; if (j === 4) td.className = 'l ev qt-hide-narrow'; tr.append(td);
     });
     tr.addEventListener('click', () => { dpState.date = iso; dpDate.value = iso; drawDay(); });
@@ -520,8 +520,8 @@ function drawDay() {
   const T = travelMin(ctx.park), Th = T / 60;
   keyTimes(document.getElementById('dp-stay-times'), [['Arrive', fmtClock(S.arrive), `${arrSub(ctx, S.arrive)} · opens ${fmtClock(ctx.open)}`], ['Leave',
         fmtClock(S.leave % 24), (S.plan.left.length ? endLbl(P.win) : 'List done') + ` · back ~${backAt(ctx, S.leave)}`]]);
-  document.getElementById('dp-stay-stats').textContent = `${S.done} of ${pool.length} rides · ~${f0(S.plan.totalWait)} min in lines${S.plan.saved ?
-    ` · Lightning Lane saves ~${f0(S.plan.saved)} min` : ''} · ${f1(S.leave - S.arrive)} h in the park · ${S.heat} h at 85°F+ feels‑like`;
+  document.getElementById('dp-stay-stats').textContent = `${S.done} of ${pool.length} rides · ~${fmtDur(f0(S.plan.totalWait))} in lines${S.plan.saved ?
+    ` · Lightning Lane saves ~${fmtDur(f0(S.plan.saved))}` : ''} · ${fmtDur((S.leave - S.arrive) * 60)} in the park · ${fmtDur(S.heat * 60)} at 85°F+ feels‑like`;
   llNote(document.getElementById('dp-stay-ll'), S.llp);
   stepList(document.getElementById('dp-stay-steps'), [['', S.plan.steps]]);
   const stayNote = document.getElementById('dp-stay-note');
@@ -538,21 +538,21 @@ function drawDay() {
     const eOut = entryInfo(ctx, X.brk), eIn = entryInfo(ctx, X.ret), atA = X.brk + eOut.min / 60, atB = eIn.leave, atMin = Math.round((atB - atA) * 60);
     keyTimes(document.getElementById('dp-split-times'), [['Arrive', fmtClock(X.arrive), `${arrSub(ctx, X.arrive)} · opens ${fmtClock(ctx.open)}`], ['Break',
           fmtClock(X.brk), atMin > 0 ? `Exit the park · at hotel ~${fmtClock(atA)}` : 'Exit the park'], ['Return', fmtClock(X.ret),
-          atMin > 0 ? `Leave hotel by ${fmtClock(atB)} · ~${eIn.sec} min security` : 'At the park entrance'], ['Leave', fmtClock(X.leave % 24),
+          atMin > 0 ? `Leave hotel by ${fmtClock(atB)} · ~${fmtDur(eIn.sec)} security` : 'At the park entrance'], ['Leave', fmtClock(X.leave % 24),
           (X.left.length ? endLbl(P.win) : 'List done') + ` · back ~${backAt(ctx, X.leave)}`]]);
-    document.getElementById('dp-split-stats').textContent = `${X.done} of ${pool.length} rides · ~${f0(X.totalWait)} min in lines${X.saved ?
-      ` · Lightning Lane saves ~${f0(X.saved)} min` : ''} · ${f1(X.leave - X.arrive - dpState.brk)} h in the park · ${X.heat} h at 85°F+ feels‑like`;
+    document.getElementById('dp-split-stats').textContent = `${X.done} of ${pool.length} rides · ~${fmtDur(f0(X.totalWait))} in lines${X.saved ?
+      ` · Lightning Lane saves ~${fmtDur(f0(X.saved))}` : ''} · ${fmtDur((X.leave - X.arrive - dpState.brk) * 60)} in the park · ${fmtDur(X.heat * 60)} at 85°F+ feels‑like`;
     llNote(document.getElementById('dp-split-ll'), X.llp);
     stepList(document.getElementById('dp-split-steps'), [['Morning', X.morning.steps],
-        [`Break ${fmtClock(X.brk)}–${fmtClock(X.ret)} · ${eOut.min} min each way to ${HOTEL_NAME[dpState.hotel]}${eOut.g ?
-            " via the hotel's own park entrance" : ''}${atMin > 0 ? `, about ${atMin} min there` : ''} (allows ~${eIn.sec} min for security on return)`, []],
+        [`Break ${fmtClock(X.brk)}–${fmtClock(X.ret)} · ${fmtDur(eOut.min)} each way to ${HOTEL_NAME[dpState.hotel]}${eOut.g ?
+            " via the hotel's own park entrance" : ''}${atMin > 0 ? `, about ${fmtDur(atMin)} there` : ''} (allows ~${fmtDur(eIn.sec)} for security on return)`, []],
         ['Evening', X.evening.steps]]);
     const dWait = S.plan.totalWait - X.totalWait;
     const perRideS = S.done ? S.plan.totalWait / S.done : 0, perRideX = X.done ? X.totalWait / X.done : 0;
-    const tooFar = atMin < 45 ? `With ${eOut.min} min each way you'd only get ${Math.max(0, atMin)} min at the hotel. Pick a longer break, or staying all day may be better. ` : '';
+    const tooFar = atMin < 45 ? `With ${fmtDur(eOut.min)} each way you'd only get ${fmtDur(Math.max(0, atMin))} at the hotel. Pick a longer break, or staying all day may be better. ` : '';
     document.getElementById('dp-split-note').textContent = (flexText(X) ? flexText(X) + ' ' : '') + tooFar + `Compared with staying all day: ${X.done - S.done >= 0 ? (X.done - S.done) + ' more' :
-      (S.done - X.done) + ' fewer'} rides, ${f0(Math.abs(perRideS - perRideX))} min ${perRideX <= perRideS ? 'less' :
-      'more'} waiting per ride, and ${Math.max(0, S.heat - X.heat)} fewer hours in the heat.` + (X.left.length ? ` Not enough time for: ${leftList(X.left)}.` :
+      (S.done - X.done) + ' fewer'} rides, ${fmtDur(f0(Math.abs(perRideS - perRideX)))} ${perRideX <= perRideS ? 'less' :
+      'more'} waiting per ride, and ${fmtDur(Math.max(0, S.heat - X.heat) * 60)} less in the heat.` + (X.left.length ? ` Not enough time for: ${leftList(X.left)}.` :
       '');
   }
   { const trial = (qs) => { const P2 = planDay(ctx, withRides(ctx, pool, qs)); return !((X && P2.split) ? P2.split.left : P2.stay.plan.left).length; };
@@ -580,7 +580,7 @@ function drawDay() {
     const c2 = dayContext(iso, ctx.park, D); const pool2 = expandPool(c2.rides.filter(r => sel.has(r.name)), dpState.reps[ctx.park]);
     const tr = document.createElement('tr'); if (iso === ctx.iso) tr.className = 'cur';
     const cells = [d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' }), `${fmtClock(c2.open)}–${fmtClock(c2.close % 24)}`,
-      f0(d3.mean(pool2.length ? pool2 : c2.rides, r => expWait(c2, r, 14))) + ' min', 'Planning…', c2.evs.map(e => e.name).join(', ')];
+      fmtDur(d3.mean(pool2.length ? pool2 : c2.rides, r => expWait(c2, r, 14))), 'Planning…', c2.evs.map(e => e.name).join(', ')];
     cells.forEach((v, j) => { const td = document.createElement('td'); td.textContent = v; if (j === 0 || j === 3 || j === 4) td.className = 'l';
         if (j === 4) td.className = 'l ev qt-hide-narrow'; tr.append(td); });
     tr.addEventListener('click', () => { dpState.date = iso; dpDate.value = iso; drawDay(); });

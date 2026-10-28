@@ -138,6 +138,7 @@ You get:
   | Go-go | Young adults | about 80 m a minute, quicker meals |
 
   Everyone walks up to 15% slower in the busiest weeks of the year.
+- **Times read as hours and minutes:** every length of time on screen and in the PDFs shows as "45 min", "2 h" or "1 h 24 min", never decimal hours.
 - **Start and finish:** rope drop means arriving 30 minutes before opening. Any other start, or a finish before close, plans only those hours.
 - **A little more time when rides don't fit:** if some picked rides would be left off, the plan can stay up to 2 hours past a finish time you set (never past close), or shorten your midday break (always keeping at least an hour at the hotel after the trip each way). It picks whichever fits the most rides with the fewest extra minutes, keeps the break when both are equal, adds only what's needed (in 15-minute steps), and says so as a warning at the top of the "Your day" box and in the plan's notes: "You leave 45 min later, at 8:15 pm instead of 7:30 pm, to fit Matterhorn Bobsleds." or "Your break is 1 h shorter to fit Space Mountain: 2 h, with about 1 h 35 min at your hotel, back in the park by 3:00 pm." If rides still don't fit, it says that too: "A shorter break (down to about 1 h at your hotel) still wouldn't make room for Goofy's Sky School." With no break and a finish at close, nothing changes: the plan lists what doesn't fit.
 - **Hotel times:** see [Hotel times](#hotel-times).

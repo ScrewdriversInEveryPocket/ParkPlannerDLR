@@ -38,7 +38,7 @@ function entryInfo(ctx, t, S = dpState) {
   const g = hotelGate(ctx, t, S), min = travelMin(ctx.park, g, S), sec = secMin(ctx, t, g);
   return { g, min, sec, name: g ? g.name : GATE_NAME[ctx.park] || 'park gate', leave: t - (min + sec) / 60 };
 }
-const arrSub = (ctx, t, S = dpState) => { const e = entryInfo(ctx, t, S); return `Leave hotel by ${fmtClock(e.leave)} · ~${e.sec} min security (${crowdWord(ctx)})${e.g ? ' at the ' + e.g.name : ''}`; };
+const arrSub = (ctx, t, S = dpState) => { const e = entryInfo(ctx, t, S); return `Leave hotel by ${fmtClock(e.leave)} · ~${fmtDur(e.sec)} security (${crowdWord(ctx)})${e.g ? ' at the ' + e.g.name : ''}`; };
 const backAt = (ctx, t, S = dpState) => fmtClock((t + travelMin(ctx.park, hotelGate(ctx, t, S), S) / 60) % 24);
 // Lightning Lane planning settings from data/lightning_lane.js (which rides are Multi or Single Pass is in ride_profiles)
 const LL = (() => {

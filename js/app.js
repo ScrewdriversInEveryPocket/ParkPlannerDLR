@@ -60,7 +60,7 @@ const render = () => {
   const ww = document.getElementById('wait-week');
   const s1 = statusOf(['wait_by_week', 'holidays']);
   if (s1 === 'ok') { ww.classList.remove('dash-skeleton'); weekLine(ww, dash.data('wait_by_week').data, dash.data('holidays').data, {
-        height: 300, fmtTick: (v) => v + ' min', fmtVal: (v) => f1(v) + ' min' }); }
+        height: 300, fmtTick: (v) => fmtDur(v), fmtVal: (v) => fmtDur(v) }); }
   else if (s1 === 'error') failed(ww); else { ww.textContent = ''; ww.classList.add('dash-skeleton'); }
 
   const cw = document.getElementById('crowd-week');
@@ -76,14 +76,14 @@ const render = () => {
   if (s3 === 'ok') {
     hw.classList.remove('dash-skeleton');
     const rows = dash.data('hours_by_week').data.map(r => ({ week: Number(r.week), week_label: r.week_label, disneyland: Number(r.disneyland), california_adventure: Number(r.california_adventure) }));
-    weekLine(hw, rows, dash.data('holidays').data, { height: 240, fmtTick: (v) => v + ' h', fmtVal: (v) => f1(v) + ' h' });
+    weekLine(hw, rows, dash.data('holidays').data, { height: 240, fmtTick: (v) => fmtDur(v * 60), fmtVal: (v) => fmtDur(v * 60) });
   } else if (s3 === 'error') failed(hw); else { hw.textContent = ''; hw.classList.add('dash-skeleton'); }
 
   // monthly + weekday bars
   const wm = document.getElementById('wait-month');
   const s4 = statusOf(['wait_by_month']);
   if (s4 === 'ok') { wm.classList.remove('dash-skeleton'); groupedBars(wm, dash.data('wait_by_month').data, 'month', {
-        height: 240, fmtTick: (v) => v + ' min', fmtVal: (v) => f1(v) + ' min', title: (r) => r.month }); }
+        height: 240, fmtTick: (v) => fmtDur(v), fmtVal: (v) => fmtDur(v), title: (r) => r.month }); }
   else if (s4 === 'error') failed(wm); else { wm.textContent = ''; wm.classList.add('dash-skeleton'); }
 
   const cm = document.getElementById('crowd-month');
@@ -114,10 +114,10 @@ const render = () => {
   const hol = wxs === 'ok' ? dash.data('holidays').data : null;
   [['temp-week', () => weekLine(document.getElementById('temp-week'), wxRows, hol, {
           height: 300, series: WX.temp, range: ['avg_low_f', 'avg_high_f'], ref: 90, refLabel: '90°F', fmtTick: (v) => v + '°', fmtVal: (v) => f1(v) + '°F',
-          extra: (r) => `Humidity ${f0(r.humidity_pct)}% · ${f1(r.daylight_hours)} h daylight` })],
+          extra: (r) => `Humidity ${f0(r.humidity_pct)}% · ${fmtDur(r.daylight_hours * 60)} daylight` })],
    ['rain-week', () => weekBars(document.getElementById('rain-week'), wxRows, hol, {
          height: 240, series: WX.rain, fmtTick: (v) => v + '%', fmtVal: (v) => f0(v) + '% of days',
-         extra: (r) => `Avg ${d3.format('.2f')(r.avg_rain_in)} in that week · ${f0(r.rain_hours_on_wet_days)} h of rain on a wet day` })],
+         extra: (r) => `Avg ${d3.format('.2f')(r.avg_rain_in)} in that week · ${fmtDur(r.rain_hours_on_wet_days * 60)} of rain on a wet day` })],
    ['risk-week', () => weekLine(document.getElementById('risk-week'), wxRows, hol, { height: 240, zero: true, series: WX.risk, fmtTick: (v) => v + '%', fmtVal: (v) => f0(v) + '% of days' })]
   ].forEach(([id, draw]) => {
     const el = document.getElementById(id);
@@ -130,7 +130,7 @@ const render = () => {
     const cols = [['month', (v) => v, 'l'], ['avg_high_f', (v) => f1(v) + '°'], ['avg_low_f', (v) => f1(v) + '°'], ['feels_like_high_f', (v) => f1(v) + '°', 'qt-hide-narrow'],
       ['rain_chance_pct', (v) => f1(v) + '%'], ['heavy_rain_chance_pct', (v) => f1(v) + '%', 'qt-hide-narrow'], ['avg_rain_in', (v) => d3.format('.2f')(v) + ' in', 'qt-hide-narrow'],
       ['hot_day_pct', (v) => f1(v) + '%'], ['chilly_night_pct', (v) => f1(v) + '%', 'qt-hide-narrow'], ['windy_day_pct', (v) => f1(v) + '%',
-        'qt-hide-narrow'], ['daylight_hours', (v) => f1(v) + ' h', 'qt-hide-narrow']];
+        'qt-hide-narrow'], ['daylight_hours', (v) => fmtDur(v * 60), 'qt-hide-narrow']];
     wm2.data.slice().sort((a, b) => Number(a.month_num) - Number(b.month_num)).forEach(r => {
       const tr = document.createElement('tr');
       cols.forEach(([k, fmt, cls]) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = k === 'month' ? r[k] : fmt(Number(r[k])); tr.append(c); });

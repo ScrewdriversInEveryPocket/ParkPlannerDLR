@@ -1,7 +1,7 @@
 // DLR Planner: Time of day overlay chart and its chips.
 // Part of the app script. The js files load in the order of their script tags in index.html (listed in CLAUDE.md).
 // ---------- overlay explorer ----------
-const fmtMin = (v) => f1(v) + ' min', fmtPct = (v) => f0(v) + '%', fmtDeg = (v) => f1(v) + '°F', fmtH = (v) => f1(v) + ' h', fmtRank = (v) => f0(v);
+const fmtMin = (v) => fmtDur(v), fmtPct = (v) => f0(v) + '%', fmtDeg = (v) => f1(v) + '°F', fmtH = (v) => fmtDur(v * 60), fmtRank = (v) => f0(v);
 const OV = [
   { id: 'dl_wait', group: 'Wait times', name: 'Disneyland wait', unit: 'min', src: 'wait_by_week', key: 'disneyland', fmt: fmtMin },
   { id: 'dca_wait', group: 'Wait times', name: 'DCA wait', unit: 'min', src: 'wait_by_week', key: 'california_adventure', fmt: fmtMin },

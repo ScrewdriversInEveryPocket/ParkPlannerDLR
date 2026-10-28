@@ -13,7 +13,7 @@ function gapFill(ctx, b, until, picked, why) {
     const fits = ctx.rides.filter(r => !picked.has(r.name) && !ctx.closedSet.has(r.name) && !r.refurb && 10 + expWait(ctx, r, h) + r.rmin <= min)
       .sort((a, c) => (c.head - a.head) || (c.avg - a.avg)).slice(0, 3).map(r => r.name);
     b.steps.splice(b.steps.length - 1, 0, { t: ex.t,
-        meal: `Free time: about ${min} min ${why}. ${fits.length ? `To use it, add a ride here, such as ${fits.join(', ')}.` :
+        meal: `Free time: about ${fmtDur(min)} ${why}. ${fits.length ? `To use it, add a ride here, such as ${fits.join(', ')}.` :
           'Catch a show, grab a snack or shop.'}`, dur: min, free: true, gap: true });
   }
   ex.t += gap; b.end = until;
@@ -36,7 +36,7 @@ function* fullAdvice(steps, left, drop) {   // a generator, like roomFor: one re
   }
   return tried.sort((a, b) => ((b.all ? 99 : b.now.length) - (a.all ? 99 : a.now.length)) || (b.min - a.min)).slice(0, 3);
 }
-const advLine = (o) => `${o.name}${o.n > 1 ? ` (all ${o.n} times)` : ''}: about ${Math.round(o.min)} min in line and riding. ${o.all ?
+const advLine = (o) => `${o.name}${o.n > 1 ? ` (all ${o.n} times)` : ''}: about ${fmtDur(Math.round(o.min))} in line and riding. ${o.all ?
   'Taking it off makes room for everything else.' : o.now.length ? `Taking it off makes room for ${o.now.join(', ')}.` :
   "Taking it off isn't enough on its own."}`;
 // Lightning Lane Multi Pass booking steps: you can't choose a return time, so the plan says when to book each one.
@@ -305,7 +305,7 @@ function scheduleBlock(ctx, start, end, pool, opts) {
     if (want.dinner) meal('dinner', want.dinner.from, want.dinner.to + 0.01, 4); else if (t >= 16.5 || keen.dinner) meal('dinner', 17.5, 20.5, 1);
   }
   if (opts.exit && prev) { const w = exitMin(prev); steps.push({
-        t, meal: `Walk to the ${opts.gateOut ? opts.gateOut.name : ctx.park + ' exit'} (~${Math.max(1, Math.round(w))} min)`, dur: Math.max(1, Math.round(w)),
+        t, meal: `Walk to the ${opts.gateOut ? opts.gateOut.name : ctx.park + ' exit'} (~${fmtDur(Math.max(1, Math.round(w)))})`, dur: Math.max(1, Math.round(w)),
         exit: true }); walked += w; t += w / 60; }
   return { steps, end: t, totalWait, left, saved, walked, last: prev, spread: later.size };
 }
@@ -497,7 +497,7 @@ function planDay(ctx, pool, S = dpState) {
 // "Your break is 15 min shorter to fit Space Mountain: 1 h 45 min, with about 1 h 5 min at your hotel, back in the park by 12:45 pm."
 // and, when picked rides still don't fit: "A shorter break (down to about 1 h at your hotel) still wouldn't make room for Goofy's Sky School."
 const flexList = (xs) => xs.length < 2 ? xs.join('') : xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1];
-const flexHours = (h) => { const m = Math.round(h * 60), r = m % 60; return m < 60 ? `${m} min` : `${Math.floor(m / 60)} h${r ? ` ${r} min` : ''}`; };
+const flexHours = (h) => fmtDur(h * 60);
 function flexWarn(X) {
   const f = X && X.flex, out = [];
   if (f && (f.names.length || f.meals.length)) {

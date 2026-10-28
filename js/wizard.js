@@ -90,7 +90,7 @@ function wzSlack(left, end, close, freeCosts, more, adv, S = dpState) {
     return `Doesn't fit: ${leftList(left, true)}. ${a ? `Taking off ${a.name} would make room for ${a.all ? 'everything else' : a.now.join(', ')}, or move` :
       'Move'} ${left.length === 1 ? 'it' : 'them'} to another day, or remove ${left.length === 1 ? 'it' : 'them'}.`; }
   const slack = close - end, before = S.win && S.win.end === 'set' ? 'your finish time' : 'close';
-  const fin = `You'd finish about ${fmtClock(end % 24)}${slack >= 0.25 ? `, ${f1(slack)} h before ${before}` : ''}`;
+  const fin = `You'd finish about ${fmtClock(end % 24)}${slack >= 0.25 ? `, ${fmtDur(slack * 60)} before ${before}` : ''}`;
   if (!freeCosts.length || (more && !more.total)) return `${fin}. Every ride is already on a day.`;
   if (more) return more.fit < 1 ? `This day is full: ${fin.charAt(0).toLowerCase() + fin.slice(1)}, and no other ride would fit.` :
     `${fin}. ${more.fit === more.total ? `Any of the ${more.fit} rides you haven't picked would still fit if you add one.` :
@@ -136,12 +136,12 @@ function wzRenderPlan(box, iso, opt, day, D) {
         const eOut = entryInfo(ctx, X.brk, cfg), eIn = entryInfo(ctx, X.ret, cfg), atA = X.brk + eOut.min / 60, atB = eIn.leave, atMin = Math.round((atB - atA) * 60);
         keyTimes(times, [['Arrive', fmtClock(X.arrive), `${arrSub(ctx, X.arrive, cfg)} · opens ${fmtClock(ctx.open)}`], ['Break', fmtClock(X.brk),
               `Exit the park · at hotel ~${fmtClock(atA)}`], ['Return', fmtClock(X.ret),
-              atMin > 0 ? `Leave hotel by ${fmtClock(atB)} · ~${eIn.sec} min security` : 'At the park entrance'], ['Leave', fmtClock(X.leave % 24),
+              atMin > 0 ? `Leave hotel by ${fmtClock(atB)} · ~${fmtDur(eIn.sec)} security` : 'At the park entrance'], ['Leave', fmtClock(X.leave % 24),
               X.left.length ? endLbl(P.win) : 'List done']]);
-        stats.textContent = `${X.done} of ${pool.length} rides · ~${f0(X.totalWait)} min in lines${X.saved ? ` · Lightning Lane saves ~${f0(X.saved)} min` : ''}`;
+        stats.textContent = `${X.done} of ${pool.length} rides · ~${fmtDur(f0(X.totalWait))} in lines${X.saved ? ` · Lightning Lane saves ~${fmtDur(f0(X.saved))}` : ''}`;
         ll.textContent = llText(X.llp);
         stepList(steps, [['Morning', X.morning.steps],
-            [`Break ${fmtClock(X.brk)}–${fmtClock(X.ret)} · ${eOut.min} min each way${eOut.g ? " via the hotel's own park entrance" : ''}`, []], ['Evening',
+            [`Break ${fmtClock(X.brk)}–${fmtClock(X.ret)} · ${fmtDur(eOut.min)} each way${eOut.g ? " via the hotel's own park entrance" : ''}`, []], ['Evening',
               X.evening.steps]]);
         // which rides would still fit, or what to take off, fills in a moment after the page shows (later, below)
         const later = function* () { const more = yield* wzMore(X.left, ctxs, taken, qs => { const P2 = planDay(ctx, withRides(ctx, pool, qs), cfg); return !(P2.split || P2.stay.plan).left.length; });
@@ -156,8 +156,8 @@ function wzRenderPlan(box, iso, opt, day, D) {
       } else {
         keyTimes(times, [['Arrive', fmtClock(S.arrive), `${arrSub(ctx, S.arrive, cfg)} · opens ${fmtClock(ctx.open)}`], ['Leave', fmtClock(S.leave % 24),
               S.plan.left.length ? endLbl(P.win) : 'List done']]);
-        stats.textContent = `${S.done} of ${pool.length} rides · ~${f0(S.plan.totalWait)} min in lines${S.plan.saved ?
-          ` · Lightning Lane saves ~${f0(S.plan.saved)} min` : ''}${day.brk > 0 ? ' · ' + (P.win.why ? winWhy(P.win).replace(/\.$/,
+        stats.textContent = `${S.done} of ${pool.length} rides · ~${fmtDur(f0(S.plan.totalWait))} in lines${S.plan.saved ?
+          ` · Lightning Lane saves ~${fmtDur(f0(S.plan.saved))}` : ''}${day.brk > 0 ? ' · ' + (P.win.why ? winWhy(P.win).replace(/\.$/,
               '') : 'park hours too short for the break, so no break') : ''}`;
         ll.textContent = llText(S.llp);
         stepList(steps, [['', S.plan.steps]]);
@@ -177,10 +177,10 @@ function wzRenderPlan(box, iso, opt, day, D) {
           return s.gapBefore === 'break' ? ['Break', fmtClock(p.depart % 24), `Hotel ~${fmtClock((p.depart + travelMin(p.park, hotelGate(p.ctx,
                       p.depart, cfg), cfg) / 60) % 24)} · leave by ${fmtClock(entryInfo(s.ctx,
                   s.start, cfg).leave % 24)} · back in ${s.park} by ${fmtClock(s.start % 24)}`] : ['Hop', fmtClock(p.depart % 24),
-            `${p.park} → ${s.park}, ${s.hopMin} min`]; });
+            `${p.park} → ${s.park}, ${fmtDur(s.hopMin)}`]; });
       keyTimes(times, [['Arrive', fmtClock(H.arrive), `${arrSub(H.ctx, H.arrive, cfg)} · ${H.first} opens ${fmtClock(H.ctx.open)}`]].concat(gaps, [['Leave',
               fmtClock(H.leave % 24), H.left.length ? endLbl(H.win) : 'List done']]));
-      stats.textContent = `${H.done} of ${H.total} rides · ${H.hops} park hop${H.hops === 1 ? '' : 's'} · ~${f0(H.totalWait)} min in lines${noBreak ?
+      stats.textContent = `${H.done} of ${H.total} rides · ${H.hops} park hop${H.hops === 1 ? '' : 's'} · ~${fmtDur(f0(H.totalWait))} in lines${noBreak ?
         ' · ' + (winWhy(H.win) ? winWhy(H.win).replace(/\.$/, '') : 'no break fits') : ''}`;
       WZ_PARKS.forEach(p => { const l = H.llps[p]; if (l && (l.multi.length || l.single.length)) { const d = document.createElement('div'); d.textContent = p + ': ' + llText(l); ll.append(d); } });
       stepList(steps, H.segs.map(s => [`${s.park} · ${fmtClock(s.start % 24)}–${fmtClock((s.hopStep ? s.depart : H.leave) % 24)}`, s.steps.concat(s.hopStep ? [s.hopStep] : [])]));

@@ -23,7 +23,7 @@ function restroomNear(park, at, max = RR_NEAR_MIN, S = dpState) {
   const min = bd * PATH_WIND / WALK_SPEED * paceWalk(S);
   return min <= max ? { name: best.n.replace(/ Companion Restroom$/, ' Restrooms'), comp: best.comp, min: Math.max(1, Math.round(min)) } : null;
 }
-const rrText = (rr) => `Restrooms ~${rr.min} min away (${rr.name}${rr.comp ? ', companion restroom too' : ''})`;
+const rrText = (rr) => `Restrooms ~${fmtDur(rr.min)} away (${rr.name}${rr.comp ? ', companion restroom too' : ''})`;
 function annotateRestrooms(steps, park, start, S = dpState) {
   let last = start != null ? start : steps.length ? steps[0].t : 0, prevExit = null;
   steps.forEach(s => {

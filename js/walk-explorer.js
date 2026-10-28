@@ -44,7 +44,7 @@ function wxRoute(a, b) {
   if (a.hotel || b.hotel) {
     const h = HOTELS[a.hotel || b.hotel], s = a.hotel ? b : a, gc = s.park === 'California Adventure' && h.to_gc_m && GC_GATE;
     const gate = gc ? GC_GATE.pos : GATE[s.park], inPark = walkM(a.hotel ? gate : s.at('exit'), a.hotel ? s.at('ent') : gate);
-    if (!h.to_dl_m) return { m: inPark, min: inPark / WALK_SPEED, fixed: Number(h.fixed_min) || 0, gates: true, via: `with the ART shuttle (about ${h.fixed_min} min whatever the pace), through the ${GATE_NAME[s.park]}` };
+    if (!h.to_dl_m) return { m: inPark, min: inPark / WALK_SPEED, fixed: Number(h.fixed_min) || 0, gates: true, via: `with the ART shuttle (about ${fmtDur(h.fixed_min)} whatever the pace), through the ${GATE_NAME[s.park]}` };
     const hm = Number(gc ? h.to_gc_m : s.park === 'California Adventure' ? h.to_dca_m : h.to_dl_m);
     return { m: hm + inPark, min: (hm + inPark) / WALK_SPEED, fixed: Number(h.lift_min) || 0, gates: true,
       via: `through the ${gc ? GC_GATE.name : GATE_NAME[s.park]}, with the hotel's own walk (elevators and hallways included)` };
@@ -68,7 +68,7 @@ function drawWalkTimes() {
   ['Pace'].concat(WX_CROWDS.map(c => c[0] + (c[1] ? ` (+${Math.round(c[1] * WALK_BUSY_MAX * 100)}%)` : ''))).forEach(h => { const th = document.createElement('th'); th.textContent = h; hd.append(th); });
   WX_PACES.forEach(([k, lbl, who]) => {
     const tr = bd.insertRow(), th = document.createElement('th'); th.textContent = `${lbl} (${PACE_SPEED[k]} m/min, ${who})`; th.className = 'l'; tr.append(th);
-    WX_CROWDS.forEach(([, f]) => { tr.insertCell().textContent = `${Math.max(1, Math.round(R.min * WALK_SPEED / PACE_SPEED[k] * (1 + f * WALK_BUSY_MAX) + R.fixed))} min`; });
+    WX_CROWDS.forEach(([, f]) => { tr.insertCell().textContent = `${fmtDur(Math.max(1, Math.round(R.min * WALK_SPEED / PACE_SPEED[k] * (1 + f * WALK_BUSY_MAX) + R.fixed)))}`; });
   });
   const wrap = document.createElement('div'); wrap.className = 'qt-tablewrap'; wrap.append(t); out.append(wrap);
   if (R.gates) out.append(Object.assign(document.createElement('p'), { className: 'qt-note', textContent: 'Going through the park gates may add time (security or tap-in lines).' }));

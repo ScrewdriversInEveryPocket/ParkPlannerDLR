@@ -160,6 +160,8 @@ const parks = [
   { key: 'california_adventure', name: 'California Adventure', c: () => dash.colors[1] }
 ];
 const f1 = d3.format('.1f');
+// a length of time people read: 45 min, 2 h, 1 h 24 min (minutes in, rounded to the nearest minute)
+const fmtDur = (min) => { const m = Math.round(min), r = m % 60; return m < 60 ? `${m} min` : `${Math.floor(m / 60)} h${r ? ` ${r} min` : ''}`; };
 const f0 = d3.format('.0f');
 
 // swatches + legends

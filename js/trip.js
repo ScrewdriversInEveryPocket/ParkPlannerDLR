@@ -217,7 +217,7 @@ function drawTrip() {
     const facts = document.createElement('div'); facts.className = 'tf';
     const m0 = show.parts[0];
     const lines = [];
-    show.parts.forEach(p => lines.push(`${p.park === 'Disneyland' ? 'DL' : 'DCA'} ${fmtClock(p.ctx.open)}–${fmtClock(p.ctx.close % 24)} · ~${f0(p.wait)} min avg wait`));
+    show.parts.forEach(p => lines.push(`${p.park === 'Disneyland' ? 'DL' : 'DCA'} ${fmtClock(p.ctx.open)}–${fmtClock(p.ctx.close % 24)} · ~${fmtDur(f0(p.wait))} avg wait`));
     lines.push((m0.ctx.fc ? `Forecast (${m0.ctx.fc.src}): ${m0.ctx.fc.conditions}, ` : 'Typical: ') + `high ${f0(Number(m0.ctx.wxd.avg_high_f))}°F · ${f0(Number(m0.ctx.wxd.rain_chance_pct))}% rain`);
     lines.push(m0.price != null ? `1‑day ticket $${f0(m0.price)} (tier ${m0.tier})` : '1‑day price not published yet');
     longWeekendNotes(iso, iso).forEach(n => lines.push('⚠️ ' + n));
@@ -271,7 +271,7 @@ function drawTrip() {
   if (rest.length) {
     const restBest = rest.map(i => bestOf(dOpts[i]));
     const dW = d3.mean(restBest, o => o.m.wait) - d3.mean(pickedOpts, o => o.m.wait);
-    if (Math.abs(dW) >= 0.5) why.push(`Your park days average about ${f0(Math.abs(dW))} min ${dW > 0 ? 'shorter' : 'longer'} waits than your break days would.`);
+    if (Math.abs(dW) >= 0.5) why.push(`Your park days average about ${fmtDur(f0(Math.abs(dW)))} ${dW > 0 ? 'shorter' : 'longer'} waits than your break days would.`);
     if (restBest.some(o => o.m.early)) why.push('A break day falls on a California Adventure early‑close party night.');
     const adj = rest.some((i, k) => k && i - rest[k - 1] === 1);
     if (adj) why.push(best.manual ? 'Two of your break days are back to back.' : 'Two break days sit next to each other because there aren’t enough park days to split them up.');
@@ -328,7 +328,7 @@ function drawTripCards(shown, wins, dates) {
       'Park days: ' + w.combo.map((i, j) => `${fmtWd(dates[w.s + i])} ${ab(w.pick[j])}`).join(', '),
       rest.length ? 'Break: ' + rest.map(i => fmtWd(dates[w.s + i])).join(', ') : null,
       `Check out ${fmtShort(checkout)} by ${fmtClock(hhmm(tpState.outT))}`,
-      `~${f0(d3.mean(w.pick, o => o.m.wait))} min avg wait · highs ${f0(d3.mean(w.pick, o => Number(o.parts[0].ctx.wxd.avg_high_f)))}°F · ${f0(d3.mean(w.pick, o => o.m.rain))}% rain`,
+      `~${fmtDur(f0(d3.mean(w.pick, o => o.m.wait)))} avg wait · highs ${f0(d3.mean(w.pick, o => Number(o.parts[0].ctx.wxd.avg_high_f)))}°F · ${f0(d3.mean(w.pick, o => o.m.rain))}% rain`,
       (() => { const ps = w.pick.map(o => o.m.price).filter(v => v != null); return ps.length === w.pick.length ? `1‑day tickets avg $${f0(d3.mean(ps))}` : null; })(),
       (() => { const ev = [...new Set(w.pick.flatMap(o => o.parts.flatMap(p => p.ctx.evs.map(e => e.name))))]; return ev.length ? ev.join(', ') : null; })(),
       (() => { const n = longWeekendNotes(checkin, checkout); return n.length ? '⚠️ ' + n.join(' ') : null; })()

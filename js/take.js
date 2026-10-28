@@ -17,7 +17,7 @@ function planItems(kind) {
   if (!dpLast) return null;
   const { ctx } = dpLast, P = dpLast.P;
   const morning = (c, t) => { const e = entryInfo(c, t); return [{
-        t: e.leave, n: 'Leave the hotel', x: `${e.min} min walk to the ${e.name}, then about ${e.sec} min for security and tap-in on a ${crowdWord(c)}` }, e];
+        t: e.leave, n: 'Leave the hotel', x: `${fmtDur(e.min)} walk to the ${e.name}, then about ${fmtDur(e.sec)} for security and tap-in on a ${crowdWord(c)}` }, e];
     };
   if (P.hop && kind === 'split' && !P.Hb) kind = 'stay';
   if (!P.hop && kind === 'split' && !P.split) kind = 'stay';
@@ -29,9 +29,9 @@ function planItems(kind) {
     `${ctx.park} · ${dateLbl} · ${kind === 'split' ? 'Split day' : 'Stay all day'}`;
   const step = (s) => { const o = step0(s); if (s.rr) o.x = (o.x ? o.x + ' · ' : '') + rrText(s.rr); return o; };
   const step0 = (s) => s.book ? { t: s.t, n: s.meal.replace('📱 ', ''), x: 'Lightning Lane booking' } : s.meal ? {
-    t: s.t, n: s.meal, x: `${s.dur} min` + (s.tip ? ' · ' + s.tip : '') + (s.dine && s.dine.length ? ' · Nearby: ' + dineText(s.dine) : '') } : {
-    t: s.t, n: s.ride, x: (s.walk >= 3 ? `${s.walk} min walk · ` : '') + (s.ll ?
-      `Lightning Lane (around this time, when your window opens) · ~${s.wait} min (standby ~${s.standby})` : `~${s.wait} min wait${s.r.sr ?
+    t: s.t, n: s.meal, x: `${fmtDur(s.dur)}` + (s.tip ? ' · ' + s.tip : '') + (s.dine && s.dine.length ? ' · Nearby: ' + dineText(s.dine) : '') } : {
+    t: s.t, n: s.ride, x: (s.walk >= 3 ? `${fmtDur(s.walk)} walk · ` : '') + (s.ll ?
+      `Lightning Lane (around this time, when your window opens) · ~${fmtDur(s.wait)} (standby ~${s.standby})` : `~${fmtDur(s.wait)} wait${s.r.sr ?
         ' · Single Rider line available' : ''}`) + (s.r.minH ? (tooShort(s.r) ?
         ` · Riders must be at least ${s.r.minH} in tall, so not everyone can ride (ask for Rider Switch)` : ` · Riders must be at least ${s.r.minH} in tall`) :
       '') };
@@ -56,7 +56,7 @@ function planItems(kind) {
     X.morning.steps.forEach(s => items.push(step(s)));
     const eOut = entryInfo(ctx, X.brk), eIn = entryInfo(ctx, X.ret);
     items.push({ t: X.brk, n: 'Leave for your break', x: `Back at the hotel ~${fmtClock(X.brk + eOut.min / 60)}${eOut.g ? ', leaving through the ' + eOut.g.name : ''}` });
-    items.push({ t: eIn.leave, n: 'Head back to the park', x: `Through security at the ${eIn.name} by ${fmtClock(X.ret)} (about ${eIn.sec} min in line)` });
+    items.push({ t: eIn.leave, n: 'Head back to the park', x: `Through security at the ${eIn.name} by ${fmtClock(X.ret)} (about ${fmtDur(eIn.sec)} in line)` });
     X.evening.steps.forEach(s => items.push(step(s)));
     items.push({ t: X.leave, n: 'Leave the park', x: X.left.length ? endLbl(P.win) : 'List done' });
     head.push(X.llp);

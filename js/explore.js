@@ -190,7 +190,7 @@ function drawPlanner() {
     const facts = document.createElement('div'); facts.className = 'rf';
     const closedRides = P === 'dl' ? s.r.closed_dl_rides : P === 'dca' ? s.r.closed_dca_rides : [s.r.closed_dl_rides, s.r.closed_dca_rides].filter(Boolean).join('; ');
     const bits = [
-      `${f1(s.v.wait)} min avg wait`,
+      `${fmtDur(f1(s.v.wait))} avg wait`,
       `crowd ${f0(s.v.crowd)}`,
       `highs ${f0(s.r.high)}°F`,
       `${f0(s.r.rain)}% rain chance`,
@@ -215,10 +215,10 @@ function hourLine(el, rows) {
   const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${width} ${height}`).attr('height', height);
   const ymax = d3.max(rows, r => Math.max(r.disneyland || 0, r.california_adventure || 0));
   const y = d3.scaleLinear([0, ymax * 1.1], [height - 24, 8]).nice();
-  const probe = svg.append('text').style('font-size', 'var(--cds-font-size-caption)').text(y.ticks(4).slice(-1)[0] + ' min');
+  const probe = svg.append('text').style('font-size', 'var(--cds-font-size-caption)').text(fmtDur(y.ticks(4).slice(-1)[0]));
   const left = (probe.node().getComputedTextLength() || 30) + 10; probe.remove();
   const x = d3.scaleLinear(d3.extent(rows, r => r.hour), [left, width - 8]);
-  const gy = svg.append('g').attr('transform', `translate(${left - 6},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(width - left)).tickFormat(v => v + ' min'));
+  const gy = svg.append('g').attr('transform', `translate(${left - 6},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(width - left)).tickFormat(v => fmtDur(v)));
   axisClean(gy);
   const gx = svg.append('g').attr('transform', `translate(0,${height - 24})`).call(d3.axisBottom(x).ticks(width < 420 ? 4 : 8).tickFormat(fmtHour).tickSize(4));
   axisClean(gx); gx.selectAll('line').attr('stroke', 'var(--cds-chart-axis)');
@@ -234,7 +234,7 @@ function hourLine(el, rows) {
       const [mx] = d3.pointer(ev); const hh = Math.round(x.invert(mx)); const r = byH.get(hh); if (!r) return;
       rule.style('display', null).attr('x1', x(hh)).attr('x2', x(hh));
       parks.forEach((p, i) => dots[i].style('display', r[p.key] == null ? 'none' : null).attr('cx', x(hh)).attr('cy', y(r[p.key] || 0)));
-      tipRows(tip, `${fmtHour(hh)}–${fmtHour(hh + 1)}`, parks.map(p => ({ c: p.c(), name: p.name, v: r[p.key] == null ? '—' : f1(r[p.key]) + ' min' })));
+      tipRows(tip, `${fmtHour(hh)}–${fmtHour(hh + 1)}`, parks.map(p => ({ c: p.c(), name: p.name, v: r[p.key] == null ? '—' : fmtDur(r[p.key]) })));
       placeTip(el, tip, x(hh) * el.clientWidth / width, y(Math.max(r.disneyland || 0, r.california_adventure || 0)) * el.clientWidth / width);
     })
     .on('pointerleave', () => { rule.style('display', 'none'); dots.forEach(d => d.style('display', 'none')); tip.style.display = 'none'; });
@@ -293,7 +293,7 @@ function drawRideHeat() {
   const hours = d3.range(8, 24);
   const pi = hmPark === 'Disneyland' ? 0 : 1;
   heatmap(el, names, hours, fmtHour, (n, h) => { const v = idx.get(n + '|' + h); if (v == null) return null; return {
-        alpha: 0.08 + 0.92 * (v / peak.get(n)), text: f0(v) + ' min', show: f0(v) }; }, { color: dash.colors[pi], valName: 'Avg wait' });
+        alpha: 0.08 + 0.92 * (v / peak.get(n)), text: fmtDur(v), show: f0(v) }; }, { color: dash.colors[pi], valName: 'Avg wait' });
 }
 
 function drawClosureHeat() {

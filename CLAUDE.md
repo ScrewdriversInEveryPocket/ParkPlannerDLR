@@ -30,7 +30,7 @@ The scripts load in this order, and they share one set of top-level names (every
 | File | What's in it |
 |---|---|
 | `js/settings.js` | The planner's tuning numbers (walking speeds, meal lengths, restroom stops, break and hop limits, more time, repeat limits, spreading a light day: `SPREAD_*`), one comment each |
-| `js/core.js` | Saved settings, month names, forecast loaders, derived data (waits by week and month, highlights), colour legends |
+| `js/core.js` | Saved settings, `fmtDur(minutes)` (every duration people read: "45 min", "2 h", "1 h 24 min"; use it for any new on-screen or PDF duration, never decimal hours), month names, forecast loaders, derived data (waits by week and month, highlights), colour legends |
 | `js/charts.js` | Chart helpers (tooltips, axes, redraw on resize), week charts, grouped bars, the ride table |
 | `js/explore.js` | Hourly and planner data, the best-dates finder (wizard Dates step), best time of day heatmaps, events chart |
 | `js/controls.js` | Shared settings (`dpState`, and `SETTINGS`: one list of every setting with a control, used to bind both tabs' copies, `syncGlobals` and saving), repeat rides, ride details, tap-to-cycle and restaurant chips (`dineChips`; the tap rule `dineTap` is in `js/meals.js`), hotels (`HOTELS`, `HOTEL_WALK` and `travelMin`, from `data/hotels.js`), start and finish, break |

@@ -176,7 +176,7 @@ function planHopper0(iso, D, withBreak, S) {
     const gap = nx.gapBefore === 'break'
       ? (() => { const eIn = entryInfo(nx.ctx, nx.start, S); return {
             t: s.depart, meal: `Break at your hotel (${fmtClock(s.depart + travelMin(s.park, hotelGate(s.ctx,
-                    s.depart, S), S) / 60)} there). Leave the hotel by ${fmtClock(eIn.leave)} to be through security at the ${eIn.name} by ${fmtClock(nx.start)} (about ${eIn.sec} min in line)`,
+                    s.depart, S), S) / 60)} there). Leave the hotel by ${fmtClock(eIn.leave)} to be through security at the ${eIn.name} by ${fmtClock(nx.start)} (about ${fmtDur(eIn.sec)} in line)`,
             hop: true, brk: true, dur: Math.round(L * 60), to: nx.park }; })()
       : { t: s.depart, meal: `Park hop: leave ${s.park}, arrive at ${nx.park} about ${fmtClock((s.depart +
               nx.hopMin / 60) % 24)} (walk across the Esplanade and tap in)`, hop: true, dur: nx.hopMin, to: nx.park };

@@ -22,8 +22,8 @@ function* roomFor(ctxs, isFree, trial) {
 // adv: fullAdvice() for a day that's over, or null
 // glance: { text, target, warn } a one-line summary of the plan, the element "See the plan" scrolls to, and flexWarn() for the plan
 const glanceText = (leave, done, total, wait, steps, heat) => { const free = d3.sum(steps.filter(x => x.gap), x => x.dur);
-  return [`Leave about ${fmtClock(leave % 24)}`, `${done} of ${total} rides`, `about ${wait >= 90 ? f1(wait / 60) + ' h' : Math.round(wait) + ' min'} in lines`,
-    heat ? `${heat} h in 85°F+ heat` : '', free ? `${free} min free before a break or hop` : ''].filter(Boolean).join(' · '); };
+  return [`Leave about ${fmtClock(leave % 24)}`, `${done} of ${total} rides`, `about ${fmtDur(wait)} in lines`,
+    heat ? `${fmtDur(heat * 60)} in 85°F+ heat` : '', free ? `${fmtDur(free)} free before a break or hop` : ''].filter(Boolean).join(' · '); };
 function fitStatus(box, left, slack, freeCosts, hint, more, adv, glance) {
   const out = new Set(left.map(r => r.park + '|' + r.name));
   const nLeft = d3.rollup(left, v => v.length, r => r.park + '|' + r.name);
@@ -69,13 +69,13 @@ function fitStatus(box, left, slack, freeCosts, hint, more, adv, glance) {
     else if (more) {
       lead.textContent = 'Room for more. ';
       const shown = more.names.slice(0, 6), rest = more.names.length - shown.length;
-      bar.append(lead, `Everything you picked fits${slack >= 0.25 ? `, with about ${f1(slack)} h to spare` : ''}. ${k === more.total ?
+      bar.append(lead, `Everything you picked fits${slack >= 0.25 ? `, with about ${fmtDur(slack * 60)} to spare` : ''}. ${k === more.total ?
           `Any of the ${k} rides you haven't picked would still fit if you add one.` : k > more.total / 2 ?
           `Any ride you haven't picked would still fit if you add one, except ${more.no.join(', ')}. The ones that fit are ticked ✓ in the list.` : `${k === 1 ?
             'This ride' : 'These rides'} would still fit if you add ${k === 1 ? 'it' : 'one'}: ${shown.join(', ')}${rest ? `, and ${rest} more` :
             ''}. ${k === 1 ? "It's" : "They're"} ticked ✓ in the list.`}`);
     }
-    else { lead.textContent = `Room for about ${k} more ride${k === 1 ? '' : 's'}. `; bar.append(lead, `Everything you picked fits, with about ${f1(slack)} h to spare before close.`); }
+    else { lead.textContent = `Room for about ${k} more ride${k === 1 ? '' : 's'}. `; bar.append(lead, `Everything you picked fits, with about ${fmtDur(slack * 60)} to spare before close.`); }
   }
   box.append(bar);
 }
